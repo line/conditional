@@ -36,52 +36,88 @@ public final class ConditionBuilder {
 
     ConditionBuilder() {}
 
+    /**
+     * Returns the {@link ConditionBuilder} with {@code function} set.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     */
     public ConditionBuilder function(ConditionFunction function) {
         this.function = requireNonNull(function, "function");
         return this;
     }
 
+    /**
+     * Returns the {@link ConditionBuilder} with {@code alias} set.
+     */
     public ConditionBuilder alias(@Nullable String alias) {
         this.alias = alias;
         return this;
     }
 
+    /**
+     * Returns the {@link ConditionBuilder} with {@code async} set to {@code true}.
+     */
     public ConditionBuilder async() {
         return async(true);
     }
 
+    /**
+     * Returns the {@link ConditionBuilder} with {@code async} set to specific value.
+     */
     public ConditionBuilder async(boolean async) {
         this.async = async;
         return this;
     }
 
+    /**
+     * Returns the {@link ConditionBuilder} with {@code executor} set.
+     */
     public ConditionBuilder executor(@Nullable Executor executor) {
         this.executor = executor;
         return this;
     }
 
+    /**
+     * Returns the {@link ConditionBuilder} with {@code delayMillis} set.
+     */
     public ConditionBuilder delay(long delayMillis) {
         this.delayMillis = delayMillis;
         return this;
     }
 
+    /**
+     * Returns the {@link ConditionBuilder} with {@code delay} and {@code unit} set.
+     *
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public ConditionBuilder delay(long delay, TimeUnit unit) {
         requireNonNull(unit, "unit");
         delayMillis = unit.toMillis(delay);
         return this;
     }
 
+    /**
+     * Returns the {@link ConditionBuilder} with {@code timeoutMillis} set.
+     */
     public ConditionBuilder timeout(long timeoutMillis) {
         this.timeoutMillis = timeoutMillis;
         return this;
     }
 
+    /**
+     * Returns the {@link ConditionBuilder} with {@code timeout} and {@code unit} set.
+     *
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public ConditionBuilder timeout(long timeout, TimeUnit unit) {
         requireNonNull(unit, "unit");
         timeoutMillis = unit.toMillis(timeout);
         return this;
     }
 
+    /**
+     * Returns a newly created {@link Condition} by {@link ConditionBuilder}.
+     */
     public Condition build() {
         return new Condition(function, alias, async, executor, delayMillis, timeoutMillis) {
             @Override

@@ -91,14 +91,27 @@ public final class ComposedCondition extends Condition {
         return conditions;
     }
 
+    /**
+     * Returns the {@link ComposedCondition} with {@code async} disabled for all nested {@link Condition}s.
+     */
     public ComposedCondition sequential() {
         return mutateNestedConditions(false, null);
     }
 
+    /**
+     * Returns the {@link ComposedCondition} with {@code async} enabled for all nested {@link Condition}s.
+     */
     public ComposedCondition parallel() {
         return mutateNestedConditions(true, null);
     }
 
+    /**
+     * Returns the {@link ComposedCondition} with {@code async} enabled for all nested {@link Condition}s.
+     *
+     * @param executor the executor to execute the {@code function} for all nested {@link Condition}s.
+     *
+     * @throws NullPointerException if the {@code executor} is null.
+     */
     public ComposedCondition parallel(Executor executor) {
         requireNonNull(executor, "executor");
         return mutateNestedConditions(true, executor);

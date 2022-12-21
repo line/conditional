@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -81,6 +82,13 @@ public abstract class Condition {
         private Aliases() {}
     }
 
+    /**
+     * Returns a newly created {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     */
     public static Condition of(ConditionFunction function) {
         return new Condition(function) {
             @Override
@@ -90,36 +98,110 @@ public abstract class Condition {
         };
     }
 
+    /**
+     * Returns a newly created {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param timeoutMillis the value to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     */
     public static Condition of(ConditionFunction function, long timeoutMillis) {
         return of(function).timeout(timeoutMillis);
     }
 
+    /**
+     * Returns a newly created {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param timeout the value to set timeout for the {@code function}.
+     * @param unit the unit to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public static Condition of(ConditionFunction function, long timeout, TimeUnit unit) {
         return of(function).timeout(timeout, unit);
     }
 
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     */
     public static Condition async(ConditionFunction function) {
         return async0(function);
     }
 
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param executor the executor to execute the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     * @throws NullPointerException if the {@code executor} is null.
+     */
     public static Condition async(ConditionFunction function, Executor executor) {
         requireNonNull(executor, "executor");
         return async0(function).executor(executor);
     }
 
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param timeoutMillis the value to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     */
     public static Condition async(ConditionFunction function, long timeoutMillis) {
         return async0(function).timeout(timeoutMillis);
     }
 
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param timeoutMillis the value to set timeout for the {@code function}.
+     * @param executor the executor to execute the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     * @throws NullPointerException if the {@code executor} is null.
+     */
     public static Condition async(ConditionFunction function, long timeoutMillis, Executor executor) {
         requireNonNull(executor, "executor");
         return async0(function).timeout(timeoutMillis).executor(executor);
     }
 
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param timeout the value to set timeout for the {@code function}.
+     * @param unit the unit to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public static Condition async(ConditionFunction function, long timeout, TimeUnit unit) {
         return async0(function).timeout(timeout, unit);
     }
 
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param timeout the value to set timeout for the {@code function}.
+     * @param unit the unit to set timeout for the {@code function}.
+     * @param executor the executor to execute the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     * @throws NullPointerException if the {@code unit} is null.
+     * @throws NullPointerException if the {@code executor} is null.
+     */
     public static Condition async(ConditionFunction function, long timeout, TimeUnit unit, Executor executor) {
         requireNonNull(executor, "executor");
         return async0(function).timeout(timeout, unit).executor(executor);
@@ -129,22 +211,65 @@ public abstract class Condition {
         return of(function).async();
     }
 
+    /**
+     * Returns a newly created {@link Condition} with delay.
+     *
+     * @param function the function to match the conditional expression.
+     * @param delayMillis the milliseconds to set delay for the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     */
     public static Condition delayed(ConditionFunction function, long delayMillis) {
         return of(function).delay(delayMillis);
     }
 
+    /**
+     * Returns a newly created {@link Condition} with delay.
+     *
+     * @param function the function to match the conditional expression.
+     * @param delay the value to set delay for the {@code function}.
+     * @param unit the unit to set delay for the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public static Condition delayed(ConditionFunction function, long delay, TimeUnit unit) {
         return of(function).delay(delay, unit);
     }
 
+    /**
+     * Returns a newly created {@link Condition} from {@link CompletableFuture<Boolean>}.
+     *
+     * @param future the {@link CompletableFuture<Boolean>} to match the conditional expression.
+     *
+     * @throws NullPointerException if the {@code future} is null.
+     */
     public static Condition from(CompletableFuture<Boolean> future) {
         return from0(future);
     }
 
+    /**
+     * Returns a newly created {@link Condition} from {@link CompletableFuture<Boolean>}.
+     *
+     * @param future the {@link CompletableFuture<Boolean>} to match the conditional expression.
+     * @param timeoutMillis the milliseconds to set timeout for the {@code future}.
+     *
+     * @throws NullPointerException if the {@code future} is null.
+     */
     public static Condition from(CompletableFuture<Boolean> future, long timeoutMillis) {
         return from0(future).timeout(timeoutMillis);
     }
 
+    /**
+     * Returns a newly created {@link Condition} from {@link CompletableFuture<Boolean>}.
+     *
+     * @param future the {@link CompletableFuture<Boolean>} to match the conditional expression.
+     * @param timeout the value to set timeout for the {@code future}.
+     * @param unit the unit to set timeout for the {@code future}.
+     *
+     * @throws NullPointerException if the {@code future} is null.
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public static Condition from(CompletableFuture<Boolean> future, long timeout, TimeUnit unit) {
         return from0(future).timeout(timeout, unit);
     }
@@ -154,14 +279,39 @@ public abstract class Condition {
         return of(ctx -> future.join());
     }
 
+    /**
+     * Returns a newly created {@link Condition} from {@link Supplier<Boolean>}.
+     *
+     * @param supplier the {@link Supplier<Boolean>} to match the conditional expression.
+     *
+     * @throws NullPointerException if the {@code supplier} is null.
+     */
     public static Condition from(Supplier<Boolean> supplier) {
         return from0(supplier);
     }
 
+    /**
+     * Returns a newly created {@link Condition} from {@link Supplier<Boolean>}.
+     *
+     * @param supplier the {@link Supplier<Boolean>} to match the conditional expression.
+     * @param timeoutMillis the value to set timeout for the {@code supplier}.
+     *
+     * @throws NullPointerException if the {@code supplier} is null.
+     */
     public static Condition from(Supplier<Boolean> supplier, long timeoutMillis) {
         return from0(supplier).timeout(timeoutMillis);
     }
 
+    /**
+     * Returns a newly created {@link Condition} from {@link Supplier<Boolean>}.
+     *
+     * @param supplier the {@link Supplier<Boolean>} to match the conditional expression.
+     * @param timeout the value to set timeout for the {@code supplier}.
+     * @param unit the unit to set timeout for the {@code supplier}.
+     *
+     * @throws NullPointerException if the {@code supplier} is null.
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public static Condition from(Supplier<Boolean> supplier, long timeout, TimeUnit unit) {
         return from0(supplier).timeout(timeout, unit);
     }
@@ -171,14 +321,39 @@ public abstract class Condition {
         return of(ctx -> supplier.get());
     }
 
+    /**
+     * Returns a newly created {@link Condition} from {@link Function<ConditionContext, Boolean>}.
+     *
+     * @param function the {@link Function<ConditionContext, Boolean>} to match the conditional expression.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     */
     public static Condition from(Function<ConditionContext, Boolean> function) {
         return from0(function);
     }
 
+    /**
+     * Returns a newly created {@link Condition} from {@link Function<ConditionContext, Boolean>}.
+     *
+     * @param function the {@link Function<ConditionContext, Boolean>} to match the conditional expression.
+     * @param timeoutMillis the value to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     */
     public static Condition from(Function<ConditionContext, Boolean> function, long timeoutMillis) {
         return from0(function).timeout(timeoutMillis);
     }
 
+    /**
+     * Returns a newly created {@link Condition} from {@link Function<ConditionContext, Boolean>}.
+     *
+     * @param function the {@link Function<ConditionContext, Boolean>} to match the conditional expression.
+     * @param timeout the value to set timeout for the {@code function}.
+     * @param unit the unit to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public static Condition from(Function<ConditionContext, Boolean> function, long timeout, TimeUnit unit) {
         return from0(function).timeout(timeout, unit);
     }
@@ -188,26 +363,79 @@ public abstract class Condition {
         return of(function::apply);
     }
 
+    /**
+     * Returns a newly created {@link ComposedCondition}.
+     * This {@link ComposedCondition} is composed with the AND operator.
+     *
+     * @param conditions the {@link Condition}s to compose.
+     *
+     * @throws IllegalArgumentException if the {@code conditions} is empty.
+     */
     public static ComposedCondition allOf(Condition... conditions) {
         return new ComposedCondition(Operator.AND, conditions);
     }
 
+    /**
+     * Returns a newly created {@link ComposedCondition}.
+     * This {@link ComposedCondition} is composed with the AND operator.
+     *
+     * @param conditions the {@link Condition}s to compose.
+     *
+     * @throws NullPointerException if the {@code conditions} is null.
+     * @throws IllegalArgumentException if the {@code conditions} is empty.
+     */
     public static ComposedCondition allOf(List<Condition> conditions) {
         return new ComposedCondition(Operator.AND, conditions);
     }
 
+    /**
+     * Returns a newly created {@link ComposedCondition}.
+     * This {@link ComposedCondition} is composed with the OR operator.
+     *
+     * @param conditions the {@link Condition}s to compose.
+     *
+     * @throws IllegalArgumentException if the {@code conditions} is empty.
+     */
     public static ComposedCondition anyOf(Condition... conditions) {
         return new ComposedCondition(Operator.OR, conditions);
     }
 
+    /**
+     * Returns a newly created {@link ComposedCondition}.
+     * This {@link ComposedCondition} is composed with the OR operator.
+     *
+     * @param conditions the {@link Condition}s to compose.
+     *
+     * @throws NullPointerException if the {@code conditions} is null.
+     * @throws IllegalArgumentException if the {@code conditions} is empty.
+     */
     public static ComposedCondition anyOf(List<Condition> conditions) {
         return new ComposedCondition(Operator.OR, conditions);
     }
 
+    /**
+     * Returns a newly created {@link ComposedCondition}.
+     * This {@link ComposedCondition} is composed with the AND operator.
+     * All {@code conditions} passed as parameters are negated.
+     *
+     * @param conditions the {@link Condition}s to compose.
+     *
+     * @throws IllegalArgumentException if the {@code conditions} is empty.
+     */
     public static ComposedCondition noneOf(Condition... conditions) {
         return new ComposedCondition(Operator.AND, negateAll(conditions));
     }
 
+    /**
+     * Returns a newly created {@link ComposedCondition}.
+     * This {@link ComposedCondition} is composed with the AND operator.
+     * All {@code conditions} passed as parameters are negated.
+     *
+     * @param conditions the {@link Condition}s to compose.
+     *
+     * @throws NullPointerException if the {@code conditions} is null.
+     * @throws IllegalArgumentException if the {@code conditions} is empty.
+     */
     public static ComposedCondition noneOf(List<Condition> conditions) {
         return new ComposedCondition(Operator.AND, negateAll(conditions));
     }
@@ -220,31 +448,62 @@ public abstract class Condition {
         return conditions.stream().map(Condition::negate).toList();
     }
 
+    /**
+     * Returns a newly created negative {@link Condition}.
+     *
+     * @param condition the {@code condition} to negate.
+     *
+     * @throws NullPointerException if the {@code condition} is null.
+     */
     public static Condition not(Condition condition) {
         requireNonNull(condition, "condition");
         return of(ctx -> !condition.matches(ctx)).alias("!" + condition);
     }
 
+    /**
+     * Returns the {@link ConditionBuilder} to build {@link Condition}.
+     */
     public static ConditionBuilder builder() {
         return new ConditionBuilder();
     }
 
+    /**
+     * Returns the {@link ConditionComposer} to build {@link ComposedCondition}.
+     *
+     * @param operator the operator of {@link ComposedCondition}.
+     *
+     * @throws NullPointerException if the {@code operator} is null.
+     */
     public static ConditionComposer composer(Operator operator) {
         return new ConditionComposer(operator);
     }
 
+    /**
+     * Returns a newly created {@link Condition} with specific {@code value}.
+     */
     public static Condition completed(boolean value) {
         return of(ctx -> value).alias(Aliases.COMPLETED);
     }
 
+    /**
+     * Returns a newly created {@link Condition} with {@code true}.
+     */
     public static Condition trueCondition() {
         return of(ctx -> true).alias(Aliases.TRUE);
     }
 
+    /**
+     * Returns a newly created {@link Condition} with {@code false}.
+     */
     public static Condition falseCondition() {
         return of(ctx -> false).alias(Aliases.FALSE);
     }
 
+    /**
+     * Returns a newly created exceptional {@link Condition}.
+     *
+     * @throws NullPointerException if the {@code exception} is null.
+     */
     public static Condition exceptional(Supplier<? extends RuntimeException> exception) {
         requireNonNull(exception, "exception");
         return of(ctx -> {
@@ -252,6 +511,11 @@ public abstract class Condition {
         }).alias(Aliases.EXCEPTIONAL);
     }
 
+    /**
+     * Returns a newly created exceptional {@link Condition}.
+     *
+     * @throws NullPointerException if the {@code exception} is null.
+     */
     public static Condition exceptional(ConditionContextAwareSupplier<? extends RuntimeException> exception) {
         requireNonNull(exception, "exception");
         return of(ctx -> {
@@ -270,72 +534,139 @@ public abstract class Condition {
         return mutator.mutate();
     }
 
+    /**
+     * Returns the {@link Condition} with function mutated.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     */
     public final Condition function(ConditionFunction function) {
         return mutate(mutator -> mutator.function(function));
     }
 
+    /**
+     * Returns the {@link ConditionFunction}.
+     */
     public final ConditionFunction function() {
         return function;
     }
 
+    /**
+     * Returns the {@link Condition} with alias mutated.
+     */
     public final Condition alias(@Nullable String alias) {
         return mutate(mutator -> mutator.alias(alias));
     }
 
+    /**
+     * Returns the alias.
+     */
     @Nullable
     public final String alias() {
         return alias;
     }
 
+    /**
+     * Returns the {@link Condition} with async enabled.
+     */
     public final Condition async() {
         return async(true);
     }
 
+    /**
+     * Returns the {@link Condition} with async mutated.
+     */
     public final Condition async(boolean async) {
         return mutate(mutator -> mutator.async(async));
     }
 
+    /**
+     * Returns whether async is enabled.
+     */
     public final boolean isAsync() {
         return async;
     }
 
+    /**
+     * Returns the {@link Condition} with executor mutated.
+     */
     public final Condition executor(@Nullable Executor executor) {
         return mutate(mutator -> mutator.executor(executor));
     }
 
+    /**
+     * Returns the {@link Executor}.
+     */
     @Nullable
     public final Executor executor() {
         return executor;
     }
 
+    /**
+     * Returns the {@link Condition} with delay attribute mutated.
+     */
     public final Condition delay(long delayMillis) {
         return mutate(mutator -> mutator.delay(delayMillis));
     }
 
+    /**
+     * Returns the {@link Condition} with delay attribute mutated.
+     *
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public final Condition delay(long delay, TimeUnit unit) {
         return mutate(mutator -> mutator.delay(delay, unit));
     }
 
+    /**
+     * Returns the {@code delayMillis}.
+     */
     public final long delayMillis() {
         return delayMillis;
     }
 
+    /**
+     * Returns the {@link Condition} with timeout attribute mutated.
+     */
     public final Condition timeout(long timeoutMillis) {
         return mutate(mutator -> mutator.timeout(timeoutMillis));
     }
 
+    /**
+     * Returns the {@link Condition} with timeout attribute mutated.
+     *
+     * @throws NullPointerException if the {@code unit} is null.
+     */
     public final Condition timeout(long timeout, TimeUnit unit) {
         return mutate(mutator -> mutator.timeout(timeout, unit));
     }
 
+    /**
+     * Returns the {@code timeoutMillis}.
+     */
     public final long timeoutMillis() {
         return timeoutMillis;
     }
 
+    /**
+     * Returns a newly created {@link ComposedCondition}.
+     * This {@link ComposedCondition} is composed with the AND operator.
+     *
+     * @param condition the {@link Condition} to compose.
+     *
+     * @throws NullPointerException if the {@code condition} is null.
+     */
     public final ComposedCondition and(Condition condition) {
         return composeWith(Operator.AND, condition);
     }
 
+    /**
+     * Returns a newly created {@link ComposedCondition}.
+     * This {@link ComposedCondition} is composed with the OR operator.
+     *
+     * @param condition the {@link Condition} to compose.
+     *
+     * @throws NullPointerException if the {@code condition} is null.
+     */
     public final ComposedCondition or(Condition condition) {
         return composeWith(Operator.OR, condition);
     }
@@ -352,10 +683,22 @@ public abstract class Condition {
         return new ComposedCondition(operator, this, condition);
     }
 
+    /**
+     * Returns a newly created negative {@link Condition}.
+     */
     public final Condition negate() {
         return not(this);
     }
 
+    /**
+     * Returns the matched result of the {@link Condition}.
+     *
+     * @param ctx the context for matching {@link Condition}.
+     *
+     * @throws NullPointerException if the {@code ctx} is null.
+     * @throws IllegalStateException if {@code delay} is greater than or equal to {@code timeout}.
+     * @throws TimeoutException if the timeout is exceeded.
+     */
     public final boolean matches(ConditionContext ctx) {
         requireNonNull(ctx, "ctx");
         final var startTimeNanos = System.nanoTime();

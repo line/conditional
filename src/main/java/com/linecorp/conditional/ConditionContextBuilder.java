@@ -29,6 +29,12 @@ public final class ConditionContextBuilder {
         contextVariables = new HashMap<>();
     }
 
+    /**
+     * Returns the {@link ConditionContextBuilder} with key-value pair set.
+     *
+     * @throws NullPointerException if the {@code key} is null.
+     * @throws NullPointerException if the {@code value} is null.
+     */
     public ConditionContextBuilder with(String key, Object value) {
         requireNonNull(key, "key");
         requireNonNull(value, "value");
@@ -36,6 +42,11 @@ public final class ConditionContextBuilder {
         return this;
     }
 
+    /**
+     * Returns the {@link ConditionContextBuilder} with {@code contextVariables} set.
+     *
+     * @throws NullPointerException if the {@code contextVariables} is null.
+     */
     public ConditionContextBuilder with(Map<String, Object> contextVariables) {
         requireNonNull(contextVariables, "contextVariables");
         if (!contextVariables.isEmpty()) {
@@ -44,6 +55,9 @@ public final class ConditionContextBuilder {
         return this;
     }
 
+    /**
+     * Returns a newly created {@link ConditionContext} by {@link ConditionContextBuilder}.
+     */
     public ConditionContext build() {
         return new ConditionContext(contextVariables);
     }
