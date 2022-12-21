@@ -152,6 +152,15 @@ Alternatively, you can use `async` method from scratch like this:
 Condition.async(ctx -> true);
 ```
 
+If you want to make all nested conditions asynchronous, you can also do like this:
+```java
+var a = Condition.delayed(ctx -> true, 3000, TimeUnit.MILLISECONDS);
+var b = Condition.delayed(ctx -> true, 4000, TimeUnit.MILLISECONDS);
+var condition = a.and(b).parallel(); // 👈
+var ctx = ConditionContext.of();
+condition.matches(ctx); // 👈 This will probably take about 4 seconds!
+```
+
 Furthermore, even if the colors of conditional expressions are different, they can be composed.
 ```java
 var sync = Condition.of(ctx -> true);
