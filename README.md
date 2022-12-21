@@ -4,6 +4,8 @@
 
 > Make your own conditional expressions more elegant.
 
+[![CI](https://github.com/line/conditional/actions/workflows/gradle.yml/badge.svg?branch=main)](https://github.com/line/conditional/actions/workflows/gradle.yml)
+
 _Conditional_ is a super lightweight library that helps you make conditional expressions. You can compose multiple conditional expressions and make them asynchronous easily.
 
 ## Why do we need Conditional?
