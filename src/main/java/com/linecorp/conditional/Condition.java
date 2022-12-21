@@ -692,12 +692,12 @@ public abstract class Condition {
 
     /**
      * Returns the matched result of the {@link Condition}.
+     * If the timeout is exceeded, a {@link TimeoutException} is raised.
      *
      * @param ctx the context for matching {@link Condition}.
      *
      * @throws NullPointerException if the {@code ctx} is null.
      * @throws IllegalStateException if {@code delay} is greater than or equal to {@code timeout}.
-     * @throws TimeoutException if the timeout is exceeded.
      */
     public final boolean matches(ConditionContext ctx) {
         requireNonNull(ctx, "ctx");
