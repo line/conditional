@@ -44,6 +44,22 @@ Let's take a look!
 
 ## Getting started
 
+To add a dependency on _Conditional_ using Gradle, use the following:
+```groovy
+dependencies {
+    implementation("com.linecorp.conditional:conditional:0.9.0")
+}
+```
+
+To add a dependency using Maven:
+```xml
+<dependency>
+    <groupId>com.linecorp.conditional</groupId>
+    <artifactId>conditional</artifactId>
+    <version>0.9.0</version>
+</dependency>
+```
+
 It takes only 3 steps to make and match a conditional expression.
 ```java
 // Step 1: Make a conditional expression.
