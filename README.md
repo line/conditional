@@ -4,6 +4,9 @@
 
 > Make your own conditional expressions more elegant.
 
+[![CI](https://github.com/line/conditional/actions/workflows/gradle.yml/badge.svg?branch=main)](https://github.com/line/conditional/actions/workflows/gradle.yml)
+<a href="https://search.maven.org/search?q=g:com.linecorp.conditional%20AND%20a:conditional"><img src="https://img.shields.io/maven-central/v/com.linecorp.conditional/conditional.svg?label=version"></a>
+
 _Conditional_ is a super lightweight library that helps you make conditional expressions. You can compose multiple conditional expressions and make them asynchronous easily.
 
 ## Why do we need Conditional?
@@ -43,6 +46,22 @@ _Conditional_ provides reusability, testability, and an easy way to apply asynch
 Let's take a look!
 
 ## Getting started
+
+To add a dependency on _Conditional_ using Gradle, use the following:
+```groovy
+dependencies {
+    implementation("com.linecorp.conditional:conditional:0.9.0")
+}
+```
+
+To add a dependency using Maven:
+```xml
+<dependency>
+    <groupId>com.linecorp.conditional</groupId>
+    <artifactId>conditional</artifactId>
+    <version>0.9.0</version>
+</dependency>
+```
 
 It takes only 3 steps to make and match a conditional expression.
 ```java
@@ -134,6 +153,15 @@ condition.matches(ctx); // 👈 This will probably take about 4 seconds!
 Alternatively, you can use `async` method from scratch like this:
 ```java
 Condition.async(ctx -> true);
+```
+
+If you want to make all nested conditions asynchronous, you can also do like this:
+```java
+var a = Condition.delayed(ctx -> true, 3000, TimeUnit.MILLISECONDS);
+var b = Condition.delayed(ctx -> true, 4000, TimeUnit.MILLISECONDS);
+var condition = a.and(b).parallel(); // 👈
+var ctx = ConditionContext.of();
+condition.matches(ctx); // 👈 This will probably take about 4 seconds!
 ```
 
 Furthermore, even if the colors of conditional expressions are different, they can be composed.
