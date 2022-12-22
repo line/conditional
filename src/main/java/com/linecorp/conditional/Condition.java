@@ -28,6 +28,31 @@ import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
+/**
+ * <h2>Makes and matches conditional expression.</h2>
+ *
+ * <p>It takes only 3 steps to make and match a conditional expression.</p>
+ * <pre>
+ * // Step 1: Make a conditional expression.
+ * var a = Condition.of(ctx -> ctx.var("a", Boolean.class));
+ * var b = Condition.of(ctx -> ctx.var("b", Boolean.class));
+ * var condition = a.and(b);
+ *
+ * // Step 2: Make a context for matching conditional expression.
+ * var ctx = ConditionContext.of("a", true, "b", true);
+ *
+ * // Step 3: Match a conditional expression.
+ * assert condition.matches(ctx) == true;</pre>
+ * <p>
+ * If you need set timeout, use {@link Condition#timeout(long)}, {@link Condition#timeout(long, TimeUnit)}.
+ * </p><p>
+ * If you need asynchronous support, use {@link Condition#async()} related methods.
+ * Alternatively, {@link ComposedCondition#parallel()} might also help.
+ * </p><p>
+ * Note that {@link Condition#matches(ConditionContext)} waits until matches of all nested {@link Condition}s are completed.
+ * If you don't want to wait for matches to complete, use {@link Condition#matchesAsync(ConditionContext)}, {@link Condition#matchesAsync(ConditionContext, Executor)} instead.
+ * </p>
+ */
 public abstract class Condition {
 
     private static final ConditionFunction NOOP = ctx -> {
@@ -117,8 +142,7 @@ public abstract class Condition {
      * @param timeout the value to set timeout for the {@code function}.
      * @param unit the unit to set timeout for the {@code function}.
      *
-     * @throws NullPointerException if the {@code function} is null.
-     * @throws NullPointerException if the {@code unit} is null.
+     * @throws NullPointerException if {@code function} or {@code unit} is null.
      */
     public static Condition of(ConditionFunction function, long timeout, TimeUnit unit) {
         return of(function).timeout(timeout, unit);
@@ -141,8 +165,7 @@ public abstract class Condition {
      * @param function the function to match the conditional expression.
      * @param executor the executor to execute the {@code function}.
      *
-     * @throws NullPointerException if the {@code function} is null.
-     * @throws NullPointerException if the {@code executor} is null.
+     * @throws NullPointerException if {@code function} or {@code executor} is null.
      */
     public static Condition async(ConditionFunction function, Executor executor) {
         requireNonNull(executor, "executor");
@@ -168,8 +191,7 @@ public abstract class Condition {
      * @param timeoutMillis the value to set timeout for the {@code function}.
      * @param executor the executor to execute the {@code function}.
      *
-     * @throws NullPointerException if the {@code function} is null.
-     * @throws NullPointerException if the {@code executor} is null.
+     * @throws NullPointerException if {@code function} or {@code executor} is null.
      */
     public static Condition async(ConditionFunction function, long timeoutMillis, Executor executor) {
         requireNonNull(executor, "executor");
@@ -183,8 +205,7 @@ public abstract class Condition {
      * @param timeout the value to set timeout for the {@code function}.
      * @param unit the unit to set timeout for the {@code function}.
      *
-     * @throws NullPointerException if the {@code function} is null.
-     * @throws NullPointerException if the {@code unit} is null.
+     * @throws NullPointerException if {@code function} or {@code unit} is null.
      */
     public static Condition async(ConditionFunction function, long timeout, TimeUnit unit) {
         return async0(function).timeout(timeout, unit);
@@ -198,9 +219,7 @@ public abstract class Condition {
      * @param unit the unit to set timeout for the {@code function}.
      * @param executor the executor to execute the {@code function}.
      *
-     * @throws NullPointerException if the {@code function} is null.
-     * @throws NullPointerException if the {@code unit} is null.
-     * @throws NullPointerException if the {@code executor} is null.
+     * @throws NullPointerException if {@code function} or {@code unit} or {@code executor} is null.
      */
     public static Condition async(ConditionFunction function, long timeout, TimeUnit unit, Executor executor) {
         requireNonNull(executor, "executor");
@@ -230,17 +249,16 @@ public abstract class Condition {
      * @param delay the value to set delay for the {@code function}.
      * @param unit the unit to set delay for the {@code function}.
      *
-     * @throws NullPointerException if the {@code function} is null.
-     * @throws NullPointerException if the {@code unit} is null.
+     * @throws NullPointerException if {@code function} or {@code unit} is null.
      */
     public static Condition delayed(ConditionFunction function, long delay, TimeUnit unit) {
         return of(function).delay(delay, unit);
     }
 
     /**
-     * Returns a newly created {@link Condition} from {@link CompletableFuture<Boolean>}.
+     * Returns a newly created {@link Condition} from {@link CompletableFuture}.
      *
-     * @param future the {@link CompletableFuture<Boolean>} to match the conditional expression.
+     * @param future the {@link CompletableFuture} to match the conditional expression.
      *
      * @throws NullPointerException if the {@code future} is null.
      */
@@ -249,9 +267,9 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link Condition} from {@link CompletableFuture<Boolean>}.
+     * Returns a newly created {@link Condition} from {@link CompletableFuture}.
      *
-     * @param future the {@link CompletableFuture<Boolean>} to match the conditional expression.
+     * @param future the {@link CompletableFuture} to match the conditional expression.
      * @param timeoutMillis the milliseconds to set timeout for the {@code future}.
      *
      * @throws NullPointerException if the {@code future} is null.
@@ -261,14 +279,13 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link Condition} from {@link CompletableFuture<Boolean>}.
+     * Returns a newly created {@link Condition} from {@link CompletableFuture}.
      *
-     * @param future the {@link CompletableFuture<Boolean>} to match the conditional expression.
+     * @param future the {@link CompletableFuture} to match the conditional expression.
      * @param timeout the value to set timeout for the {@code future}.
      * @param unit the unit to set timeout for the {@code future}.
      *
-     * @throws NullPointerException if the {@code future} is null.
-     * @throws NullPointerException if the {@code unit} is null.
+     * @throws NullPointerException if {@code future} or {@code unit} is null.
      */
     public static Condition from(CompletableFuture<Boolean> future, long timeout, TimeUnit unit) {
         return from0(future).timeout(timeout, unit);
@@ -280,9 +297,9 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link Condition} from {@link Supplier<Boolean>}.
+     * Returns a newly created {@link Condition} from {@link Supplier}.
      *
-     * @param supplier the {@link Supplier<Boolean>} to match the conditional expression.
+     * @param supplier the {@link Supplier} to match the conditional expression.
      *
      * @throws NullPointerException if the {@code supplier} is null.
      */
@@ -291,9 +308,9 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link Condition} from {@link Supplier<Boolean>}.
+     * Returns a newly created {@link Condition} from {@link Supplier}.
      *
-     * @param supplier the {@link Supplier<Boolean>} to match the conditional expression.
+     * @param supplier the {@link Supplier} to match the conditional expression.
      * @param timeoutMillis the value to set timeout for the {@code supplier}.
      *
      * @throws NullPointerException if the {@code supplier} is null.
@@ -303,14 +320,13 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link Condition} from {@link Supplier<Boolean>}.
+     * Returns a newly created {@link Condition} from {@link Supplier}.
      *
-     * @param supplier the {@link Supplier<Boolean>} to match the conditional expression.
+     * @param supplier the {@link Supplier} to match the conditional expression.
      * @param timeout the value to set timeout for the {@code supplier}.
      * @param unit the unit to set timeout for the {@code supplier}.
      *
-     * @throws NullPointerException if the {@code supplier} is null.
-     * @throws NullPointerException if the {@code unit} is null.
+     * @throws NullPointerException if {@code supplier} or {@code unit} is null.
      */
     public static Condition from(Supplier<Boolean> supplier, long timeout, TimeUnit unit) {
         return from0(supplier).timeout(timeout, unit);
@@ -322,9 +338,9 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link Condition} from {@link Function<ConditionContext, Boolean>}.
+     * Returns a newly created {@link Condition} from {@link Function}.
      *
-     * @param function the {@link Function<ConditionContext, Boolean>} to match the conditional expression.
+     * @param function the {@link Function} to match the conditional expression.
      *
      * @throws NullPointerException if the {@code function} is null.
      */
@@ -333,9 +349,9 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link Condition} from {@link Function<ConditionContext, Boolean>}.
+     * Returns a newly created {@link Condition} from {@link Function}.
      *
-     * @param function the {@link Function<ConditionContext, Boolean>} to match the conditional expression.
+     * @param function the {@link Function} to match the conditional expression.
      * @param timeoutMillis the value to set timeout for the {@code function}.
      *
      * @throws NullPointerException if the {@code function} is null.
@@ -345,14 +361,13 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link Condition} from {@link Function<ConditionContext, Boolean>}.
+     * Returns a newly created {@link Condition} from {@link Function}.
      *
-     * @param function the {@link Function<ConditionContext, Boolean>} to match the conditional expression.
+     * @param function the {@link Function} to match the conditional expression.
      * @param timeout the value to set timeout for the {@code function}.
      * @param unit the unit to set timeout for the {@code function}.
      *
-     * @throws NullPointerException if the {@code function} is null.
-     * @throws NullPointerException if the {@code unit} is null.
+     * @throws NullPointerException if {@code function} or {@code unit} is null.
      */
     public static Condition from(Function<ConditionContext, Boolean> function, long timeout, TimeUnit unit) {
         return from0(function).timeout(timeout, unit);
@@ -551,14 +566,14 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with alias mutated.
+     * Returns the {@link Condition} with {@code alias} mutated.
      */
     public final Condition alias(@Nullable String alias) {
         return mutate(mutator -> mutator.alias(alias));
     }
 
     /**
-     * Returns the alias.
+     * Returns the {@code alias}.
      */
     @Nullable
     public final String alias() {
@@ -566,28 +581,28 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with async enabled.
+     * Returns the {@link Condition} with {@code async} enabled.
      */
     public final Condition async() {
         return async(true);
     }
 
     /**
-     * Returns the {@link Condition} with async mutated.
+     * Returns the {@link Condition} with {@code async} mutated.
      */
     public final Condition async(boolean async) {
         return mutate(mutator -> mutator.async(async));
     }
 
     /**
-     * Returns whether async is enabled.
+     * Returns whether {@code async} is enabled.
      */
     public final boolean isAsync() {
         return async;
     }
 
     /**
-     * Returns the {@link Condition} with executor mutated.
+     * Returns the {@link Condition} with {@code executor} mutated.
      */
     public final Condition executor(@Nullable Executor executor) {
         return mutate(mutator -> mutator.executor(executor));
@@ -602,14 +617,14 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with delay attribute mutated.
+     * Returns the {@link Condition} with {@code delay} attribute mutated.
      */
     public final Condition delay(long delayMillis) {
         return mutate(mutator -> mutator.delay(delayMillis));
     }
 
     /**
-     * Returns the {@link Condition} with delay attribute mutated.
+     * Returns the {@link Condition} with {@code delay} attribute mutated.
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
@@ -625,14 +640,14 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with timeout attribute mutated.
+     * Returns the {@link Condition} with {@code timeout} attribute mutated.
      */
     public final Condition timeout(long timeoutMillis) {
         return mutate(mutator -> mutator.timeout(timeoutMillis));
     }
 
     /**
-     * Returns the {@link Condition} with timeout attribute mutated.
+     * Returns the {@link Condition} with {@code timeout} attribute mutated.
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
@@ -732,6 +747,31 @@ public abstract class Condition {
         }
         ctx.addConditionExecutionResult(thread, condition, matches, durationMillis(startTimeNanos));
         return matches;
+    }
+
+    /**
+     * Returns the {@link CompletableFuture}. The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
+     *
+     * @param ctx the context for matching {@link Condition}.
+     */
+    public final CompletableFuture<Boolean> matchesAsync(ConditionContext ctx) {
+        return matchesAsync0(ctx, null);
+    }
+
+    /**
+     * Returns the {@link CompletableFuture}. The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
+     *
+     * @param ctx the context for matching {@link Condition}.
+     * @param executor the executor to execute the {@link ConditionFunction}.
+     */
+    public final CompletableFuture<Boolean> matchesAsync(ConditionContext ctx, Executor executor) {
+        requireNonNull(executor, "executor");
+        return matchesAsync0(ctx, executor);
+    }
+
+    private CompletableFuture<Boolean> matchesAsync0(ConditionContext ctx, @Nullable Executor executor) {
+        requireNonNull(ctx, "ctx");
+        return supplyAsync(() -> matches(ctx), executor);
     }
 
     protected abstract boolean match(ConditionContext ctx);

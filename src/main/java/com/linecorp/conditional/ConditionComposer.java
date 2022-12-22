@@ -30,10 +30,22 @@ public final class ConditionComposer {
         this.operator = requireNonNull(operator, "operator");
     }
 
+    /**
+     * Returns the {@link ConditionComposer} composed by {@code conditions}.
+     *
+     * @param conditions the {@code conditions} to compose.
+     */
     public ConditionComposer with(Condition... conditions) {
         return with(List.of(conditions));
     }
 
+    /**
+     * Returns the {@link ConditionComposer} composed by {@code conditions}.
+     *
+     * @param conditions the {@code conditions} to compose.
+     *
+     * @throws NullPointerException if the {@code conditions} is null.
+     */
     public ConditionComposer with(List<Condition> conditions) {
         requireNonNull(conditions, "conditions");
         if (!conditions.isEmpty()) {
@@ -42,6 +54,9 @@ public final class ConditionComposer {
         return this;
     }
 
+    /**
+     * Returns a newly created {@link ComposedCondition} by {@link ConditionComposer}.
+     */
     public ComposedCondition compose() {
         return new ComposedCondition(operator, conditions);
     }

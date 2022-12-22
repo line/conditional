@@ -26,6 +26,9 @@ public final class ConditionExecutionCompletion extends ConditionExecutionResult
         this.matches = matches;
     }
 
+    /**
+     * Returns the {@code matches}.
+     */
     public boolean matches() {
         return matches;
     }

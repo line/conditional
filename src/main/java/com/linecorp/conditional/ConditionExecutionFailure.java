@@ -28,6 +28,9 @@ public final class ConditionExecutionFailure extends ConditionExecutionResult {
         this.cause = requireNonNull(cause, "cause");
     }
 
+    /**
+     * Returns the {@code cause}.
+     */
     public Throwable cause() {
         return cause;
     }

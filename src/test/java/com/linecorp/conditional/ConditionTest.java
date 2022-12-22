@@ -298,6 +298,17 @@ class ConditionTest {
                });
     }
 
+    @ParameterizedTest
+    @MethodSource("deadlocks")
+    void avoid_deadlock_when_matchesAsync(Condition condition) {
+        await().atMost(1000, TimeUnit.MILLISECONDS)
+               .until(() -> {
+                   final var ctx = ConditionContext.of();
+                   condition.matchesAsync(ctx).join();
+                   return true;
+               });
+    }
+
     @Nested
     class MatchesTest {
 

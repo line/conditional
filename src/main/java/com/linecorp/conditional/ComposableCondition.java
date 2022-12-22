@@ -16,6 +16,35 @@
 
 package com.linecorp.conditional;
 
+/**
+ * <p>{@link ComposableCondition} is a class to compose multiple {@link Condition}s.</p>
+ * <p>If you don't use {@link ComposableCondition}, you can compose like the code below:</p>
+ * <pre>
+ * class TestCondition extends Condition {
+ *     Condition a;
+ *     Condition b;
+ *
+ *     &#064;Override
+ *     protected boolean match(ConditionContext ctx) {
+ *         // You have to invoke {@link Condition#matches(ConditionContext)} manually.
+ *         return a.and(b).matches(ctx);
+ *     }
+ * }
+ * </pre>
+ * <p>Otherwise, if you use {@link ComposableCondition}:</p>
+ * <pre>
+ * class TestCondition extends ComposableCondition {
+ *     Condition a;
+ *     Condition b;
+ *
+ *     &#064;Override
+ *     protected Condition compose() {
+ *         // You don't have to invoke {@link Condition#matches(ConditionContext)} manually.
+ *         return a.and(b);
+ *     }
+ * }
+ * </pre>
+ */
 public abstract class ComposableCondition extends Condition {
 
     @Override

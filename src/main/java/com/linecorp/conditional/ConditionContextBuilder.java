@@ -32,8 +32,7 @@ public final class ConditionContextBuilder {
     /**
      * Returns the {@link ConditionContextBuilder} with key-value pair set.
      *
-     * @throws NullPointerException if the {@code key} is null.
-     * @throws NullPointerException if the {@code value} is null.
+     * @throws NullPointerException if {@code key} or {@code value} is null.
      */
     public ConditionContextBuilder with(String key, Object value) {
         requireNonNull(key, "key");
