@@ -4,7 +4,7 @@
 
 > Make your own conditional expressions more elegant.
 
-[![CI](https://github.com/line/conditional/actions/workflows/gradle.yml/badge.svg?branch=main)](https://github.com/line/conditional/actions/workflows/gradle.yml)
+[![build](https://github.com/line/conditional/actions/workflows/gradle.yml/badge.svg?branch=main)](https://github.com/line/conditional/actions/workflows/gradle.yml)
 <a href="https://search.maven.org/search?q=g:com.linecorp.conditional%20AND%20a:conditional"><img src="https://img.shields.io/maven-central/v/com.linecorp.conditional/conditional.svg?label=version"></a>
 
 _Conditional_ is a super lightweight library that helps you make conditional expressions. You can compose multiple conditional expressions and make them asynchronous easily.
@@ -50,7 +50,7 @@ Let's take a look!
 To add a dependency on _Conditional_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:0.9.0")
+    implementation("com.linecorp.conditional:conditional:0.9.1")
 }
 ```
 
@@ -59,7 +59,7 @@ To add a dependency using Maven:
 <dependency>
     <groupId>com.linecorp.conditional</groupId>
     <artifactId>conditional</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1</version>
 </dependency>
 ```
 
@@ -93,7 +93,7 @@ Condition.of(ctx -> true, 3000, TimeUnit.MILLISECONDS);
 Condition.of(ctx -> true).timeout(3000, TimeUnit.MILLISECONDS);
 ```
 
-If timeout is exceeded, a `TimeoutException` will be raised.
+If timeout is exceeded, a `TimeoutException` is raised.
 ```java
 var condition = Condition.of(ctx -> {
     try {

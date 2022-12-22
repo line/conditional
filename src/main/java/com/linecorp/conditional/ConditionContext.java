@@ -55,14 +55,14 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} with key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2) {
         return of(Map.of(k1, v1, k2, v2));
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} with key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3) {
@@ -70,7 +70,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} with key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4) {
@@ -78,7 +78,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} with key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -87,7 +87,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} with key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -96,7 +96,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} with key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -106,7 +106,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} with key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -116,7 +116,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} with key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -127,7 +127,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} with key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -156,7 +156,7 @@ public final class ConditionContext {
      *
      * @param key the {@code key} to get {@code value} from {@code contextVariables}.
      *
-     * @throws NullPointerException if the {@code value} is null.
+     * @throws NullPointerException if the {@code value} corresponding to the {@code key} is null.
      */
     public Object var(String key) {
         return must(contextVariables.get(key));
@@ -168,8 +168,7 @@ public final class ConditionContext {
      * @param key the {@code key} to get {@code value} from {@code contextVariables}.
      * @param as the type to cast the {@code value}.
      *
-     * @throws NullPointerException if the {@code as} is null.
-     * @throws NullPointerException if the {@code value} is null.
+     * @throws NullPointerException if {@code as} or {@code value} corresponding to the {@code key} is null.
      * @throws ClassCastException if the {@code value} cannot be cast to {@code as} type.
      */
     public <T> T var(String key, Class<T> as) {

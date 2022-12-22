@@ -31,14 +31,23 @@ public abstract class ConditionExecutionResult {
         this.durationMillis = durationMillis;
     }
 
+    /**
+     * Returns the {@code thread}.
+     */
     public final Thread thread() {
         return thread;
     }
 
+    /**
+     * Returns the {@code condition}.
+     */
     public final Condition condition() {
         return condition;
     }
 
+    /**
+     * Returns the {@code durationMillis}.
+     */
     public final long durationMillis() {
         return durationMillis;
     }

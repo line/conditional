@@ -18,12 +18,12 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class ConditionContextTest {
@@ -40,7 +40,7 @@ class ConditionContextTest {
         // true
         final var condition = Condition.trueCondition();
         final var ctx = ConditionContext.of();
-        Assertions.assertDoesNotThrow(() -> condition.matches(ctx));
+        assertDoesNotThrow(() -> condition.matches(ctx));
 
         final var conditionExecutionResults = ctx.conditionExecutionResults();
         assertEquals(1, conditionExecutionResults.size());
@@ -55,7 +55,7 @@ class ConditionContextTest {
         // false
         final var condition = Condition.falseCondition();
         final var ctx = ConditionContext.of();
-        Assertions.assertDoesNotThrow(() -> condition.matches(ctx));
+        assertDoesNotThrow(() -> condition.matches(ctx));
 
         final var conditionExecutionResults = ctx.conditionExecutionResults();
         assertEquals(1, conditionExecutionResults.size());
@@ -86,7 +86,7 @@ class ConditionContextTest {
         // true && false
         final var condition = Condition.trueCondition().and(Condition.falseCondition());
         final var ctx = ConditionContext.of();
-        Assertions.assertDoesNotThrow(() -> condition.matches(ctx));
+        assertDoesNotThrow(() -> condition.matches(ctx));
 
         final var conditionExecutionResults = ctx.conditionExecutionResults();
         assertEquals(3, conditionExecutionResults.size());
@@ -110,7 +110,7 @@ class ConditionContextTest {
         // true || false
         final var condition = Condition.trueCondition().or(Condition.falseCondition());
         final var ctx = ConditionContext.of();
-        Assertions.assertDoesNotThrow(() -> condition.matches(ctx));
+        assertDoesNotThrow(() -> condition.matches(ctx));
 
         final var conditionExecutionResults = ctx.conditionExecutionResults();
         assertEquals(2, conditionExecutionResults.size());
@@ -130,7 +130,7 @@ class ConditionContextTest {
         // false && true
         final var condition = Condition.falseCondition().and(Condition.trueCondition());
         final var ctx = ConditionContext.of();
-        Assertions.assertDoesNotThrow(() -> condition.matches(ctx));
+        assertDoesNotThrow(() -> condition.matches(ctx));
 
         final var conditionExecutionResults = ctx.conditionExecutionResults();
         assertEquals(2, conditionExecutionResults.size());
@@ -150,7 +150,7 @@ class ConditionContextTest {
         // false || true
         final var condition = Condition.falseCondition().or(Condition.trueCondition());
         final var ctx = ConditionContext.of();
-        Assertions.assertDoesNotThrow(() -> condition.matches(ctx));
+        assertDoesNotThrow(() -> condition.matches(ctx));
 
         final var conditionExecutionResults = ctx.conditionExecutionResults();
         assertEquals(3, conditionExecutionResults.size());
@@ -202,7 +202,7 @@ class ConditionContextTest {
         final var condition = Condition.trueCondition().or(
                 Condition.exceptional(unused -> new RuntimeException()));
         final var ctx = ConditionContext.of();
-        Assertions.assertDoesNotThrow(() -> condition.matches(ctx));
+        assertDoesNotThrow(() -> condition.matches(ctx));
 
         final var conditionExecutionResults = ctx.conditionExecutionResults();
         assertEquals(2, conditionExecutionResults.size());
@@ -273,7 +273,7 @@ class ConditionContextTest {
                                        .or(Condition.falseCondition().and(
                                                Condition.exceptional(unused -> new RuntimeException())));
         final var ctx = ConditionContext.of();
-        Assertions.assertDoesNotThrow(() -> condition.matches(ctx));
+        assertDoesNotThrow(() -> condition.matches(ctx));
 
         final var conditionExecutionResults = ctx.conditionExecutionResults();
         assertEquals(6, conditionExecutionResults.size());
