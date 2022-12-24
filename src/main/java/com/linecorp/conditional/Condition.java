@@ -476,14 +476,14 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link ConditionBuilder} to build {@link Condition}.
+     * Returns the {@link ConditionBuilder}.
      */
     public static ConditionBuilder builder() {
         return new ConditionBuilder();
     }
 
     /**
-     * Returns the {@link ConditionComposer} to build {@link ComposedCondition}.
+     * Returns the {@link ConditionComposer}.
      *
      * @param operator the operator of {@link ComposedCondition}.
      *
@@ -494,7 +494,7 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link Condition} with specific {@code value}.
+     * Returns a newly created {@link Condition} by specific {@code value}.
      */
     public static Condition completed(boolean value) {
         return of(ctx -> value).alias(Aliases.COMPLETED);
@@ -515,26 +515,27 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created exceptional {@link Condition}.
+     * Returns a newly created {@link Condition} by {@code exceptionSupplier}.
      *
-     * @throws NullPointerException if the {@code exception} is null.
+     * @throws NullPointerException if the {@code exceptionSupplier} is null.
      */
-    public static Condition exceptional(Supplier<? extends RuntimeException> exception) {
-        requireNonNull(exception, "exception");
+    public static Condition exceptional(Supplier<? extends RuntimeException> exceptionSupplier) {
+        requireNonNull(exceptionSupplier, "exceptionSupplier");
         return of(ctx -> {
-            throw exception.get();
+            throw exceptionSupplier.get();
         }).alias(Aliases.EXCEPTIONAL);
     }
 
     /**
-     * Returns a newly created exceptional {@link Condition}.
+     * Returns a newly created {@link Condition} by {@code exceptionSupplier}.
      *
-     * @throws NullPointerException if the {@code exception} is null.
+     * @throws NullPointerException if the {@code exceptionSupplier} is null.
      */
-    public static Condition exceptional(ConditionContextAwareSupplier<? extends RuntimeException> exception) {
-        requireNonNull(exception, "exception");
+    public static Condition exceptional(
+            ConditionContextAwareSupplier<? extends RuntimeException> exceptionSupplier) {
+        requireNonNull(exceptionSupplier, "exceptionSupplier");
         return of(ctx -> {
-            throw exception.get(ctx);
+            throw exceptionSupplier.get(ctx);
         }).alias(Aliases.EXCEPTIONAL);
     }
 
@@ -742,10 +743,10 @@ public abstract class Condition {
                       match.get() :
                       CompletableFuture.supplyAsync(match).orTimeout(timeout, TimeUnit.MILLISECONDS).join();
         } catch (Exception e) {
-            ctx.addConditionExecutionResult(thread, condition, e, durationMillis(startTimeNanos));
+            ctx.log(thread, condition, e, durationMillis(startTimeNanos));
             return rethrow(e);
         }
-        ctx.addConditionExecutionResult(thread, condition, matches, durationMillis(startTimeNanos));
+        ctx.log(thread, condition, matches, durationMillis(startTimeNanos));
         return matches;
     }
 

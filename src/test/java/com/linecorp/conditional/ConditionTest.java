@@ -16,6 +16,9 @@
 
 package com.linecorp.conditional;
 
+import static com.linecorp.conditional.Condition.exceptional;
+import static com.linecorp.conditional.Condition.falseCondition;
+import static com.linecorp.conditional.Condition.trueCondition;
 import static java.util.Objects.requireNonNull;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -230,7 +233,7 @@ class ConditionTest {
                    return true;
                });
 
-        final var executionResults = ctx.conditionExecutionResults();
+        final var executionResults = ctx.logs();
         assertEquals(3, executionResults.size());
         assertDurationMillis(executionResults.get(0), 3000, 4000);
         assertDurationMillis(executionResults.get(1), 4000, 5000);
@@ -264,7 +267,7 @@ class ConditionTest {
                    return true;
                });
 
-        final var executionResults = ctx.conditionExecutionResults();
+        final var executionResults = ctx.logs();
         assertEquals(3, executionResults.size());
         assertDurationMillis(executionResults.get(0), 3000, 4000);
         assertDurationMillis(executionResults.get(1), 4000, 5000);
@@ -314,26 +317,25 @@ class ConditionTest {
 
         static Stream<Arguments> AND() {
             return Stream.of(
-                    Arguments.of(Condition.trueCondition(), Condition.trueCondition(), true),
-                    Arguments.of(Condition.trueCondition().async(), Condition.trueCondition(), true),
-                    Arguments.of(Condition.trueCondition(), Condition.trueCondition().async(), true),
-                    Arguments.of(Condition.trueCondition().async(), Condition.trueCondition().async(), true),
+                    Arguments.of(trueCondition(), trueCondition(), true),
+                    Arguments.of(trueCondition().async(), trueCondition(), true),
+                    Arguments.of(trueCondition(), trueCondition().async(), true),
+                    Arguments.of(trueCondition().async(), trueCondition().async(), true),
 
-                    Arguments.of(Condition.trueCondition(), Condition.falseCondition(), false),
-                    Arguments.of(Condition.trueCondition().async(), Condition.falseCondition(), false),
-                    Arguments.of(Condition.trueCondition(), Condition.falseCondition().async(), false),
-                    Arguments.of(Condition.trueCondition().async(), Condition.falseCondition().async(), false),
+                    Arguments.of(trueCondition(), falseCondition(), false),
+                    Arguments.of(trueCondition().async(), falseCondition(), false),
+                    Arguments.of(trueCondition(), falseCondition().async(), false),
+                    Arguments.of(trueCondition().async(), falseCondition().async(), false),
 
-                    Arguments.of(Condition.falseCondition(), Condition.trueCondition(), false),
-                    Arguments.of(Condition.falseCondition().async(), Condition.trueCondition(), false),
-                    Arguments.of(Condition.falseCondition(), Condition.trueCondition().async(), false),
-                    Arguments.of(Condition.falseCondition().async(), Condition.trueCondition().async(), false),
+                    Arguments.of(falseCondition(), trueCondition(), false),
+                    Arguments.of(falseCondition().async(), trueCondition(), false),
+                    Arguments.of(falseCondition(), trueCondition().async(), false),
+                    Arguments.of(falseCondition().async(), trueCondition().async(), false),
 
-                    Arguments.of(Condition.falseCondition(), Condition.falseCondition(), false),
-                    Arguments.of(Condition.falseCondition().async(), Condition.falseCondition(), false),
-                    Arguments.of(Condition.falseCondition(), Condition.falseCondition().async(), false),
-                    Arguments.of(Condition.falseCondition().async(), Condition.falseCondition().async(),
-                                 false));
+                    Arguments.of(falseCondition(), falseCondition(), false),
+                    Arguments.of(falseCondition().async(), falseCondition(), false),
+                    Arguments.of(falseCondition(), falseCondition().async(), false),
+                    Arguments.of(falseCondition().async(), falseCondition().async(), false));
         }
 
         @ParameterizedTest
@@ -361,26 +363,25 @@ class ConditionTest {
 
         static Stream<Arguments> OR() {
             return Stream.of(
-                    Arguments.of(Condition.trueCondition(), Condition.trueCondition(), true),
-                    Arguments.of(Condition.trueCondition().async(), Condition.trueCondition(), true),
-                    Arguments.of(Condition.trueCondition(), Condition.trueCondition().async(), true),
-                    Arguments.of(Condition.trueCondition().async(), Condition.trueCondition().async(), true),
+                    Arguments.of(trueCondition(), trueCondition(), true),
+                    Arguments.of(trueCondition().async(), trueCondition(), true),
+                    Arguments.of(trueCondition(), trueCondition().async(), true),
+                    Arguments.of(trueCondition().async(), trueCondition().async(), true),
 
-                    Arguments.of(Condition.trueCondition(), Condition.falseCondition(), true),
-                    Arguments.of(Condition.trueCondition().async(), Condition.falseCondition(), true),
-                    Arguments.of(Condition.trueCondition(), Condition.falseCondition().async(), true),
-                    Arguments.of(Condition.trueCondition().async(), Condition.falseCondition().async(), true),
+                    Arguments.of(trueCondition(), falseCondition(), true),
+                    Arguments.of(trueCondition().async(), falseCondition(), true),
+                    Arguments.of(trueCondition(), falseCondition().async(), true),
+                    Arguments.of(trueCondition().async(), falseCondition().async(), true),
 
-                    Arguments.of(Condition.falseCondition(), Condition.trueCondition(), true),
-                    Arguments.of(Condition.falseCondition().async(), Condition.trueCondition(), true),
-                    Arguments.of(Condition.falseCondition(), Condition.trueCondition().async(), true),
-                    Arguments.of(Condition.falseCondition().async(), Condition.trueCondition().async(), true),
+                    Arguments.of(falseCondition(), trueCondition(), true),
+                    Arguments.of(falseCondition().async(), trueCondition(), true),
+                    Arguments.of(falseCondition(), trueCondition().async(), true),
+                    Arguments.of(falseCondition().async(), trueCondition().async(), true),
 
-                    Arguments.of(Condition.falseCondition(), Condition.falseCondition(), false),
-                    Arguments.of(Condition.falseCondition().async(), Condition.falseCondition(), false),
-                    Arguments.of(Condition.falseCondition(), Condition.falseCondition().async(), false),
-                    Arguments.of(Condition.falseCondition().async(), Condition.falseCondition().async(),
-                                 false));
+                    Arguments.of(falseCondition(), falseCondition(), false),
+                    Arguments.of(falseCondition().async(), falseCondition(), false),
+                    Arguments.of(falseCondition(), falseCondition().async(), false),
+                    Arguments.of(falseCondition().async(), falseCondition().async(), false));
         }
 
         @ParameterizedTest
@@ -406,25 +407,25 @@ class ConditionTest {
 
         static Stream<Arguments> NOR() {
             return Stream.of(
-                    Arguments.of(Condition.trueCondition(), Condition.trueCondition(), false),
-                    Arguments.of(Condition.trueCondition().async(), Condition.trueCondition(), false),
-                    Arguments.of(Condition.trueCondition(), Condition.trueCondition().async(), false),
-                    Arguments.of(Condition.trueCondition().async(), Condition.trueCondition().async(), false),
+                    Arguments.of(trueCondition(), trueCondition(), false),
+                    Arguments.of(trueCondition().async(), trueCondition(), false),
+                    Arguments.of(trueCondition(), trueCondition().async(), false),
+                    Arguments.of(trueCondition().async(), trueCondition().async(), false),
 
-                    Arguments.of(Condition.trueCondition(), Condition.falseCondition(), false),
-                    Arguments.of(Condition.trueCondition().async(), Condition.falseCondition(), false),
-                    Arguments.of(Condition.trueCondition(), Condition.falseCondition().async(), false),
-                    Arguments.of(Condition.trueCondition().async(), Condition.falseCondition().async(), false),
+                    Arguments.of(trueCondition(), falseCondition(), false),
+                    Arguments.of(trueCondition().async(), falseCondition(), false),
+                    Arguments.of(trueCondition(), falseCondition().async(), false),
+                    Arguments.of(trueCondition().async(), falseCondition().async(), false),
 
-                    Arguments.of(Condition.falseCondition(), Condition.trueCondition(), false),
-                    Arguments.of(Condition.falseCondition().async(), Condition.trueCondition(), false),
-                    Arguments.of(Condition.falseCondition(), Condition.trueCondition().async(), false),
-                    Arguments.of(Condition.falseCondition().async(), Condition.trueCondition().async(), false),
+                    Arguments.of(falseCondition(), trueCondition(), false),
+                    Arguments.of(falseCondition().async(), trueCondition(), false),
+                    Arguments.of(falseCondition(), trueCondition().async(), false),
+                    Arguments.of(falseCondition().async(), trueCondition().async(), false),
 
-                    Arguments.of(Condition.falseCondition(), Condition.falseCondition(), true),
-                    Arguments.of(Condition.falseCondition().async(), Condition.falseCondition(), true),
-                    Arguments.of(Condition.falseCondition(), Condition.falseCondition().async(), true),
-                    Arguments.of(Condition.falseCondition().async(), Condition.falseCondition().async(), true));
+                    Arguments.of(falseCondition(), falseCondition(), true),
+                    Arguments.of(falseCondition().async(), falseCondition(), true),
+                    Arguments.of(falseCondition(), falseCondition().async(), true),
+                    Arguments.of(falseCondition().async(), falseCondition().async(), true));
         }
 
         @ParameterizedTest
@@ -437,7 +438,7 @@ class ConditionTest {
         @Test
         void exceptional_with_ContextAwareSupplier() {
             final var ctx = ConditionContext.of();
-            assertThrows(RuntimeException.class, () -> Condition.exceptional(ctx0 -> {
+            assertThrows(RuntimeException.class, () -> exceptional(ctx0 -> {
                 assertSame(ctx, ctx0);
                 return new RuntimeException();
             }).matches(ctx));
@@ -446,13 +447,10 @@ class ConditionTest {
         static Stream<Arguments> precedence() {
             return Stream.of(
                     // ((true || false) && false) = false
-                    Arguments.of(Condition.trueCondition().or(Condition.falseCondition()).and(
-                            Condition.falseCondition()), false),
+                    Arguments.of(trueCondition().or(falseCondition()).and(falseCondition()), false),
 
                     // (true || (false && false)) = true
-                    Arguments.of(
-                            Condition.trueCondition()
-                                     .or(Condition.falseCondition().and(Condition.falseCondition())), true));
+                    Arguments.of(trueCondition().or(falseCondition().and(falseCondition())), true));
         }
 
         @ParameterizedTest
@@ -463,7 +461,7 @@ class ConditionTest {
 
         @Test
         void delayed() {
-            final var ctx = ConditionContext.of(Map.of("a", true, "b", true));
+            final var ctx = ConditionContext.of("a", true, "b", true);
             final var a = Condition.of(ctx0 -> {
                 try {
                     Thread.sleep(3000L);
@@ -500,41 +498,30 @@ class ConditionTest {
                     Arguments.of(Condition.of(ctx -> {
                         throw new RuntimeException();
                     }), "Undefined"),
-                    Arguments.of(Condition.exceptional(unused -> new RuntimeException()),
-                                 "ExceptionalCondition"),
-                    Arguments.of(Condition.trueCondition(), "TrueCondition"),
-                    Arguments.of(Condition.falseCondition(), "FalseCondition"),
-                    Arguments.of(Condition.composer(Operator.AND).with(Condition.trueCondition()).compose(),
+                    Arguments.of(exceptional(unused -> new RuntimeException()), "ExceptionalCondition"),
+                    Arguments.of(trueCondition(), "TrueCondition"),
+                    Arguments.of(falseCondition(), "FalseCondition"),
+                    Arguments.of(Condition.composer(Operator.AND).with(trueCondition()).compose(),
                                  "TrueCondition"),
-                    Arguments.of(Condition.composer(Operator.OR).with(Condition.trueCondition()).compose(),
+                    Arguments.of(Condition.composer(Operator.OR).with(trueCondition()).compose(),
                                  "TrueCondition"),
-                    Arguments.of(Condition.trueCondition().and(Condition.falseCondition()),
+                    Arguments.of(trueCondition().and(falseCondition()),
                                  "(TrueCondition && FalseCondition)"),
-                    Arguments.of(Condition.trueCondition().or(Condition.falseCondition()),
+                    Arguments.of(trueCondition().or(falseCondition()),
                                  "(TrueCondition || FalseCondition)"),
-                    Arguments.of(Condition.trueCondition().and(Condition.falseCondition()).and(
-                                         Condition.trueCondition()),
+                    Arguments.of(trueCondition().and(falseCondition()).and(trueCondition()),
                                  "(TrueCondition && FalseCondition && TrueCondition)"),
-                    Arguments.of(
-                            Condition.trueCondition().or(Condition.falseCondition())
-                                     .or(Condition.trueCondition()),
-                            "(TrueCondition || FalseCondition || TrueCondition)"),
-                    Arguments.of(
-                            Condition.trueCondition()
-                                     .or(Condition.falseCondition().and(Condition.trueCondition())),
-                            "(TrueCondition || (FalseCondition && TrueCondition))"),
-                    Arguments.of(
-                            Condition.trueCondition().or(Condition.falseCondition())
-                                     .and(Condition.trueCondition()),
-                            "((TrueCondition || FalseCondition) && TrueCondition)"),
-                    Arguments.of(Condition.trueCondition().and(Condition.falseCondition()).async().and(
-                                         Condition.trueCondition()),
+                    Arguments.of(trueCondition().or(falseCondition()).or(trueCondition()),
+                                 "(TrueCondition || FalseCondition || TrueCondition)"),
+                    Arguments.of(trueCondition().or(falseCondition().and(trueCondition())),
+                                 "(TrueCondition || (FalseCondition && TrueCondition))"),
+                    Arguments.of(trueCondition().or(falseCondition()).and(trueCondition()),
+                                 "((TrueCondition || FalseCondition) && TrueCondition)"),
+                    Arguments.of(trueCondition().and(falseCondition()).async().and(trueCondition()),
                                  "((TrueCondition && FalseCondition) && TrueCondition)"),
-                    Arguments.of(Condition.trueCondition().async().and(Condition.falseCondition()).and(
-                                         Condition.trueCondition()),
+                    Arguments.of(trueCondition().async().and(falseCondition()).and(trueCondition()),
                                  "(TrueCondition && FalseCondition && TrueCondition)"),
-                    Arguments.of(Condition.trueCondition().and(Condition.falseCondition()).and(
-                                         Condition.trueCondition().async()),
+                    Arguments.of(trueCondition().and(falseCondition()).and(trueCondition().async()),
                                  "(TrueCondition && FalseCondition && TrueCondition)"));
         }
 
@@ -545,10 +532,10 @@ class ConditionTest {
         }
     }
 
-    static void assertDurationMillis(ConditionExecutionResult executionResult,
+    static void assertDurationMillis(ConditionExecutionResult conditionExecutionResult,
                                      long atLeastMillisInclusive, long atMostMillisExclusive) {
-        requireNonNull(executionResult, "executionResult");
-        final var durationMillis = executionResult.durationMillis();
+        requireNonNull(conditionExecutionResult, "conditionExecutionResult");
+        final var durationMillis = conditionExecutionResult.durationMillis();
         assertTrue(atLeastMillisInclusive <= durationMillis && durationMillis < atMostMillisExclusive);
     }
 }

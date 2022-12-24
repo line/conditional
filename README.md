@@ -50,7 +50,7 @@ Let's take a look!
 To add a dependency on _Conditional_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:0.9.1")
+    implementation("com.linecorp.conditional:conditional:0.9.2")
 }
 ```
 
@@ -59,7 +59,7 @@ To add a dependency using Maven:
 <dependency>
     <groupId>com.linecorp.conditional</groupId>
     <artifactId>conditional</artifactId>
-    <version>0.9.1</version>
+    <version>0.9.2</version>
 </dependency>
 ```
 
@@ -176,20 +176,18 @@ _Conditional_ is easy to use even if you are not familiar with asynchronous prog
 
 ## Easy to debug
 
-`ConditionContext` contains information for debugging conditional expressions.
-Let's look at the result of executing a simple conditional expression.
+`ConditionContext` contains useful information for debugging conditional expression.
+Execution logs of conditional expression can be seen in `ctx.logs()`. Here, let's look at the execution logs for asynchronous conditional expression.
 ```java
 var a = Condition.async(ctx -> true).alias("a");
 var b = Condition.async(ctx -> false).alias("b");
 var condition = a.and(b);
 var ctx = ConditionContext.of();
 condition.matches(ctx);
-```
 
-The execution result of conditional expression can be seen in `ctx.conditionExecutionResults()`. Here, let's look at the execution result for asynchronous conditional expression.
-
-```java
-ctx.conditionExecutionResults(); // 👈
+for (var log : ctx.logs()) { // 👈
+    System.out.println(log);
+}
 // ConditionExecutionCompletion{thread=ForkJoinPool.commonPool-worker-1, condition=a, matches=true, duration=1ms, timeout=INF}
 // ConditionExecutionCompletion{thread=ForkJoinPool.commonPool-worker-2, condition=b, matches=false, duration=0ms, timeout=INF}
 // ConditionExecutionCompletion{thread=main, condition=(a && b), matches=false, duration=4ms, timeout=INF}

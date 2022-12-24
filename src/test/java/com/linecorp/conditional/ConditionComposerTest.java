@@ -16,6 +16,8 @@
 
 package com.linecorp.conditional;
 
+import static com.linecorp.conditional.Condition.falseCondition;
+import static com.linecorp.conditional.Condition.trueCondition;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.stream.Stream;
@@ -32,57 +34,53 @@ class ConditionComposerTest {
                         // (true || false) && (true && true) = true
                         Condition.composer(Operator.AND)
                                  .with(Condition.composer(Operator.OR)
-                                                .with(Condition.trueCondition(), Condition.falseCondition())
+                                                .with(trueCondition(), falseCondition())
                                                 .compose(),
                                        Condition.composer(Operator.AND)
-                                                .with(Condition.trueCondition(), Condition.trueCondition())
+                                                .with(trueCondition(), trueCondition())
                                                 .compose()).compose(),
-                        Condition.trueCondition().or(Condition.falseCondition()).and(
-                                Condition.trueCondition().and(Condition.trueCondition())),
+                        trueCondition().or(falseCondition()).and(trueCondition().and(trueCondition())),
                         true),
                 Arguments.of(
                         // (true || false) && true = true
                         Condition.composer(Operator.AND)
                                  .with(Condition.composer(Operator.OR)
-                                                .with(Condition.trueCondition(), Condition.falseCondition())
+                                                .with(trueCondition(), falseCondition())
                                                 .compose(),
-                                       Condition.trueCondition()).compose(),
-                        Condition.trueCondition().or(Condition.falseCondition()).and(Condition.trueCondition()),
+                                       trueCondition()).compose(),
+                        trueCondition().or(falseCondition()).and(trueCondition()),
                         true),
                 Arguments.of(
                         // true && (true || false) = true
                         Condition.composer(Operator.AND)
-                                 .with(Condition.trueCondition(),
+                                 .with(trueCondition(),
                                        Condition.composer(Operator.OR)
-                                                .with(Condition.trueCondition(), Condition.falseCondition())
+                                                .with(trueCondition(), falseCondition())
                                                 .compose()).compose(),
-                        Condition.trueCondition().and(Condition.trueCondition().or(Condition.falseCondition())),
+                        trueCondition().and(trueCondition().or(falseCondition())),
                         true),
                 Arguments.of(
                         // ((true || false) && true) || false = true
                         Condition.composer(Operator.OR)
                                  .with(Condition.composer(Operator.AND)
                                                 .with(Condition.composer(Operator.OR)
-                                                               .with(Condition.trueCondition(),
-                                                                     Condition.falseCondition()).compose(),
-                                                      Condition.trueCondition()).compose(),
-                                       Condition.falseCondition()).compose(),
-                        Condition.trueCondition().or(Condition.falseCondition()).and(Condition.trueCondition())
-                                 .or(
-                                         Condition.falseCondition()),
+                                                               .with(trueCondition(), falseCondition())
+                                                               .compose(),
+                                                      trueCondition()).compose(), falseCondition()).compose(),
+                        trueCondition().or(falseCondition()).and(trueCondition())
+                                       .or(falseCondition()),
                         true),
                 Arguments.of(
                         // true && (false || (true && false)) = false
                         Condition.composer(Operator.AND)
-                                 .with(Condition.trueCondition(),
+                                 .with(trueCondition(),
                                        Condition.composer(Operator.OR)
-                                                .with(Condition.falseCondition(),
+                                                .with(falseCondition(),
                                                       Condition.composer(Operator.AND)
-                                                               .with(Condition.trueCondition(),
-                                                                     Condition.falseCondition()).compose())
+                                                               .with(trueCondition(),
+                                                                     falseCondition()).compose())
                                                 .compose()).compose(),
-                        Condition.trueCondition().and(Condition.falseCondition().or(
-                                Condition.trueCondition().and(Condition.falseCondition()))),
+                        trueCondition().and(falseCondition().or(trueCondition().and(falseCondition()))),
                         false)
         );
     }
