@@ -16,6 +16,8 @@
 
 package com.linecorp.conditional;
 
+import static com.linecorp.conditional.Condition.falseCondition;
+import static com.linecorp.conditional.Condition.trueCondition;
 import static java.util.Objects.requireNonNull;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -40,22 +42,24 @@ class ComposedConditionTest {
     static Stream<Arguments> AND() {
         return Stream.of(
                 // true && exceptional = exception raised
-                Arguments.of(Condition.trueCondition().and(exceptional), RuntimeException.class, null),
+                Arguments.of(trueCondition().and(exceptional),
+                             RuntimeException.class, null),
 
                 // false && exceptional = false
-                Arguments.of(Condition.falseCondition().and(exceptional), null, false),
+                Arguments.of(falseCondition().and(exceptional),
+                             null, false),
 
                 // false && (exceptional && true) = false
-                Arguments.of(Condition.falseCondition().and(exceptional.and(Condition.trueCondition())), null,
-                             false),
+                Arguments.of(falseCondition().and(exceptional.and(trueCondition())),
+                             null, false),
 
                 // (true && true) && exceptional = exception raised
-                Arguments.of(Condition.trueCondition().and(Condition.trueCondition()).and(exceptional),
+                Arguments.of(trueCondition().and(trueCondition()).and(exceptional),
                              RuntimeException.class, null),
 
                 // (true && false) && exceptional = false
-                Arguments.of(Condition.trueCondition().and(Condition.falseCondition()).and(exceptional), null,
-                             false)
+                Arguments.of(trueCondition().and(falseCondition()).and(exceptional),
+                             null, false)
         );
     }
 
@@ -77,21 +81,23 @@ class ComposedConditionTest {
     static Stream<Arguments> OR() {
         return Stream.of(
                 // false || exceptional = exception raised
-                Arguments.of(Condition.falseCondition().or(exceptional), RuntimeException.class, null),
+                Arguments.of(falseCondition().or(exceptional),
+                             RuntimeException.class, null),
 
                 // true || exceptional = true
-                Arguments.of(Condition.trueCondition().or(exceptional), null, true),
+                Arguments.of(trueCondition().or(exceptional),
+                             null, true),
 
                 // true || (exceptional || false) = true
-                Arguments.of(Condition.trueCondition().or(exceptional.or(Condition.falseCondition())), null,
-                             true),
+                Arguments.of(trueCondition().or(exceptional.or(falseCondition())),
+                             null, true),
 
                 // (true || false) || exceptional = true
-                Arguments.of(Condition.trueCondition().or(Condition.falseCondition()).or(exceptional), null,
-                             true),
+                Arguments.of(trueCondition().or(falseCondition()).or(exceptional),
+                             null, true),
 
                 // (false || false) || exceptional = exception raised
-                Arguments.of(Condition.falseCondition().or(Condition.falseCondition()).or(exceptional),
+                Arguments.of(falseCondition().or(falseCondition()).or(exceptional),
                              RuntimeException.class, null)
         );
     }

@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 public final class ConditionContext {
 
-    private final List<ConditionExecutionResult> conditionExecutionResults = new CopyOnWriteArrayList<>();
+    private final List<ConditionExecutionResult> logs = new CopyOnWriteArrayList<>();
     private final Map<String, Object> contextVariables;
 
     ConditionContext(Map<String, Object> contextVariables) {
@@ -41,28 +41,28 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with {@code contextVariables}.
+     * Returns a newly created {@link ConditionContext} by {@code contextVariables}.
      */
     public static ConditionContext of(Map<String, Object> contextVariables) {
         return new ConditionContext(Map.copyOf(contextVariables));
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pair.
+     * Returns a newly created {@link ConditionContext} by key-value pair.
      */
     public static ConditionContext of(String k1, Object v1) {
         return of(Map.of(k1, v1));
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pairs.
+     * Returns a newly created {@link ConditionContext} by key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2) {
         return of(Map.of(k1, v1, k2, v2));
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pairs.
+     * Returns a newly created {@link ConditionContext} by key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3) {
@@ -70,7 +70,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pairs.
+     * Returns a newly created {@link ConditionContext} by key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4) {
@@ -78,7 +78,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pairs.
+     * Returns a newly created {@link ConditionContext} by key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -87,7 +87,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pairs.
+     * Returns a newly created {@link ConditionContext} by key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -96,7 +96,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pairs.
+     * Returns a newly created {@link ConditionContext} by key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -106,7 +106,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pairs.
+     * Returns a newly created {@link ConditionContext} by key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -116,7 +116,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pairs.
+     * Returns a newly created {@link ConditionContext} by key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -127,7 +127,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns a newly created {@link ConditionContext} with key-value pairs.
+     * Returns a newly created {@link ConditionContext} by key-value pairs.
      */
     public static ConditionContext of(String k1, Object v1, String k2, Object v2,
                                       String k3, Object v3, String k4, Object v4,
@@ -138,17 +138,17 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns the {@link ConditionContextBuilder} to build {@link ConditionContext}.
+     * Returns the {@link ConditionContextBuilder}.
      */
     public static ConditionContextBuilder builder() {
         return new ConditionContextBuilder();
     }
 
     /**
-     * Returns the condition execution results.
+     * Returns the execution logs of {@link Condition}.
      */
-    public List<ConditionExecutionResult> conditionExecutionResults() {
-        return conditionExecutionResults;
+    public List<ConditionExecutionResult> logs() {
+        return List.copyOf(logs);
     }
 
     /**
@@ -227,14 +227,11 @@ public final class ConditionContext {
         return (T) var;
     }
 
-    void addConditionExecutionResult(Thread thread, Condition condition,
-                                     boolean matches, long durationMillis) {
-        conditionExecutionResults.add(new ConditionExecutionCompletion(thread, condition,
-                                                                       matches, durationMillis));
+    void log(Thread thread, Condition condition, boolean matches, long durationMillis) {
+        logs.add(new ConditionExecutionCompletion(thread, condition, matches, durationMillis));
     }
 
-    void addConditionExecutionResult(Thread thread, Condition condition,
-                                     Throwable cause, long durationMillis) {
-        conditionExecutionResults.add(new ConditionExecutionFailure(thread, condition, cause, durationMillis));
+    void log(Thread thread, Condition condition, Throwable cause, long durationMillis) {
+        logs.add(new ConditionExecutionFailure(thread, condition, cause, durationMillis));
     }
 }
