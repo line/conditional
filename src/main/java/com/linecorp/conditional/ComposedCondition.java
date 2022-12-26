@@ -31,8 +31,8 @@ public final class ComposedCondition extends Condition {
 
     private static final String PREFIX = "(";
     private static final String SUFFIX = ")";
-    private static final String DELIMITER_AND = " AND ";
-    private static final String DELIMITER_OR = " OR ";
+    private static final String DELIMITER_AND = " and ";
+    private static final String DELIMITER_OR = " or ";
 
     private final Operator operator;
     private final List<Condition> conditions = new ArrayList<>();

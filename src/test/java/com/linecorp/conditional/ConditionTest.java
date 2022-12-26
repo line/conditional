@@ -506,23 +506,23 @@ class ConditionTest {
                     Arguments.of(Condition.composer(Operator.OR).with(trueCondition()).compose(),
                                  "TrueCondition"),
                     Arguments.of(trueCondition().and(falseCondition()),
-                                 "(TrueCondition AND FalseCondition)"),
+                                 "(TrueCondition and FalseCondition)"),
                     Arguments.of(trueCondition().or(falseCondition()),
-                                 "(TrueCondition OR FalseCondition)"),
+                                 "(TrueCondition or FalseCondition)"),
                     Arguments.of(trueCondition().and(falseCondition()).and(trueCondition()),
-                                 "(TrueCondition AND FalseCondition AND TrueCondition)"),
+                                 "(TrueCondition and FalseCondition and TrueCondition)"),
                     Arguments.of(trueCondition().or(falseCondition()).or(trueCondition()),
-                                 "(TrueCondition OR FalseCondition OR TrueCondition)"),
+                                 "(TrueCondition or FalseCondition or TrueCondition)"),
                     Arguments.of(trueCondition().or(falseCondition().and(trueCondition())),
-                                 "(TrueCondition OR (FalseCondition AND TrueCondition))"),
+                                 "(TrueCondition or (FalseCondition and TrueCondition))"),
                     Arguments.of(trueCondition().or(falseCondition()).and(trueCondition()),
-                                 "((TrueCondition OR FalseCondition) AND TrueCondition)"),
+                                 "((TrueCondition or FalseCondition) and TrueCondition)"),
                     Arguments.of(trueCondition().and(falseCondition()).async().and(trueCondition()),
-                                 "((TrueCondition AND FalseCondition) AND TrueCondition)"),
+                                 "((TrueCondition and FalseCondition) and TrueCondition)"),
                     Arguments.of(trueCondition().async().and(falseCondition()).and(trueCondition()),
-                                 "(TrueCondition AND FalseCondition AND TrueCondition)"),
+                                 "(TrueCondition and FalseCondition and TrueCondition)"),
                     Arguments.of(trueCondition().and(falseCondition()).and(trueCondition().async()),
-                                 "(TrueCondition AND FalseCondition AND TrueCondition)"));
+                                 "(TrueCondition and FalseCondition and TrueCondition)"));
         }
 
         @ParameterizedTest
