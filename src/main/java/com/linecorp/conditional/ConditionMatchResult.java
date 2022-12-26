@@ -18,17 +18,26 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class ConditionExecutionResult {
+public abstract class ConditionMatchResult {
 
     private final Thread thread;
     private final Condition condition;
+    private final long startTimeMillis;
+    private final long endTimeMillis;
     private final long durationMillis;
 
-    protected ConditionExecutionResult(Thread thread, Condition condition,
-                                       long durationMillis) {
-        this.thread = requireNonNull(thread, "thread");
-        this.condition = requireNonNull(condition, "condition");
-        this.durationMillis = durationMillis;
+    protected ConditionMatchResult(Thread thread, Condition condition,
+                                   long startTimeMillis, long endTimeMillis) {
+        requireNonNull(thread, "thread");
+        requireNonNull(condition, "condition");
+        if (startTimeMillis > endTimeMillis) {
+            throw new IllegalArgumentException("startTimeMillis > endTimeMillis (expected <= endTimeMillis)");
+        }
+        this.thread = thread;
+        this.condition = condition;
+        this.startTimeMillis = startTimeMillis;
+        this.endTimeMillis = endTimeMillis;
+        durationMillis = endTimeMillis - startTimeMillis;
     }
 
     /**
@@ -46,15 +55,28 @@ public abstract class ConditionExecutionResult {
     }
 
     /**
+     * Returns the {@code startTimeMillis}.
+     */
+    public final long startTimeMillis() {
+        return startTimeMillis;
+    }
+
+    /**
+     * Returns the {@code endTimeMillis}.
+     */
+    public final long endTimeMillis() {
+        return endTimeMillis;
+    }
+
+    /**
      * Returns the {@code durationMillis}.
      */
     public final long durationMillis() {
         return durationMillis;
     }
 
-    protected final String timeoutAsString() {
-        final var timeoutMillis = condition.timeoutMillis();
-        return timeoutMillis == Long.MAX_VALUE ? "INF" : timeoutMillis + "ms";
+    protected static String millisAsString(long millis) {
+        return millis == Long.MAX_VALUE ? "INF" : millis + "ms";
     }
 
     @Override

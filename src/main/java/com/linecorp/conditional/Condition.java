@@ -163,7 +163,7 @@ public abstract class Condition {
      * Returns a newly created asynchronous {@link Condition}.
      *
      * @param function the function to match the conditional expression.
-     * @param executor the executor to execute the {@code function}.
+     * @param executor the executor to match the {@code function}.
      *
      * @throws NullPointerException if {@code function} or {@code executor} is null.
      */
@@ -189,7 +189,7 @@ public abstract class Condition {
      *
      * @param function the function to match the conditional expression.
      * @param timeoutMillis the value to set timeout for the {@code function}.
-     * @param executor the executor to execute the {@code function}.
+     * @param executor the executor to match the {@code function}.
      *
      * @throws NullPointerException if {@code function} or {@code executor} is null.
      */
@@ -217,7 +217,7 @@ public abstract class Condition {
      * @param function the function to match the conditional expression.
      * @param timeout the value to set timeout for the {@code function}.
      * @param unit the unit to set timeout for the {@code function}.
-     * @param executor the executor to execute the {@code function}.
+     * @param executor the executor to match the {@code function}.
      *
      * @throws NullPointerException if {@code function} or {@code unit} or {@code executor} is null.
      */
@@ -717,7 +717,7 @@ public abstract class Condition {
      */
     public final boolean matches(ConditionContext ctx) {
         requireNonNull(ctx, "ctx");
-        final var startTimeNanos = System.nanoTime();
+        final var startTimeMillis = System.currentTimeMillis();
         final var thread = Thread.currentThread();
         final var condition = this;
         final boolean matches;
@@ -743,10 +743,10 @@ public abstract class Condition {
                       match.get() :
                       CompletableFuture.supplyAsync(match).orTimeout(timeout, TimeUnit.MILLISECONDS).join();
         } catch (Exception e) {
-            ctx.log(thread, condition, e, durationMillis(startTimeNanos));
+            ctx.log(thread, condition, e, startTimeMillis, System.currentTimeMillis());
             return rethrow(e);
         }
-        ctx.log(thread, condition, matches, durationMillis(startTimeNanos));
+        ctx.log(thread, condition, matches, startTimeMillis, System.currentTimeMillis());
         return matches;
     }
 
@@ -763,7 +763,7 @@ public abstract class Condition {
      * Returns the {@link CompletableFuture}. The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
      *
      * @param ctx the context for matching {@link Condition}.
-     * @param executor the executor to execute the {@link ConditionFunction}.
+     * @param executor the executor to match the {@link ConditionFunction}.
      */
     public final CompletableFuture<Boolean> matchesAsync(ConditionContext ctx, Executor executor) {
         requireNonNull(executor, "executor");
@@ -785,10 +785,6 @@ public abstract class Condition {
                CompletableFuture.supplyAsync(supplier);
     }
 
-    private static long durationMillis(long startTimeNanos) {
-        return (System.nanoTime() - startTimeNanos) / 1_000_000L;
-    }
-
     @Override
     public String toString() {
         final var alias = this.alias;
@@ -802,7 +798,7 @@ public abstract class Condition {
         return !className.isBlank() ? className : defaultValue;
     }
 
-    private static <R> R rethrow(Throwable e) {
+    protected static <R> R rethrow(Throwable e) {
         return typeErasure(e);
     }
 

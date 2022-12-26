@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 public final class ConditionContext {
 
-    private final List<ConditionExecutionResult> logs = new CopyOnWriteArrayList<>();
+    private final List<ConditionMatchResult> logs = new CopyOnWriteArrayList<>();
     private final Map<String, Object> contextVariables;
 
     ConditionContext(Map<String, Object> contextVariables) {
@@ -145,9 +145,9 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns the execution logs of {@link Condition}.
+     * Returns the match logs of {@link Condition}.
      */
-    public List<ConditionExecutionResult> logs() {
+    public List<ConditionMatchResult> logs() {
         return List.copyOf(logs);
     }
 
@@ -227,11 +227,11 @@ public final class ConditionContext {
         return (T) var;
     }
 
-    void log(Thread thread, Condition condition, boolean matches, long durationMillis) {
-        logs.add(new ConditionExecutionCompletion(thread, condition, matches, durationMillis));
+    void log(Thread thread, Condition condition, boolean matches, long startTimeMillis, long endTimeMillis) {
+        logs.add(new ConditionMatchCompletion(thread, condition, matches, startTimeMillis, endTimeMillis));
     }
 
-    void log(Thread thread, Condition condition, Throwable cause, long durationMillis) {
-        logs.add(new ConditionExecutionFailure(thread, condition, cause, durationMillis));
+    void log(Thread thread, Condition condition, Throwable cause, long startTimeMillis, long endTimeMillis) {
+        logs.add(new ConditionMatchFailure(thread, condition, cause, startTimeMillis, endTimeMillis));
     }
 }

@@ -5,7 +5,10 @@
 > Make your own conditional expressions more elegant.
 
 [![build](https://github.com/line/conditional/actions/workflows/gradle.yml/badge.svg?branch=main)](https://github.com/line/conditional/actions/workflows/gradle.yml)
+<a href="https://github.com/line/conditional/contributors"><img src="https://img.shields.io/github/contributors/line/conditional.svg"></a>
 <a href="https://search.maven.org/search?q=g:com.linecorp.conditional%20AND%20a:conditional"><img src="https://img.shields.io/maven-central/v/com.linecorp.conditional/conditional.svg?label=version"></a>
+<a href="https://github.com/line/conditional/commits"><img src="https://img.shields.io/github/release-date/line/conditional.svg?label=release"></a>
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 _Conditional_ is a super lightweight library that helps you make conditional expressions. You can compose multiple conditional expressions and make them asynchronous easily.
 
@@ -50,7 +53,7 @@ Let's take a look!
 To add a dependency on _Conditional_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:0.9.2")
+    implementation("com.linecorp.conditional:conditional:0.9.3")
 }
 ```
 
@@ -59,7 +62,7 @@ To add a dependency using Maven:
 <dependency>
     <groupId>com.linecorp.conditional</groupId>
     <artifactId>conditional</artifactId>
-    <version>0.9.2</version>
+    <version>0.9.3</version>
 </dependency>
 ```
 
@@ -177,7 +180,7 @@ _Conditional_ is easy to use even if you are not familiar with asynchronous prog
 ## Easy to debug
 
 `ConditionContext` contains useful information for debugging conditional expression.
-Execution logs of conditional expression can be seen in `ctx.logs()`. Here, let's look at the execution logs for asynchronous conditional expression.
+Match logs of conditional expression can be seen in `ctx.logs()`. Here, let's look at the match logs for asynchronous conditional expression.
 ```java
 var a = Condition.async(ctx -> true).alias("a");
 var b = Condition.async(ctx -> false).alias("b");
@@ -188,13 +191,31 @@ condition.matches(ctx);
 for (var log : ctx.logs()) { // 👈
     System.out.println(log);
 }
-// ConditionExecutionCompletion{thread=ForkJoinPool.commonPool-worker-1, condition=a, matches=true, duration=1ms, timeout=INF}
-// ConditionExecutionCompletion{thread=ForkJoinPool.commonPool-worker-2, condition=b, matches=false, duration=0ms, timeout=INF}
-// ConditionExecutionCompletion{thread=main, condition=(a && b), matches=false, duration=4ms, timeout=INF}
+// ConditionMatchCompletion{condition=a, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672051484770ms, endTime=1672051484770ms, duration=0ms}
+// ConditionMatchCompletion{condition=b, matches=false, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672051484770ms, endTime=1672051484770ms, duration=0ms}
+// ConditionMatchCompletion{condition=(a and b), matches=false, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672051484768ms, endTime=1672051484770ms, duration=2ms}
 ```
 
-You can see in which thread each conditional expression was executed, how long it took, and what the result was.
-Also, it is easy to know whether an exception was raised in the process of executing the conditional expression.
+You can see in which thread each conditional expression was matched, how long it took, and what the result was.
+Also, it is easy to know whether an exception was raised in the process of matching the conditional expression.
+
+```java
+var a = Condition.async(ctx -> true).alias("a");
+var b = Condition.exceptional(ctx -> new RuntimeException()).async().alias("b");
+var condition = a.and(b);
+var ctx = ConditionContext.of();
+
+try {
+    condition.matches(ctx);
+} catch (Exception e) {
+    for (var log : ctx.logs()) { // 👈
+        System.out.println(log);
+    }
+}
+// ConditionMatchCompletion{condition=a, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672051528775ms, endTime=1672051528775ms, duration=0ms}
+// ConditionMatchFailure{condition=b, cause=java.lang.IllegalStateException, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672051528776ms, endTime=1672051528776ms, duration=0ms}
+// ConditionMatchFailure{condition=(a and b), cause=java.util.concurrent.CompletionException: java.lang.IllegalStateException, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672051528774ms, endTime=1672051528776ms, duration=2ms}
+```
 
 ## Easy to integrate with Spring Framework
 

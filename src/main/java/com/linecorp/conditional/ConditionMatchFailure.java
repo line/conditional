@@ -18,13 +18,13 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 
-public final class ConditionExecutionFailure extends ConditionExecutionResult {
+public final class ConditionMatchFailure extends ConditionMatchResult {
 
     private final Throwable cause;
 
-    ConditionExecutionFailure(Thread thread, Condition condition,
-                              Throwable cause, long durationMillis) {
-        super(thread, condition, durationMillis);
+    ConditionMatchFailure(Thread thread, Condition condition,
+                          Throwable cause, long startTimeMillis, long endTimeMillis) {
+        super(thread, condition, startTimeMillis, endTimeMillis);
         this.cause = requireNonNull(cause, "cause");
     }
 
@@ -37,12 +37,16 @@ public final class ConditionExecutionFailure extends ConditionExecutionResult {
 
     @Override
     public String toString() {
-        return "ConditionExecutionFailure{" +
-               "thread=" + thread().getName() +
-               ", condition=" + condition() +
+        return "ConditionMatchFailure{" +
+               "condition=" + condition() +
                ", cause=" + cause +
-               ", duration=" + durationMillis() + "ms" +
-               ", timeout=" + timeoutAsString() +
+               ", async=" + condition().isAsync() +
+               ", thread=" + thread().getName() +
+               ", delay=" + millisAsString(condition().delayMillis()) +
+               ", timeout=" + millisAsString(condition().timeoutMillis()) +
+               ", startTime=" + millisAsString(startTimeMillis()) +
+               ", endTime=" + millisAsString(endTimeMillis()) +
+               ", duration=" + millisAsString(durationMillis()) +
                '}';
     }
 }
