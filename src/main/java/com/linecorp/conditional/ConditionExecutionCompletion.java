@@ -21,8 +21,8 @@ public final class ConditionExecutionCompletion extends ConditionExecutionResult
     private final boolean matches;
 
     ConditionExecutionCompletion(Thread thread, Condition condition,
-                                 boolean matches, long durationMillis) {
-        super(thread, condition, durationMillis);
+                                 boolean matches, long startTimeMillis, long endTimeMillis) {
+        super(thread, condition, startTimeMillis, endTimeMillis);
         this.matches = matches;
     }
 
@@ -36,11 +36,15 @@ public final class ConditionExecutionCompletion extends ConditionExecutionResult
     @Override
     public String toString() {
         return "ConditionExecutionCompletion{" +
-               "thread=" + thread().getName() +
-               ", condition=" + condition() +
+               "condition=" + condition() +
                ", matches=" + matches +
-               ", duration=" + durationMillis() + "ms" +
-               ", timeout=" + timeoutAsString() +
+               ", async=" + condition().isAsync() +
+               ", thread=" + thread().getName() +
+               ", delay=" + millisAsString(condition().delayMillis()) +
+               ", timeout=" + millisAsString(condition().timeoutMillis()) +
+               ", startTime=" + millisAsString(startTimeMillis()) +
+               ", endTime=" + millisAsString(endTimeMillis()) +
+               ", duration=" + millisAsString(durationMillis()) +
                '}';
     }
 }

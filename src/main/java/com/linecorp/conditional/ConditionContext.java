@@ -227,11 +227,11 @@ public final class ConditionContext {
         return (T) var;
     }
 
-    void log(Thread thread, Condition condition, boolean matches, long durationMillis) {
-        logs.add(new ConditionExecutionCompletion(thread, condition, matches, durationMillis));
+    void log(Thread thread, Condition condition, boolean matches, long startTimeMillis, long endTimeMillis) {
+        logs.add(new ConditionExecutionCompletion(thread, condition, matches, startTimeMillis, endTimeMillis));
     }
 
-    void log(Thread thread, Condition condition, Throwable cause, long durationMillis) {
-        logs.add(new ConditionExecutionFailure(thread, condition, cause, durationMillis));
+    void log(Thread thread, Condition condition, Throwable cause, long startTimeMillis, long endTimeMillis) {
+        logs.add(new ConditionExecutionFailure(thread, condition, cause, startTimeMillis, endTimeMillis));
     }
 }

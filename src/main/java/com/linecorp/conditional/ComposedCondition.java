@@ -95,14 +95,14 @@ public final class ComposedCondition extends Condition {
      * Returns the {@link ComposedCondition} with {@code async} disabled for all nested {@link Condition}s.
      */
     public ComposedCondition sequential() {
-        return mutateNestedConditions(false, null);
+        return mutateAll(false, null);
     }
 
     /**
      * Returns the {@link ComposedCondition} with {@code async} enabled for all nested {@link Condition}s.
      */
     public ComposedCondition parallel() {
-        return mutateNestedConditions(true, null);
+        return mutateAll(true, null);
     }
 
     /**
@@ -114,25 +114,23 @@ public final class ComposedCondition extends Condition {
      */
     public ComposedCondition parallel(Executor executor) {
         requireNonNull(executor, "executor");
-        return mutateNestedConditions(true, executor);
+        return mutateAll(true, executor);
     }
 
-    private ComposedCondition mutateNestedConditions(boolean async, @Nullable Executor executor) {
-        return mutate(mutator -> mutator.conditions(asyncAllRecursively(conditions, async, executor)));
+    private ComposedCondition mutateAll(boolean async, @Nullable Executor executor) {
+        return mutate(mutator -> mutator.conditions(async(conditions, async, executor)));
     }
 
-    private static List<Condition> asyncAllRecursively(List<Condition> conditions, boolean async,
-                                                       @Nullable Executor executor) {
+    private static List<Condition> async(List<Condition> conditions, boolean async,
+                                         @Nullable Executor executor) {
         requireNonNull(conditions, "conditions");
-        final var conditions0 = new ArrayList<Condition>();
-        for (var condition : conditions) {
-            final Condition condition0 =
+        return conditions.stream().map(condition -> {
+            final var condition0 =
                     condition instanceof ComposedCondition composedCondition ?
                     composedCondition.mutate(mutator -> mutator.conditions(
-                            asyncAllRecursively(composedCondition.conditions, async, executor))) : condition;
-            conditions0.add(condition0.async(async).executor(async ? executor : null));
-        }
-        return conditions0;
+                            async(composedCondition.conditions, async, executor))) : condition;
+            return condition0.async(async).executor(async ? executor : null);
+        }).toList();
     }
 
     @Override
@@ -141,21 +139,22 @@ public final class ComposedCondition extends Condition {
         final var cfs = new ArrayList<CompletableFuture<Boolean>>();
         for (var condition : conditions) {
             final var cf = matches0(condition, ctx);
-            if (earlyReturn(cf)) {
+            if (completed(cf)) {
                 return cf.join();
             }
             cfs.add(cf);
         }
-        if (earlyReturnAsync(cfs, true).join()) {
-            for (var cf : cfs) {
-                if (!cf.isDone()) {
-                    cf.cancel(false);
-                }
+        try {
+            if (completedAsync(cfs).join()) {
+                cancel(cfs);
+                return switch (operator) {
+                    case AND -> false;
+                    case OR -> true;
+                };
             }
-            return switch (operator) {
-                case AND -> false;
-                case OR -> true;
-            };
+        } catch (Exception e) {
+            cancel(cfs);
+            return rethrow(e);
         }
         final var it = cfs.iterator();
         var value = it.next().join();
@@ -178,13 +177,12 @@ public final class ComposedCondition extends Condition {
                CompletableFuture.completedFuture(matches.get());
     }
 
-    private boolean earlyReturn(CompletableFuture<Boolean> cf) {
+    private boolean completed(CompletableFuture<Boolean> cf) {
         requireNonNull(cf, "cf");
         return cf.isDone() ? shortCircuit(operator, cf.join()) : false;
     }
 
-    private CompletableFuture<Boolean> earlyReturnAsync(List<CompletableFuture<Boolean>> cfs,
-                                                        boolean fallback) {
+    private CompletableFuture<Boolean> completedAsync(List<CompletableFuture<Boolean>> cfs) {
         requireNonNull(cfs, "cfs");
         final var future = new CompletableFuture<Boolean>();
         for (var cf : cfs) {
@@ -192,12 +190,13 @@ public final class ComposedCondition extends Condition {
                 if (shortCircuit(operator, value)) {
                     complete(future, true);
                 }
+            }).exceptionally(e -> {
+                future.completeExceptionally(e);
+                return null;
             });
         }
-        if (fallback) {
-            CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
-                             .thenRun(() -> complete(future, false));
-        }
+        CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
+                         .thenRun(() -> complete(future, false));
         return future;
     }
 
@@ -213,6 +212,15 @@ public final class ComposedCondition extends Condition {
         requireNonNull(cf, "cf");
         if (!cf.isDone()) {
             cf.complete(value);
+        }
+    }
+
+    private static void cancel(List<CompletableFuture<Boolean>> cfs) {
+        requireNonNull(cfs, "cfs");
+        for (var cf : cfs) {
+            if (!cf.isDone()) {
+                cf.cancel(false);
+            }
         }
     }
 

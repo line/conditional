@@ -23,8 +23,8 @@ public final class ConditionExecutionFailure extends ConditionExecutionResult {
     private final Throwable cause;
 
     ConditionExecutionFailure(Thread thread, Condition condition,
-                              Throwable cause, long durationMillis) {
-        super(thread, condition, durationMillis);
+                              Throwable cause, long startTimeMillis, long endTimeMillis) {
+        super(thread, condition, startTimeMillis, endTimeMillis);
         this.cause = requireNonNull(cause, "cause");
     }
 
@@ -38,11 +38,15 @@ public final class ConditionExecutionFailure extends ConditionExecutionResult {
     @Override
     public String toString() {
         return "ConditionExecutionFailure{" +
-               "thread=" + thread().getName() +
-               ", condition=" + condition() +
+               "condition=" + condition() +
                ", cause=" + cause +
-               ", duration=" + durationMillis() + "ms" +
-               ", timeout=" + timeoutAsString() +
+               ", async=" + condition().isAsync() +
+               ", thread=" + thread().getName() +
+               ", delay=" + millisAsString(condition().delayMillis()) +
+               ", timeout=" + millisAsString(condition().timeoutMillis()) +
+               ", startTime=" + millisAsString(startTimeMillis()) +
+               ", endTime=" + millisAsString(endTimeMillis()) +
+               ", duration=" + millisAsString(durationMillis()) +
                '}';
     }
 }
