@@ -513,15 +513,23 @@ public abstract class Condition {
     }
 
     /**
+     * Returns a newly created {@link Condition} by {@code e}.
+     *
+     * @throws NullPointerException if the {@code e} is null.
+     */
+    public static Condition failed(Throwable e) {
+        requireNonNull(e, "e");
+        return of(ctx -> rethrow(e)).alias(Aliases.FAILED);
+    }
+
+    /**
      * Returns a newly created {@link Condition} by {@code exceptionSupplier}.
      *
      * @throws NullPointerException if the {@code exceptionSupplier} is null.
      */
-    public static Condition failed(Supplier<? extends RuntimeException> exceptionSupplier) {
+    public static Condition failed(Supplier<? extends Throwable> exceptionSupplier) {
         requireNonNull(exceptionSupplier, "exceptionSupplier");
-        return of(ctx -> {
-            throw exceptionSupplier.get();
-        }).alias(Aliases.FAILED);
+        return of(ctx -> rethrow(exceptionSupplier.get())).alias(Aliases.FAILED);
     }
 
     /**
@@ -530,11 +538,9 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code exceptionSupplier} is null.
      */
     public static Condition failed(
-            ConditionContextAwareSupplier<? extends RuntimeException> exceptionSupplier) {
+            ConditionContextAwareSupplier<? extends Throwable> exceptionSupplier) {
         requireNonNull(exceptionSupplier, "exceptionSupplier");
-        return of(ctx -> {
-            throw exceptionSupplier.get(ctx);
-        }).alias(Aliases.FAILED);
+        return of(ctx -> rethrow(exceptionSupplier.get(ctx))).alias(Aliases.FAILED);
     }
 
     protected ConditionAttributeMutator attributeMutator() {

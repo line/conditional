@@ -435,6 +435,18 @@ class ConditionTest {
         }
 
         @Test
+        void failed_with_Throwable() {
+            final var ctx = ConditionContext.of();
+            assertThrows(RuntimeException.class, () -> failed(new RuntimeException()).matches(ctx));
+        }
+
+        @Test
+        void failed_with_Supplier() {
+            final var ctx = ConditionContext.of();
+            assertThrows(RuntimeException.class, () -> failed(() -> new RuntimeException()).matches(ctx));
+        }
+
+        @Test
         void failed_with_ContextAwareSupplier() {
             final var ctx = ConditionContext.of();
             assertThrows(RuntimeException.class, () -> failed(ctx0 -> {
