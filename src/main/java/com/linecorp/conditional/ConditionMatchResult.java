@@ -18,7 +18,7 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class ConditionExecutionResult {
+public abstract class ConditionMatchResult {
 
     private final Thread thread;
     private final Condition condition;
@@ -26,8 +26,8 @@ public abstract class ConditionExecutionResult {
     private final long endTimeMillis;
     private final long durationMillis;
 
-    protected ConditionExecutionResult(Thread thread, Condition condition,
-                                       long startTimeMillis, long endTimeMillis) {
+    protected ConditionMatchResult(Thread thread, Condition condition,
+                                   long startTimeMillis, long endTimeMillis) {
         requireNonNull(thread, "thread");
         requireNonNull(condition, "condition");
         if (startTimeMillis > endTimeMillis) {

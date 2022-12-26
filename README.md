@@ -177,7 +177,7 @@ _Conditional_ is easy to use even if you are not familiar with asynchronous prog
 ## Easy to debug
 
 `ConditionContext` contains useful information for debugging conditional expression.
-Execution logs of conditional expression can be seen in `ctx.logs()`. Here, let's look at the execution logs for asynchronous conditional expression.
+Match logs of conditional expression can be seen in `ctx.logs()`. Here, let's look at the match logs for asynchronous conditional expression.
 ```java
 var a = Condition.async(ctx -> true).alias("a");
 var b = Condition.async(ctx -> false).alias("b");
@@ -188,13 +188,13 @@ condition.matches(ctx);
 for (var log : ctx.logs()) { // 👈
     System.out.println(log);
 }
-// ConditionExecutionCompletion{condition=a, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672051484770ms, endTime=1672051484770ms, duration=0ms}
-// ConditionExecutionCompletion{condition=b, matches=false, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672051484770ms, endTime=1672051484770ms, duration=0ms}
-// ConditionExecutionCompletion{condition=(a && b), matches=false, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672051484768ms, endTime=1672051484770ms, duration=2ms}
+// ConditionMatchCompletion{condition=a, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672051484770ms, endTime=1672051484770ms, duration=0ms}
+// ConditionMatchCompletion{condition=b, matches=false, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672051484770ms, endTime=1672051484770ms, duration=0ms}
+// ConditionMatchCompletion{condition=(a && b), matches=false, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672051484768ms, endTime=1672051484770ms, duration=2ms}
 ```
 
-You can see in which thread each conditional expression was executed, how long it took, and what the result was.
-Also, it is easy to know whether an exception was raised in the process of executing the conditional expression.
+You can see in which thread each conditional expression was matched, how long it took, and what the result was.
+Also, it is easy to know whether an exception was raised in the process of matching the conditional expression.
 
 ```java
 var a = Condition.async(ctx -> true).alias("a");
@@ -209,9 +209,9 @@ try {
         System.out.println(log);
     }
 }
-// ConditionExecutionCompletion{condition=a, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672051528775ms, endTime=1672051528775ms, duration=0ms}
-// ConditionExecutionFailure{condition=b, cause=java.lang.IllegalStateException, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672051528776ms, endTime=1672051528776ms, duration=0ms}
-// ConditionExecutionFailure{condition=(a && b), cause=java.util.concurrent.CompletionException: java.lang.IllegalStateException, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672051528774ms, endTime=1672051528776ms, duration=2ms}
+// ConditionMatchCompletion{condition=a, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672051528775ms, endTime=1672051528775ms, duration=0ms}
+// ConditionMatchFailure{condition=b, cause=java.lang.IllegalStateException, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672051528776ms, endTime=1672051528776ms, duration=0ms}
+// ConditionMatchFailure{condition=(a && b), cause=java.util.concurrent.CompletionException: java.lang.IllegalStateException, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672051528774ms, endTime=1672051528776ms, duration=2ms}
 ```
 
 ## Easy to integrate with Spring Framework

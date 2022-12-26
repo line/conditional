@@ -39,7 +39,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionExecutionResult1() {
+    void conditionMatchResult1() {
         // true
         final var condition = trueCondition();
         final var ctx = ConditionContext.of();
@@ -48,13 +48,13 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(1, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(trueCondition(), log0.condition());
         assertTrue(log0.matches());
     }
 
     @Test
-    void conditionExecutionResult2() {
+    void conditionMatchResult2() {
         // false
         final var condition = falseCondition();
         final var ctx = ConditionContext.of();
@@ -63,13 +63,13 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(1, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(falseCondition(), log0.condition());
         assertFalse(log0.matches());
     }
 
     @Test
-    void conditionExecutionResult3() {
+    void conditionMatchResult3() {
         // exceptional
         final var condition = exceptional(unused -> new RuntimeException());
         final var ctx = ConditionContext.of();
@@ -78,13 +78,13 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(1, logs.size());
 
-        final var log0 = (ConditionExecutionFailure) logs.get(0);
+        final var log0 = (ConditionMatchFailure) logs.get(0);
         assertConditionEquals(exceptional(unused -> new RuntimeException()), log0.condition());
         assertRuntimeException(log0.cause());
     }
 
     @Test
-    void conditionExecutionResult4() {
+    void conditionMatchResult4() {
         // true && false
         final var condition = trueCondition().and(falseCondition());
         final var ctx = ConditionContext.of();
@@ -93,21 +93,21 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(3, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(trueCondition(), log0.condition());
         assertTrue(log0.matches());
 
-        final var log1 = (ConditionExecutionCompletion) logs.get(1);
+        final var log1 = (ConditionMatchCompletion) logs.get(1);
         assertConditionEquals(falseCondition(), log1.condition());
         assertFalse(log1.matches());
 
-        final var log2 = (ConditionExecutionCompletion) logs.get(2);
+        final var log2 = (ConditionMatchCompletion) logs.get(2);
         assertConditionEquals(trueCondition().and(falseCondition()), log2.condition());
         assertFalse(log2.matches());
     }
 
     @Test
-    void conditionExecutionResult5() {
+    void conditionMatchResult5() {
         // true || false
         final var condition = trueCondition().or(falseCondition());
         final var ctx = ConditionContext.of();
@@ -116,17 +116,17 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(2, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(trueCondition(), log0.condition());
         assertTrue(log0.matches());
 
-        final var log1 = (ConditionExecutionCompletion) logs.get(1);
+        final var log1 = (ConditionMatchCompletion) logs.get(1);
         assertConditionEquals(trueCondition().or(falseCondition()), log1.condition());
         assertTrue(log1.matches());
     }
 
     @Test
-    void conditionExecutionResult6() {
+    void conditionMatchResult6() {
         // false && true
         final var condition = falseCondition().and(trueCondition());
         final var ctx = ConditionContext.of();
@@ -135,17 +135,17 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(2, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(falseCondition(), log0.condition());
         assertFalse(log0.matches());
 
-        final var log1 = (ConditionExecutionCompletion) logs.get(1);
+        final var log1 = (ConditionMatchCompletion) logs.get(1);
         assertConditionEquals(falseCondition().and(trueCondition()), log1.condition());
         assertFalse(log1.matches());
     }
 
     @Test
-    void conditionExecutionResult7() {
+    void conditionMatchResult7() {
         // false || true
         final var condition = falseCondition().or(trueCondition());
         final var ctx = ConditionContext.of();
@@ -154,21 +154,21 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(3, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(falseCondition(), log0.condition());
         assertFalse(log0.matches());
 
-        final var log1 = (ConditionExecutionCompletion) logs.get(1);
+        final var log1 = (ConditionMatchCompletion) logs.get(1);
         assertConditionEquals(trueCondition(), log1.condition());
         assertTrue(log1.matches());
 
-        final var log2 = (ConditionExecutionCompletion) logs.get(2);
+        final var log2 = (ConditionMatchCompletion) logs.get(2);
         assertConditionEquals(falseCondition().or(trueCondition()), log2.condition());
         assertTrue(log2.matches());
     }
 
     @Test
-    void conditionExecutionResult8() {
+    void conditionMatchResult8() {
         // true && exceptional
         final var condition = trueCondition().and(
                 exceptional(unused -> new RuntimeException()));
@@ -178,15 +178,15 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(3, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(trueCondition(), log0.condition());
         assertTrue(log0.matches());
 
-        final var log1 = (ConditionExecutionFailure) logs.get(1);
+        final var log1 = (ConditionMatchFailure) logs.get(1);
         assertConditionEquals(exceptional(unused -> new RuntimeException()), log1.condition());
         assertRuntimeException(log1.cause());
 
-        final var log2 = (ConditionExecutionFailure) logs.get(2);
+        final var log2 = (ConditionMatchFailure) logs.get(2);
         assertConditionEquals(
                 trueCondition().and(exceptional(unused -> new RuntimeException())),
                 log2.condition());
@@ -194,7 +194,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionExecutionResult9() {
+    void conditionMatchResult9() {
         // true || exceptional
         final var condition = trueCondition().or(
                 exceptional(unused -> new RuntimeException()));
@@ -204,11 +204,11 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(2, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(trueCondition(), log0.condition());
         assertTrue(log0.matches());
 
-        final var log1 = (ConditionExecutionCompletion) logs.get(1);
+        final var log1 = (ConditionMatchCompletion) logs.get(1);
         assertConditionEquals(
                 trueCondition().or(exceptional(unused -> new RuntimeException())),
                 log1.condition());
@@ -216,7 +216,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionExecutionResult10() {
+    void conditionMatchResult10() {
         // (true && false) || (false || exceptional)
         final var condition = trueCondition().and(falseCondition())
                                              .or(falseCondition().or(
@@ -227,33 +227,33 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(7, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(trueCondition(), log0.condition());
         assertTrue(log0.matches());
 
-        final var log1 = (ConditionExecutionCompletion) logs.get(1);
+        final var log1 = (ConditionMatchCompletion) logs.get(1);
         assertConditionEquals(falseCondition(), log1.condition());
         assertFalse(log1.matches());
 
-        final var log2 = (ConditionExecutionCompletion) logs.get(2);
+        final var log2 = (ConditionMatchCompletion) logs.get(2);
         assertConditionEquals(trueCondition().and(falseCondition()), log2.condition());
         assertFalse(log2.matches());
 
-        final var log3 = (ConditionExecutionCompletion) logs.get(3);
+        final var log3 = (ConditionMatchCompletion) logs.get(3);
         assertConditionEquals(falseCondition(), log3.condition());
         assertFalse(log3.matches());
 
-        final var log4 = (ConditionExecutionFailure) logs.get(4);
+        final var log4 = (ConditionMatchFailure) logs.get(4);
         assertConditionEquals(exceptional(unused -> new RuntimeException()), log4.condition());
         assertRuntimeException(log4.cause());
 
-        final var log5 = (ConditionExecutionFailure) logs.get(5);
+        final var log5 = (ConditionMatchFailure) logs.get(5);
         assertConditionEquals(
                 falseCondition().or(exceptional(unused -> new RuntimeException())),
                 log5.condition());
         assertRuntimeException(log5.cause());
 
-        final var log6 = (ConditionExecutionFailure) logs.get(6);
+        final var log6 = (ConditionMatchFailure) logs.get(6);
         assertConditionEquals(
                 trueCondition().and(falseCondition())
                                .or(falseCondition().or(exceptional(unused -> new RuntimeException()))),
@@ -262,7 +262,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionExecutionResult11() {
+    void conditionMatchResult11() {
         // (true && false) || (false && exceptional)
         final var condition = trueCondition().and(falseCondition())
                                              .or(falseCondition().and(
@@ -273,29 +273,29 @@ class ConditionContextTest {
         final var logs = ctx.logs();
         assertEquals(6, logs.size());
 
-        final var log0 = (ConditionExecutionCompletion) logs.get(0);
+        final var log0 = (ConditionMatchCompletion) logs.get(0);
         assertConditionEquals(trueCondition(), log0.condition());
         assertTrue(log0.matches());
 
-        final var log1 = (ConditionExecutionCompletion) logs.get(1);
+        final var log1 = (ConditionMatchCompletion) logs.get(1);
         assertConditionEquals(falseCondition(), log1.condition());
         assertFalse(log1.matches());
 
-        final var log2 = (ConditionExecutionCompletion) logs.get(2);
+        final var log2 = (ConditionMatchCompletion) logs.get(2);
         assertConditionEquals(trueCondition().and(falseCondition()), log2.condition());
         assertFalse(log2.matches());
 
-        final var log3 = (ConditionExecutionCompletion) logs.get(3);
+        final var log3 = (ConditionMatchCompletion) logs.get(3);
         assertConditionEquals(falseCondition(), log3.condition());
         assertFalse(log3.matches());
 
-        final var log4 = (ConditionExecutionCompletion) logs.get(4);
+        final var log4 = (ConditionMatchCompletion) logs.get(4);
         assertConditionEquals(
                 falseCondition().and(exceptional(unused -> new RuntimeException())),
                 log4.condition());
         assertFalse(log4.matches());
 
-        final var log5 = (ConditionExecutionCompletion) logs.get(5);
+        final var log5 = (ConditionMatchCompletion) logs.get(5);
         assertConditionEquals(
                 trueCondition().and(falseCondition())
                                .or(falseCondition().and(exceptional(unused -> new RuntimeException()))),

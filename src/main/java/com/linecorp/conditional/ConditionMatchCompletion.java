@@ -16,30 +16,28 @@
 
 package com.linecorp.conditional;
 
-import static java.util.Objects.requireNonNull;
+public final class ConditionMatchCompletion extends ConditionMatchResult {
 
-public final class ConditionExecutionFailure extends ConditionExecutionResult {
+    private final boolean matches;
 
-    private final Throwable cause;
-
-    ConditionExecutionFailure(Thread thread, Condition condition,
-                              Throwable cause, long startTimeMillis, long endTimeMillis) {
+    ConditionMatchCompletion(Thread thread, Condition condition,
+                             boolean matches, long startTimeMillis, long endTimeMillis) {
         super(thread, condition, startTimeMillis, endTimeMillis);
-        this.cause = requireNonNull(cause, "cause");
+        this.matches = matches;
     }
 
     /**
-     * Returns the {@code cause}.
+     * Returns the {@code matches}.
      */
-    public Throwable cause() {
-        return cause;
+    public boolean matches() {
+        return matches;
     }
 
     @Override
     public String toString() {
-        return "ConditionExecutionFailure{" +
+        return "ConditionMatchCompletion{" +
                "condition=" + condition() +
-               ", cause=" + cause +
+               ", matches=" + matches +
                ", async=" + condition().isAsync() +
                ", thread=" + thread().getName() +
                ", delay=" + millisAsString(condition().delayMillis()) +

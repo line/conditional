@@ -163,7 +163,7 @@ public abstract class Condition {
      * Returns a newly created asynchronous {@link Condition}.
      *
      * @param function the function to match the conditional expression.
-     * @param executor the executor to execute the {@code function}.
+     * @param executor the executor to match the {@code function}.
      *
      * @throws NullPointerException if {@code function} or {@code executor} is null.
      */
@@ -189,7 +189,7 @@ public abstract class Condition {
      *
      * @param function the function to match the conditional expression.
      * @param timeoutMillis the value to set timeout for the {@code function}.
-     * @param executor the executor to execute the {@code function}.
+     * @param executor the executor to match the {@code function}.
      *
      * @throws NullPointerException if {@code function} or {@code executor} is null.
      */
@@ -217,7 +217,7 @@ public abstract class Condition {
      * @param function the function to match the conditional expression.
      * @param timeout the value to set timeout for the {@code function}.
      * @param unit the unit to set timeout for the {@code function}.
-     * @param executor the executor to execute the {@code function}.
+     * @param executor the executor to match the {@code function}.
      *
      * @throws NullPointerException if {@code function} or {@code unit} or {@code executor} is null.
      */
@@ -763,7 +763,7 @@ public abstract class Condition {
      * Returns the {@link CompletableFuture}. The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
      *
      * @param ctx the context for matching {@link Condition}.
-     * @param executor the executor to execute the {@link ConditionFunction}.
+     * @param executor the executor to match the {@link ConditionFunction}.
      */
     public final CompletableFuture<Boolean> matchesAsync(ConditionContext ctx, Executor executor) {
         requireNonNull(executor, "executor");

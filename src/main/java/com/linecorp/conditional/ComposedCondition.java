@@ -108,7 +108,7 @@ public final class ComposedCondition extends Condition {
     /**
      * Returns the {@link ComposedCondition} with {@code async} enabled for all nested {@link Condition}s.
      *
-     * @param executor the executor to execute all nested {@link Condition}s.
+     * @param executor the executor to match all nested {@link Condition}s.
      *
      * @throws NullPointerException if the {@code executor} is null.
      */

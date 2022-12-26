@@ -233,11 +233,11 @@ class ConditionTest {
                    return true;
                });
 
-        final var executionResults = ctx.logs();
-        assertEquals(3, executionResults.size());
-        assertDurationMillis(executionResults.get(0), 3000, 4000);
-        assertDurationMillis(executionResults.get(1), 4000, 5000);
-        assertDurationMillis(executionResults.get(2), 7000, 8000);
+        final var matchResults = ctx.logs();
+        assertEquals(3, matchResults.size());
+        assertDurationMillis(matchResults.get(0), 3000, 4000);
+        assertDurationMillis(matchResults.get(1), 4000, 5000);
+        assertDurationMillis(matchResults.get(2), 7000, 8000);
     }
 
     @Test
@@ -267,11 +267,11 @@ class ConditionTest {
                    return true;
                });
 
-        final var executionResults = ctx.logs();
-        assertEquals(3, executionResults.size());
-        assertDurationMillis(executionResults.get(0), 3000, 4000);
-        assertDurationMillis(executionResults.get(1), 4000, 5000);
-        assertDurationMillis(executionResults.get(2), 4000, 5000);
+        final var matchResults = ctx.logs();
+        assertEquals(3, matchResults.size());
+        assertDurationMillis(matchResults.get(0), 3000, 4000);
+        assertDurationMillis(matchResults.get(1), 4000, 5000);
+        assertDurationMillis(matchResults.get(2), 4000, 5000);
     }
 
     @Test
@@ -532,10 +532,10 @@ class ConditionTest {
         }
     }
 
-    static void assertDurationMillis(ConditionExecutionResult conditionExecutionResult,
+    static void assertDurationMillis(ConditionMatchResult conditionMatchResult,
                                      long atLeastMillisInclusive, long atMostMillisExclusive) {
-        requireNonNull(conditionExecutionResult, "conditionExecutionResult");
-        final var durationMillis = conditionExecutionResult.durationMillis();
+        requireNonNull(conditionMatchResult, "conditionMatchResult");
+        final var durationMillis = conditionMatchResult.durationMillis();
         assertTrue(atLeastMillisInclusive <= durationMillis && durationMillis < atMostMillisExclusive);
     }
 }
