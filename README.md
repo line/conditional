@@ -50,6 +50,7 @@ Condition.trueCondition();
 Condition.falseCondition();
 Condition.completed(true);
 Condition.completed(false);
+Condition.failed(new RuntimeException());
 Condition.failed(() -> new RuntimeException());
 Condition.failed(ctx -> new RuntimeException());
 ```
