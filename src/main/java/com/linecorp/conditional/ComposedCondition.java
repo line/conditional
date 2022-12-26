@@ -138,8 +138,15 @@ public final class ComposedCondition extends Condition {
         assert !conditions.isEmpty();
         final var cfs = new ArrayList<CompletableFuture<Boolean>>();
         for (var condition : conditions) {
-            final var cf = matches0(condition, ctx);
+            final CompletableFuture<Boolean> cf;
+            try {
+                cf = matches0(condition, ctx);
+            } catch (Exception e) {
+                cancel(cfs);
+                return rethrow(e);
+            }
             if (completed(cf)) {
+                cancel(cfs);
                 return cf.join();
             }
             cfs.add(cf);
@@ -157,15 +164,15 @@ public final class ComposedCondition extends Condition {
             return rethrow(e);
         }
         final var it = cfs.iterator();
-        var value = it.next().join();
+        var result = it.next().join();
         while (it.hasNext()) {
             final var next = it.next().join();
-            value = switch (operator) {
-                case AND -> value && next;
-                case OR -> value || next;
+            result = switch (operator) {
+                case AND -> result && next;
+                case OR -> result || next;
             };
         }
-        return value;
+        return result;
     }
 
     private static CompletableFuture<Boolean> matches0(Condition condition, ConditionContext ctx) {
@@ -191,7 +198,7 @@ public final class ComposedCondition extends Condition {
                     complete(future, true);
                 }
             }).exceptionally(e -> {
-                future.completeExceptionally(e);
+                completeExceptionally(future, e);
                 return null;
             });
         }
@@ -212,6 +219,14 @@ public final class ComposedCondition extends Condition {
         requireNonNull(cf, "cf");
         if (!cf.isDone()) {
             cf.complete(value);
+        }
+    }
+
+    private static void completeExceptionally(CompletableFuture<Boolean> cf, Throwable e) {
+        requireNonNull(cf, "cf");
+        requireNonNull(e, "e");
+        if (!cf.isDone()) {
+            cf.completeExceptionally(e);
         }
     }
 

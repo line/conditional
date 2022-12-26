@@ -53,7 +53,7 @@ Let's take a look!
 To add a dependency on _Conditional_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:0.9.3")
+    implementation("com.linecorp.conditional:conditional:0.9.4")
 }
 ```
 
@@ -62,7 +62,7 @@ To add a dependency using Maven:
 <dependency>
     <groupId>com.linecorp.conditional</groupId>
     <artifactId>conditional</artifactId>
-    <version>0.9.3</version>
+    <version>0.9.4</version>
 </dependency>
 ```
 
