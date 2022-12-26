@@ -139,8 +139,6 @@ sync.and(async); // 👈
 async.and(sync); // 👈
 ```
 
-_Conditional_ is easy to use even if you are not familiar with asynchronous programming.
-
 ## Easy to debug
 
 `ConditionContext` contains useful information for debugging conditional expression.
