@@ -31,7 +31,7 @@ class ConditionComposerTest {
     static Stream<Arguments> complexCondition() {
         return Stream.of(
                 Arguments.of(
-                        // (true || false) && (true && true) = true
+                        // (true or false) and (true and true) = true
                         Condition.composer(Operator.AND)
                                  .with(Condition.composer(Operator.OR)
                                                 .with(trueCondition(), falseCondition())
@@ -42,7 +42,7 @@ class ConditionComposerTest {
                         trueCondition().or(falseCondition()).and(trueCondition().and(trueCondition())),
                         true),
                 Arguments.of(
-                        // (true || false) && true = true
+                        // (true or false) and true = true
                         Condition.composer(Operator.AND)
                                  .with(Condition.composer(Operator.OR)
                                                 .with(trueCondition(), falseCondition())
@@ -51,7 +51,7 @@ class ConditionComposerTest {
                         trueCondition().or(falseCondition()).and(trueCondition()),
                         true),
                 Arguments.of(
-                        // true && (true || false) = true
+                        // true and (true or false) = true
                         Condition.composer(Operator.AND)
                                  .with(trueCondition(),
                                        Condition.composer(Operator.OR)
@@ -60,7 +60,7 @@ class ConditionComposerTest {
                         trueCondition().and(trueCondition().or(falseCondition())),
                         true),
                 Arguments.of(
-                        // ((true || false) && true) || false = true
+                        // ((true or false) and true) or false = true
                         Condition.composer(Operator.OR)
                                  .with(Condition.composer(Operator.AND)
                                                 .with(Condition.composer(Operator.OR)
@@ -71,7 +71,7 @@ class ConditionComposerTest {
                                        .or(falseCondition()),
                         true),
                 Arguments.of(
-                        // true && (false || (true && false)) = false
+                        // true and (false or (true and false)) = false
                         Condition.composer(Operator.AND)
                                  .with(trueCondition(),
                                        Condition.composer(Operator.OR)

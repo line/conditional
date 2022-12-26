@@ -97,14 +97,12 @@ public abstract class Condition {
         this.timeoutMillis = timeoutMillis;
     }
 
-    public static final class Aliases {
+    private static final class Aliases {
 
-        public static final String TRUE = "TrueCondition";
-        public static final String FALSE = "FalseCondition";
-        public static final String COMPLETED = "CompletedCondition";
-        public static final String EXCEPTIONAL = "ExceptionalCondition";
-
-        private Aliases() {}
+        private static final String TRUE = "TrueCondition";
+        private static final String FALSE = "FalseCondition";
+        private static final String COMPLETED = "CompletedCondition";
+        private static final String FAILED = "FailedCondition";
     }
 
     /**
@@ -519,11 +517,11 @@ public abstract class Condition {
      *
      * @throws NullPointerException if the {@code exceptionSupplier} is null.
      */
-    public static Condition exceptional(Supplier<? extends RuntimeException> exceptionSupplier) {
+    public static Condition failed(Supplier<? extends RuntimeException> exceptionSupplier) {
         requireNonNull(exceptionSupplier, "exceptionSupplier");
         return of(ctx -> {
             throw exceptionSupplier.get();
-        }).alias(Aliases.EXCEPTIONAL);
+        }).alias(Aliases.FAILED);
     }
 
     /**
@@ -531,12 +529,12 @@ public abstract class Condition {
      *
      * @throws NullPointerException if the {@code exceptionSupplier} is null.
      */
-    public static Condition exceptional(
+    public static Condition failed(
             ConditionContextAwareSupplier<? extends RuntimeException> exceptionSupplier) {
         requireNonNull(exceptionSupplier, "exceptionSupplier");
         return of(ctx -> {
             throw exceptionSupplier.get(ctx);
-        }).alias(Aliases.EXCEPTIONAL);
+        }).alias(Aliases.FAILED);
     }
 
     protected ConditionAttributeMutator attributeMutator() {

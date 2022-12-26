@@ -16,7 +16,7 @@
 
 package com.linecorp.conditional;
 
-import static com.linecorp.conditional.Condition.exceptional;
+import static com.linecorp.conditional.Condition.failed;
 import static com.linecorp.conditional.Condition.falseCondition;
 import static com.linecorp.conditional.Condition.trueCondition;
 import static java.util.Objects.requireNonNull;
@@ -30,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Duration;
-import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -208,7 +207,7 @@ class ConditionTest {
 
     @Test
     void sync() {
-        final var ctx = ConditionContext.of(Map.of("a", true, "b", true));
+        final var ctx = ConditionContext.of("a", true, "b", true);
         final var a = Condition.of(ctx0 -> {
             try {
                 Thread.sleep(3000);
@@ -242,7 +241,7 @@ class ConditionTest {
 
     @Test
     void async() {
-        final var ctx = ConditionContext.of(Map.of("a", true, "b", true));
+        final var ctx = ConditionContext.of("a", true, "b", true);
         final var a = Condition.of(ctx0 -> {
             try {
                 Thread.sleep(3000);
@@ -436,9 +435,9 @@ class ConditionTest {
         }
 
         @Test
-        void exceptional_with_ContextAwareSupplier() {
+        void failed_with_ContextAwareSupplier() {
             final var ctx = ConditionContext.of();
-            assertThrows(RuntimeException.class, () -> exceptional(ctx0 -> {
+            assertThrows(RuntimeException.class, () -> failed(ctx0 -> {
                 assertSame(ctx, ctx0);
                 return new RuntimeException();
             }).matches(ctx));
@@ -446,10 +445,10 @@ class ConditionTest {
 
         static Stream<Arguments> precedence() {
             return Stream.of(
-                    // ((true || false) && false) = false
+                    // ((true or false) and false) = false
                     Arguments.of(trueCondition().or(falseCondition()).and(falseCondition()), false),
 
-                    // (true || (false && false)) = true
+                    // (true or (false and false)) = true
                     Arguments.of(trueCondition().or(falseCondition().and(falseCondition())), true));
         }
 
@@ -498,7 +497,7 @@ class ConditionTest {
                     Arguments.of(Condition.of(ctx -> {
                         throw new RuntimeException();
                     }), "Undefined"),
-                    Arguments.of(exceptional(unused -> new RuntimeException()), "ExceptionalCondition"),
+                    Arguments.of(failed(unused -> new RuntimeException()), "FailedCondition"),
                     Arguments.of(trueCondition(), "TrueCondition"),
                     Arguments.of(falseCondition(), "FalseCondition"),
                     Arguments.of(Condition.composer(Operator.AND).with(trueCondition()).compose(),

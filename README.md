@@ -44,14 +44,14 @@ var ctx = ConditionContext.of("a", true, "b", true);
 assert condition.matches(ctx) == true;
 ```
 
-Frequently used conditional expressions such as `true/false/completed/exceptional` can be made as follows.
+Frequently used conditional expressions such as `true/false/completed/failed` can be made as follows.
 ```java
 Condition.trueCondition();
 Condition.falseCondition();
 Condition.completed(true);
 Condition.completed(false);
-Condition.exceptional(() -> new RuntimeException());
-Condition.exceptional(ctx -> new RuntimeException());
+Condition.failed(() -> new RuntimeException());
+Condition.failed(ctx -> new RuntimeException());
 ```
 
 If you want to set a timeout in a conditional expression, you can do something like this:
@@ -163,7 +163,7 @@ Also, it is easy to know whether an exception was raised in the process of match
 
 ```java
 var a = Condition.async(ctx -> true).alias("a");
-var b = Condition.exceptional(ctx -> new RuntimeException()).async().alias("b");
+var b = Condition.failed(ctx -> new RuntimeException()).async().alias("b");
 var condition = a.and(b);
 var ctx = ConditionContext.of();
 

@@ -37,28 +37,28 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class ComposedConditionTest {
 
-    static final Condition exceptional = Condition.exceptional(unused -> new RuntimeException());
+    static final Condition failed = Condition.failed(unused -> new RuntimeException());
 
     static Stream<Arguments> AND() {
         return Stream.of(
-                // true && exceptional = exception raised
-                Arguments.of(trueCondition().and(exceptional),
+                // true and failed = exception raised
+                Arguments.of(trueCondition().and(failed),
                              RuntimeException.class, null),
 
-                // false && exceptional = false
-                Arguments.of(falseCondition().and(exceptional),
+                // false and failed = false
+                Arguments.of(falseCondition().and(failed),
                              null, false),
 
-                // false && (exceptional && true) = false
-                Arguments.of(falseCondition().and(exceptional.and(trueCondition())),
+                // false and (failed and true) = false
+                Arguments.of(falseCondition().and(failed.and(trueCondition())),
                              null, false),
 
-                // (true && true) && exceptional = exception raised
-                Arguments.of(trueCondition().and(trueCondition()).and(exceptional),
+                // (true and true) and failed = exception raised
+                Arguments.of(trueCondition().and(trueCondition()).and(failed),
                              RuntimeException.class, null),
 
-                // (true && false) && exceptional = false
-                Arguments.of(trueCondition().and(falseCondition()).and(exceptional),
+                // (true and false) and failed = false
+                Arguments.of(trueCondition().and(falseCondition()).and(failed),
                              null, false)
         );
     }
@@ -80,24 +80,24 @@ class ComposedConditionTest {
 
     static Stream<Arguments> OR() {
         return Stream.of(
-                // false || exceptional = exception raised
-                Arguments.of(falseCondition().or(exceptional),
+                // false or failed = exception raised
+                Arguments.of(falseCondition().or(failed),
                              RuntimeException.class, null),
 
-                // true || exceptional = true
-                Arguments.of(trueCondition().or(exceptional),
+                // true or failed = true
+                Arguments.of(trueCondition().or(failed),
                              null, true),
 
-                // true || (exceptional || false) = true
-                Arguments.of(trueCondition().or(exceptional.or(falseCondition())),
+                // true or (failed or false) = true
+                Arguments.of(trueCondition().or(failed.or(falseCondition())),
                              null, true),
 
-                // (true || false) || exceptional = true
-                Arguments.of(trueCondition().or(falseCondition()).or(exceptional),
+                // (true or false) or failed = true
+                Arguments.of(trueCondition().or(falseCondition()).or(failed),
                              null, true),
 
-                // (false || false) || exceptional = exception raised
-                Arguments.of(falseCondition().or(falseCondition()).or(exceptional),
+                // (false or false) or failed = exception raised
+                Arguments.of(falseCondition().or(falseCondition()).or(failed),
                              RuntimeException.class, null)
         );
     }
