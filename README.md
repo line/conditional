@@ -12,42 +12,6 @@
 
 _Conditional_ is a super lightweight library that helps you make conditional expressions. You can compose multiple conditional expressions and make them asynchronous easily.
 
-## Why do we need Conditional?
-
-We use conditional branches when writing control flows. For example, using syntactic elements provided by programming languages such as `if`, `switch`, `when`, etc. Let's write a simple control flow.
-
-```javascript
-if (A && B) { /**/ }
-```
-
-When both `A` and `B` are `true`, the above conditional expression is `true`.
-So, how can we implement `A`, `B`, `A && B`?
-In a simple way, we can use a function like below:
-
-```javascript
-function A() { return true }
-function B() { return true }
-function X() { return A() && B() } 
-```
-
-So what about this one?
-
-```javascript
-if (A && B && C) { /**/ }
-```
-
-Similarly, let's use a function.
-```javascript
-function C() { return true }
-function Y() { return X() && C() }
-```
-
-This is a simple and useful way, but as the conditional expression becomes more complex, the depth of the function call increases, so the code becomes more and more difficult to read. Besides, the test code for it also gets more and more complex.
-Not to mention the difficulties of applying the asynchronous paradigm or timeout mechanism to conditional expression.
-
-_Conditional_ provides reusability, testability, and an easy way to apply asynchronous paradigm and timeout mechanism to conditional expression.
-Let's take a look!
-
 ## Getting started
 
 To add a dependency on _Conditional_ using Gradle, use the following:
