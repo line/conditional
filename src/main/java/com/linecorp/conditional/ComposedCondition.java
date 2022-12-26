@@ -30,9 +30,9 @@ import javax.annotation.Nullable;
 public final class ComposedCondition extends Condition {
 
     private static final String PREFIX = "(";
-    private static final String POSTFIX = ")";
-    private static final String SEPARATOR_AND = " && ";
-    private static final String SEPARATOR_OR = " || ";
+    private static final String SUFFIX = ")";
+    private static final String DELIMITER_AND = " AND ";
+    private static final String DELIMITER_OR = " OR ";
 
     private final Operator operator;
     private final List<Condition> conditions = new ArrayList<>();
@@ -235,11 +235,11 @@ public final class ComposedCondition extends Condition {
             final var condition0 = conditions.get(0);
             return condition0.toString();
         }
-        final var separator = switch (operator) {
-            case AND -> SEPARATOR_AND;
-            case OR -> SEPARATOR_OR;
+        final var delimiter = switch (operator) {
+            case AND -> DELIMITER_AND;
+            case OR -> DELIMITER_OR;
         };
-        final var joiner = new StringJoiner(separator, PREFIX, POSTFIX);
+        final var joiner = new StringJoiner(delimiter, PREFIX, SUFFIX);
         for (var condition : conditions) {
             joiner.add(condition.toString());
         }
