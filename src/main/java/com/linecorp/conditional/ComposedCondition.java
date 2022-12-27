@@ -340,8 +340,11 @@ public final class ComposedCondition extends Condition {
 
     private void cancel(List<CompletableFuture<Boolean>> cfs) {
         requireNonNull(cfs, "cfs");
+        if (!cancellable) {
+            return;
+        }
         for (var cf : cfs) {
-            if (!cf.isDone() && !cf.isCancelled() && cancellable) {
+            if (!cf.isDone() && !cf.isCancelled()) {
                 cf.cancel(false);
             }
         }
