@@ -25,14 +25,14 @@ import javax.annotation.Nullable;
 
 class ConditionAttributeMutator {
 
-    protected volatile ConditionFunction function;
+    private volatile ConditionFunction function;
     @Nullable
-    protected volatile String alias;
-    protected volatile boolean async;
+    private volatile String alias;
+    private volatile boolean async;
     @Nullable
-    protected volatile Executor executor;
-    protected volatile long delayMillis;
-    protected volatile long timeoutMillis;
+    private volatile Executor executor;
+    private volatile long delayMillis;
+    private volatile long timeoutMillis;
 
     ConditionAttributeMutator(Condition condition) {
         requireNonNull(condition, "condition");
@@ -44,9 +44,18 @@ class ConditionAttributeMutator {
         timeoutMillis = condition.timeoutMillis();
     }
 
+    final ConditionFunction function() {
+        return function;
+    }
+
     final ConditionAttributeMutator function(ConditionFunction function) {
         this.function = requireNonNull(function, "function");
         return this;
+    }
+
+    @Nullable
+    final String alias() {
+        return alias;
     }
 
     final ConditionAttributeMutator alias(@Nullable String alias) {
@@ -54,14 +63,27 @@ class ConditionAttributeMutator {
         return this;
     }
 
+    final boolean isAsync() {
+        return async;
+    }
+
     final ConditionAttributeMutator async(boolean async) {
         this.async = async;
         return this;
     }
 
+    @Nullable
+    final Executor executor() {
+        return executor;
+    }
+
     final ConditionAttributeMutator executor(@Nullable Executor executor) {
         this.executor = executor;
         return this;
+    }
+
+    final long delayMillis() {
+        return delayMillis;
     }
 
     final ConditionAttributeMutator delay(long delayMillis) {
@@ -73,6 +95,10 @@ class ConditionAttributeMutator {
         requireNonNull(unit, "unit");
         delayMillis = unit.toMillis(delay);
         return this;
+    }
+
+    final long timeoutMillis() {
+        return timeoutMillis;
     }
 
     final ConditionAttributeMutator timeout(long timeoutMillis) {

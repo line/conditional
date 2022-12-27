@@ -33,9 +33,17 @@ final class ComposedConditionAttributeMutator extends ConditionAttributeMutator 
         cancellable = composedCondition.cancellable();
     }
 
+    List<Condition> conditions() {
+        return conditions;
+    }
+
     ComposedConditionAttributeMutator conditions(List<Condition> conditions) {
         this.conditions = requireNonNull(conditions, "conditions");
         return this;
+    }
+
+    boolean cancellable() {
+        return cancellable;
     }
 
     ComposedConditionAttributeMutator cancellable(boolean cancellable) {
@@ -45,7 +53,7 @@ final class ComposedConditionAttributeMutator extends ConditionAttributeMutator 
 
     @Override
     ComposedCondition mutate() {
-        return new ComposedCondition(function, alias, async, executor, delayMillis, timeoutMillis,
+        return new ComposedCondition(function(), alias(), isAsync(), executor(), delayMillis(), timeoutMillis(),
                                      operator, conditions, cancellable);
     }
 }
