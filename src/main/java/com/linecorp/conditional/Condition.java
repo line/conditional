@@ -19,6 +19,7 @@ package com.linecorp.conditional;
 import static java.util.Objects.requireNonNull;
 
 import java.util.List;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -559,7 +560,7 @@ public abstract class Condition {
      *
      * @throws NullPointerException if the {@code function} is null.
      */
-    public final Condition function(ConditionFunction function) {
+    public Condition function(ConditionFunction function) {
         return mutate(mutator -> mutator.function(function));
     }
 
@@ -573,7 +574,7 @@ public abstract class Condition {
     /**
      * Returns the {@link Condition} with {@code alias} mutated.
      */
-    public final Condition alias(@Nullable String alias) {
+    public Condition alias(@Nullable String alias) {
         return mutate(mutator -> mutator.alias(alias));
     }
 
@@ -588,14 +589,14 @@ public abstract class Condition {
     /**
      * Returns the {@link Condition} with {@code async} enabled.
      */
-    public final Condition async() {
+    public Condition async() {
         return async(true);
     }
 
     /**
      * Returns the {@link Condition} with {@code async} mutated.
      */
-    public final Condition async(boolean async) {
+    public Condition async(boolean async) {
         return mutate(mutator -> mutator.async(async));
     }
 
@@ -609,7 +610,7 @@ public abstract class Condition {
     /**
      * Returns the {@link Condition} with {@code executor} mutated.
      */
-    public final Condition executor(@Nullable Executor executor) {
+    public Condition executor(@Nullable Executor executor) {
         return mutate(mutator -> mutator.executor(executor));
     }
 
@@ -624,7 +625,7 @@ public abstract class Condition {
     /**
      * Returns the {@link Condition} with {@code delay} attribute mutated.
      */
-    public final Condition delay(long delayMillis) {
+    public Condition delay(long delayMillis) {
         return mutate(mutator -> mutator.delay(delayMillis));
     }
 
@@ -633,7 +634,7 @@ public abstract class Condition {
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
-    public final Condition delay(long delay, TimeUnit unit) {
+    public Condition delay(long delay, TimeUnit unit) {
         return mutate(mutator -> mutator.delay(delay, unit));
     }
 
@@ -647,7 +648,7 @@ public abstract class Condition {
     /**
      * Returns the {@link Condition} with {@code timeout} attribute mutated.
      */
-    public final Condition timeout(long timeoutMillis) {
+    public Condition timeout(long timeoutMillis) {
         return mutate(mutator -> mutator.timeout(timeoutMillis));
     }
 
@@ -656,7 +657,7 @@ public abstract class Condition {
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
-    public final Condition timeout(long timeout, TimeUnit unit) {
+    public Condition timeout(long timeout, TimeUnit unit) {
         return mutate(mutator -> mutator.timeout(timeout, unit));
     }
 
@@ -717,7 +718,10 @@ public abstract class Condition {
      * @param ctx the context for matching {@link Condition}.
      *
      * @throws NullPointerException if the {@code ctx} is null.
-     * @throws IllegalStateException if {@code delay} is greater than or equal to {@code timeout}.
+     * @throws IllegalStateException if the {@code delay} is greater than or equal to {@code timeout}.
+     * @throws CancellationException if the {@code cancellable} of {@link ComposedCondition} is {@code true},
+     * and the {@link Condition#matches(ConditionContext)} is cancelled because an exception is raised in a certain {@link Condition}.
+     * @see ComposedCondition#cancellable(boolean)
      */
     public final boolean matches(ConditionContext ctx) {
         requireNonNull(ctx, "ctx");

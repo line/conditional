@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -36,6 +37,7 @@ public final class ComposedCondition extends Condition {
 
     private final Operator operator;
     private final List<Condition> conditions = new ArrayList<>();
+    private final boolean cancellable;
 
     ComposedCondition(Operator operator, Condition... conditions) {
         this(operator, List.of(conditions));
@@ -45,16 +47,18 @@ public final class ComposedCondition extends Condition {
         checkConstructorArguments(operator, conditions);
         this.operator = operator;
         this.conditions.addAll(conditions);
+        cancellable = false;
     }
 
     ComposedCondition(ConditionFunction function, @Nullable String alias,
                       boolean async, @Nullable Executor executor,
                       long delayMillis, long timeoutMillis,
-                      Operator operator, List<Condition> conditions) {
+                      Operator operator, List<Condition> conditions, boolean cancellable) {
         super(function, alias, async, executor, delayMillis, timeoutMillis);
         checkConstructorArguments(operator, conditions);
         this.operator = operator;
         this.conditions.addAll(conditions);
+        this.cancellable = cancellable;
     }
 
     private static void checkConstructorArguments(Operator operator, List<Condition> conditions) {
@@ -89,6 +93,103 @@ public final class ComposedCondition extends Condition {
 
     List<Condition> conditions() {
         return conditions;
+    }
+
+    boolean cancellable() {
+        return cancellable;
+    }
+
+    /**
+     * Returns the {@link ComposedCondition} with function mutated.
+     *
+     * @throws NullPointerException if the {@code function} is null.
+     * @see Condition#function(ConditionFunction)
+     */
+    @Override
+    public ComposedCondition function(ConditionFunction function) {
+        return (ComposedCondition) super.function(function);
+    }
+
+    /**
+     * Returns the {@link ComposedCondition} with {@code alias} mutated.
+     *
+     * @see Condition#alias(String)
+     */
+    @Override
+    public ComposedCondition alias(@Nullable String alias) {
+        return (ComposedCondition) super.alias(alias);
+    }
+
+    /**
+     * Returns the {@link ComposedCondition} with {@code async} enabled.
+     *
+     * @see Condition#async()
+     */
+    @Override
+    public ComposedCondition async() {
+        return (ComposedCondition) super.async();
+    }
+
+    /**
+     * Returns the {@link ComposedCondition} with {@code async} mutated.
+     *
+     * @see Condition#async(boolean)
+     */
+    @Override
+    public ComposedCondition async(boolean async) {
+        return (ComposedCondition) super.async(async);
+    }
+
+    /**
+     * Returns the {@link ComposedCondition} with {@code executor} mutated.
+     *
+     * @see Condition#executor(Executor)
+     */
+    @Override
+    public ComposedCondition executor(@Nullable Executor executor) {
+        return (ComposedCondition) super.executor(executor);
+    }
+
+    /**
+     * Returns the {@link ComposedCondition} with {@code delay} attribute mutated.
+     *
+     * @see Condition#delay(long)
+     */
+    @Override
+    public ComposedCondition delay(long delayMillis) {
+        return (ComposedCondition) super.delay(delayMillis);
+    }
+
+    /**
+     * Returns the {@link ComposedCondition} with {@code delay} attribute mutated.
+     *
+     * @throws NullPointerException if the {@code unit} is null.
+     * @see Condition#delay(long, TimeUnit)
+     */
+    @Override
+    public ComposedCondition delay(long delay, TimeUnit unit) {
+        return (ComposedCondition) super.delay(delay, unit);
+    }
+
+    /**
+     * Returns the {@link ComposedCondition} with {@code timeout} attribute mutated.
+     *
+     * @see Condition#timeout(long)
+     */
+    @Override
+    public ComposedCondition timeout(long timeoutMillis) {
+        return (ComposedCondition) super.timeout(timeoutMillis);
+    }
+
+    /**
+     * Returns the {@link ComposedCondition} with {@code timeout} attribute mutated.
+     *
+     * @throws NullPointerException if the {@code unit} is null.
+     * @see Condition#timeout(long, TimeUnit)
+     */
+    @Override
+    public ComposedCondition timeout(long timeout, TimeUnit unit) {
+        return (ComposedCondition) super.timeout(timeout, unit);
     }
 
     /**
@@ -133,6 +234,15 @@ public final class ComposedCondition extends Condition {
         }).toList();
     }
 
+    /**
+     * Returns the {@link ComposedCondition} with {@code cancellable} set to specific value.
+     *
+     * @see Condition#matches(ConditionContext)
+     */
+    public ComposedCondition cancellable(boolean cancellable) {
+        return mutate(mutator -> mutator.cancellable(cancellable));
+    }
+
     @Override
     protected boolean match(ConditionContext ctx) {
         assert !conditions.isEmpty();
@@ -140,39 +250,35 @@ public final class ComposedCondition extends Condition {
         for (var condition : conditions) {
             final CompletableFuture<Boolean> cf;
             try {
-                cf = matches0(condition, ctx);
+                cf = matches0(condition, ctx).exceptionally(e -> cancelWith(cfs, () -> rethrow(e)));
             } catch (Exception e) {
-                cancel(cfs);
-                return rethrow(e);
+                return cancelWith(cfs, () -> rethrow(e));
             }
             if (completed(cf)) {
-                cancel(cfs);
-                return cf.join();
+                return cancelWith(cfs, cf::join);
             }
             cfs.add(cf);
         }
         try {
             if (completedAsync(cfs).join()) {
-                cancel(cfs);
-                return switch (operator) {
+                return cancelWith(cfs, () -> switch (operator) {
                     case AND -> false;
                     case OR -> true;
-                };
+                });
             }
         } catch (Exception e) {
-            cancel(cfs);
-            return rethrow(e);
+            return cancelWith(cfs, () -> rethrow(e));
         }
         final var it = cfs.iterator();
-        var result = it.next().join();
+        var value = it.next().join();
         while (it.hasNext()) {
             final var next = it.next().join();
-            result = switch (operator) {
-                case AND -> result && next;
-                case OR -> result || next;
+            value = switch (operator) {
+                case AND -> value && next;
+                case OR -> value || next;
             };
         }
-        return result;
+        return value;
     }
 
     private static CompletableFuture<Boolean> matches0(Condition condition, ConditionContext ctx) {
@@ -193,13 +299,15 @@ public final class ComposedCondition extends Condition {
         requireNonNull(cfs, "cfs");
         final var future = new CompletableFuture<Boolean>();
         for (var cf : cfs) {
-            cf.thenAccept(value -> {
+            cf.whenComplete((value, e) -> {
+                if (e != null) {
+                    cancel(cfs);
+                    completeExceptionally(future, e);
+                    return;
+                }
                 if (shortCircuit(operator, value)) {
                     complete(future, true);
                 }
-            }).exceptionally(e -> {
-                completeExceptionally(future, e);
-                return null;
             });
         }
         CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
@@ -230,13 +338,19 @@ public final class ComposedCondition extends Condition {
         }
     }
 
-    private static void cancel(List<CompletableFuture<Boolean>> cfs) {
+    private void cancel(List<CompletableFuture<Boolean>> cfs) {
         requireNonNull(cfs, "cfs");
         for (var cf : cfs) {
-            if (!cf.isDone()) {
+            if (!cf.isDone() && !cf.isCancelled() && cancellable) {
                 cf.cancel(false);
             }
         }
+    }
+
+    private <R> R cancelWith(List<CompletableFuture<Boolean>> cfs, Supplier<R> supplier) {
+        requireNonNull(supplier, "supplier");
+        cancel(cfs);
+        return supplier.get();
     }
 
     @Override
