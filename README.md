@@ -1,5 +1,3 @@
-![logo](./docs/img/Conditional_logo.png)
-
 # Conditional
 
 > Make your own conditional expressions more elegant.
