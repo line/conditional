@@ -18,13 +18,13 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class ConditionComposer {
 
     private final Operator operator;
-    private final List<Condition> conditions = new ArrayList<>();
+    private final List<Condition> conditions = new CopyOnWriteArrayList<>();
 
     ConditionComposer(Operator operator) {
         this.operator = requireNonNull(operator, "operator");
