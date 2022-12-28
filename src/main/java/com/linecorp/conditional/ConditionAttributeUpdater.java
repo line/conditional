@@ -20,13 +20,12 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
 class ConditionAttributeUpdater {
 
-    private final Function<ConditionContext, Boolean> function;
+    private final ConditionFunction function;
     @Nullable
     private volatile String alias;
     private volatile boolean async;
@@ -108,7 +107,7 @@ class ConditionAttributeUpdater {
         return new Condition(alias, async, executor, delayMillis, timeoutMillis) {
             @Override
             protected boolean match(ConditionContext ctx) {
-                return function.apply(ctx);
+                return function.match(ctx);
             }
         };
     }
