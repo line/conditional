@@ -720,7 +720,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code ctx} is null.
      * @throws IllegalStateException if the {@code delay} is greater than or equal to {@code timeout}.
      * @throws CancellationException if the {@code cancellable} of {@link ComposedCondition} is {@code true},
-     * and the {@link Condition#matches(ConditionContext)} is cancelled because an exception is raised in a certain {@link Condition}.
+     * and the {@link CompletableFuture} is cancelled because an exception is raised in a certain {@link Condition}.
      * @see ComposedCondition#cancellable(boolean)
      */
     public final boolean matches(ConditionContext ctx) {
