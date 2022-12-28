@@ -53,7 +53,7 @@ final class ComposedConditionAttributeMutator extends ConditionAttributeMutator 
 
     @Override
     ComposedCondition mutate() {
-        return new ComposedCondition(function(), alias(), isAsync(), executor(), delayMillis(), timeoutMillis(),
+        return new ComposedCondition(alias(), isAsync(), executor(), delayMillis(), timeoutMillis(),
                                      operator, conditions, cancellable);
     }
 }

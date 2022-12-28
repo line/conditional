@@ -56,14 +56,9 @@ import javax.annotation.Nullable;
  */
 public abstract class Condition {
 
-    private static final ConditionFunction NOOP = ctx -> {
-        throw new UnsupportedOperationException("NOOP");
-    };
-
     private static final long DEFAULT_DELAY_MILLIS = 0L;
     private static final long DEFAULT_TIMEOUT_MILLIS = Long.MAX_VALUE;
 
-    private final ConditionFunction function;
     @Nullable
     private final String alias;
     private final boolean async;
@@ -73,24 +68,17 @@ public abstract class Condition {
     private final long timeoutMillis;
 
     protected Condition() {
-        this(NOOP);
+        this(null, false, null, DEFAULT_DELAY_MILLIS, DEFAULT_TIMEOUT_MILLIS);
     }
 
-    Condition(ConditionFunction function) {
-        this(function, null, false, null, DEFAULT_DELAY_MILLIS, DEFAULT_TIMEOUT_MILLIS);
-    }
-
-    Condition(ConditionFunction function, @Nullable String alias,
-              boolean async, @Nullable Executor executor,
+    Condition(@Nullable String alias, boolean async, @Nullable Executor executor,
               long delayMillis, long timeoutMillis) {
-        requireNonNull(function, "function");
         if (delayMillis < 0) {
             throw new IllegalArgumentException("delayMillis: " + delayMillis + " (expected >= 0)");
         }
         if (timeoutMillis <= 0) {
             throw new IllegalArgumentException("timeoutMillis: " + timeoutMillis + " (expected > 0)");
         }
-        this.function = function;
         this.alias = alias;
         this.async = async;
         this.executor = executor;
@@ -114,7 +102,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code function} is null.
      */
     public static Condition of(ConditionFunction function) {
-        return new Condition(function) {
+        return new Condition() {
             @Override
             protected boolean match(ConditionContext ctx) {
                 return function.match(ctx);
@@ -556,22 +544,6 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with function mutated.
-     *
-     * @throws NullPointerException if the {@code function} is null.
-     */
-    public Condition function(ConditionFunction function) {
-        return mutate(mutator -> mutator.function(function));
-    }
-
-    /**
-     * Returns the {@link ConditionFunction}.
-     */
-    public final ConditionFunction function() {
-        return function;
-    }
-
-    /**
      * Returns the {@link Condition} with {@code alias} mutated.
      */
     public Condition alias(@Nullable String alias) {
@@ -744,8 +716,7 @@ public abstract class Condition {
                         return rethrow(e);
                     }
                 }
-                final var function = this.function;
-                return function == NOOP ? match(ctx) : function.match(ctx);
+                return match(ctx);
             };
             matches = timeout == DEFAULT_TIMEOUT_MILLIS ?
                       match.get() :

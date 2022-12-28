@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 class ConditionAttributeMutator {
 
-    private volatile ConditionFunction function;
+    private final Condition condition;
     @Nullable
     private volatile String alias;
     private volatile boolean async;
@@ -36,21 +36,12 @@ class ConditionAttributeMutator {
 
     ConditionAttributeMutator(Condition condition) {
         requireNonNull(condition, "condition");
-        function = condition.function();
+        this.condition = condition;
         alias = condition.alias();
         async = condition.isAsync();
         executor = condition.executor();
         delayMillis = condition.delayMillis();
         timeoutMillis = condition.timeoutMillis();
-    }
-
-    final ConditionFunction function() {
-        return function;
-    }
-
-    final ConditionAttributeMutator function(ConditionFunction function) {
-        this.function = requireNonNull(function, "function");
-        return this;
     }
 
     @Nullable
@@ -113,10 +104,10 @@ class ConditionAttributeMutator {
     }
 
     Condition mutate() {
-        return new Condition(function, alias, async, executor, delayMillis, timeoutMillis) {
+        return new Condition(alias, async, executor, delayMillis, timeoutMillis) {
             @Override
             protected boolean match(ConditionContext ctx) {
-                return function().match(ctx);
+                return condition.match(ctx);
             }
         };
     }

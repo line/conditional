@@ -54,11 +54,10 @@ public final class ComposedCondition extends Condition {
         this.cancellable = cancellable;
     }
 
-    ComposedCondition(ConditionFunction function, @Nullable String alias,
-                      boolean async, @Nullable Executor executor,
+    ComposedCondition(@Nullable String alias, boolean async, @Nullable Executor executor,
                       long delayMillis, long timeoutMillis,
                       Operator operator, List<Condition> conditions, boolean cancellable) {
-        super(function, alias, async, executor, delayMillis, timeoutMillis);
+        super(alias, async, executor, delayMillis, timeoutMillis);
         checkConstructorArguments(operator, conditions);
         this.operator = operator;
         this.conditions.addAll(conditions);
@@ -101,17 +100,6 @@ public final class ComposedCondition extends Condition {
 
     boolean cancellable() {
         return cancellable;
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with function mutated.
-     *
-     * @throws NullPointerException if the {@code function} is null.
-     * @see Condition#function(ConditionFunction)
-     */
-    @Override
-    public ComposedCondition function(ConditionFunction function) {
-        return (ComposedCondition) super.function(function);
     }
 
     /**

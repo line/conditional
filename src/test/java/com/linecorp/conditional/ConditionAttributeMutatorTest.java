@@ -11,20 +11,6 @@ import org.junit.jupiter.api.Test;
 class ConditionAttributeMutatorTest {
 
     @Test
-    void function() {
-        final var mutator = new ConditionAttributeMutator(trueCondition());
-        final var function = new ConditionFunction() {
-            @Override
-            public boolean match(ConditionContext ctx) {
-                throw new UnsupportedOperationException();
-            }
-        };
-        assertThat(mutator.function()).isNotEqualTo(function);
-        mutator.function(function);
-        assertThat(mutator.mutate().function()).isEqualTo(function);
-    }
-
-    @Test
     void alias() {
         final var mutator = new ConditionAttributeMutator(trueCondition());
         final var alias = "alias";

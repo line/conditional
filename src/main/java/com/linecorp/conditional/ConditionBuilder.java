@@ -25,7 +25,6 @@ import javax.annotation.Nullable;
 
 public final class ConditionBuilder {
 
-    private volatile ConditionFunction function;
     @Nullable
     private volatile String alias;
     private volatile boolean async;
@@ -35,16 +34,6 @@ public final class ConditionBuilder {
     private volatile long timeoutMillis;
 
     ConditionBuilder() {}
-
-    /**
-     * Returns the {@link ConditionBuilder} with {@code function} set.
-     *
-     * @throws NullPointerException if the {@code function} is null.
-     */
-    public ConditionBuilder function(ConditionFunction function) {
-        this.function = requireNonNull(function, "function");
-        return this;
-    }
 
     /**
      * Returns the {@link ConditionBuilder} with {@code alias} set.
@@ -118,11 +107,12 @@ public final class ConditionBuilder {
     /**
      * Returns a newly created {@link Condition} by {@link ConditionBuilder}.
      */
-    public Condition build() {
-        return new Condition(function, alias, async, executor, delayMillis, timeoutMillis) {
+    public Condition build(ConditionFunction function) {
+        requireNonNull(function, "function");
+        return new Condition(alias, async, executor, delayMillis, timeoutMillis) {
             @Override
             protected boolean match(ConditionContext ctx) {
-                return function().match(ctx);
+                return function.match(ctx);
             }
         };
     }
