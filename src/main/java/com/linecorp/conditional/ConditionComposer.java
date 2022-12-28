@@ -25,6 +25,7 @@ public final class ConditionComposer {
 
     private final Operator operator;
     private final List<Condition> conditions = new CopyOnWriteArrayList<>();
+    private volatile boolean cancellable;
 
     ConditionComposer(Operator operator) {
         this.operator = requireNonNull(operator, "operator");
@@ -55,9 +56,19 @@ public final class ConditionComposer {
     }
 
     /**
+     * Returns the {@link ConditionComposer} with {@code cancellable} set to specific value.
+     *
+     * @see Condition#matches(ConditionContext)
+     */
+    public ConditionComposer cancellable(boolean cancellable) {
+        this.cancellable = cancellable;
+        return this;
+    }
+
+    /**
      * Returns a newly created {@link ComposedCondition} by {@link ConditionComposer}.
      */
     public ComposedCondition compose() {
-        return new ComposedCondition(operator, conditions);
+        return new ComposedCondition(operator, conditions, cancellable);
     }
 }

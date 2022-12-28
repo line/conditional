@@ -45,10 +45,14 @@ public final class ComposedCondition extends Condition {
     }
 
     ComposedCondition(Operator operator, List<Condition> conditions) {
+        this(operator, conditions, false);
+    }
+
+    ComposedCondition(Operator operator, List<Condition> conditions, boolean cancellable) {
         checkConstructorArguments(operator, conditions);
         this.operator = operator;
         this.conditions.addAll(conditions);
-        cancellable = false;
+        this.cancellable = cancellable;
     }
 
     ComposedCondition(ConditionFunction function, @Nullable String alias,
