@@ -18,16 +18,14 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class ConditionContextBuilder {
 
-    private final Map<String, Object> contextVariables;
+    private final Map<String, Object> contextVariables = new ConcurrentHashMap<>();
 
-    ConditionContextBuilder() {
-        contextVariables = new HashMap<>();
-    }
+    ConditionContextBuilder() {}
 
     /**
      * Returns the {@link ConditionContextBuilder} with key-value pair set.
