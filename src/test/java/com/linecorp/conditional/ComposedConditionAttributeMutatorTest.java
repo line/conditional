@@ -2,8 +2,7 @@ package com.linecorp.conditional;
 
 import static com.linecorp.conditional.Condition.falseCondition;
 import static com.linecorp.conditional.Condition.trueCondition;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
@@ -15,17 +14,17 @@ class ComposedConditionAttributeMutatorTest {
     void conditions() {
         final var mutator = new ComposedConditionAttributeMutator(trueCondition().or(falseCondition()));
         final var conditions = List.of(trueCondition(), trueCondition());
-        assertNotEquals(conditions, mutator.conditions());
+        assertThat(mutator.conditions()).isNotEqualTo(conditions);
         mutator.conditions(conditions);
-        assertEquals(conditions, mutator.mutate().conditions());
+        assertThat(mutator.mutate().conditions()).isEqualTo(conditions);
     }
 
     @Test
     void cancellable() {
         final var mutator = new ComposedConditionAttributeMutator(trueCondition().or(falseCondition()));
         final var cancellable = true;
-        assertNotEquals(cancellable, mutator.cancellable());
+        assertThat(mutator.cancellable()).isNotEqualTo(cancellable);
         mutator.cancellable(cancellable);
-        assertEquals(cancellable, mutator.mutate().cancellable());
+        assertThat(mutator.mutate().cancellable()).isEqualTo(cancellable);
     }
 }

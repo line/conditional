@@ -19,10 +19,9 @@ package com.linecorp.conditional;
 import static com.linecorp.conditional.Condition.falseCondition;
 import static com.linecorp.conditional.Condition.trueCondition;
 import static java.util.Objects.requireNonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -30,7 +29,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-import org.junit.jupiter.api.function.Executable;
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -67,14 +66,15 @@ class ComposedConditionTest {
     @MethodSource("AND")
     void matches_when_operator_AND(Condition condition,
                                    @Nullable Class<? extends Throwable> expectedException,
-                                   @Nullable Boolean expectedMatches) {
+                                   @Nullable Boolean expectedMatches) throws Throwable {
         final var ctx = ConditionContext.of();
-        final Executable executable = () -> condition.matches(ctx);
+        final ThrowingCallable throwingCallable = () -> condition.matches(ctx);
         if (expectedException != null) {
-            assertThrows(expectedException, executable);
+            assertThatThrownBy(throwingCallable)
+                    .isExactlyInstanceOf(expectedException);
         } else {
             requireNonNull(expectedMatches, "expectedMatches");
-            assertDoesNotThrow(executable);
+            throwingCallable.call();
         }
     }
 
@@ -106,14 +106,15 @@ class ComposedConditionTest {
     @MethodSource("OR")
     void matches_when_operator_OR(Condition condition,
                                   @Nullable Class<? extends Throwable> expectedException,
-                                  @Nullable Boolean expectedMatches) {
+                                  @Nullable Boolean expectedMatches) throws Throwable {
         final var ctx = ConditionContext.of();
-        final Executable executable = () -> condition.matches(ctx);
+        final ThrowingCallable throwingCallable = () -> condition.matches(ctx);
         if (expectedException != null) {
-            assertThrows(expectedException, executable);
+            assertThatThrownBy(throwingCallable)
+                    .isExactlyInstanceOf(expectedException);
         } else {
             requireNonNull(expectedMatches, "expectedMatches");
-            assertDoesNotThrow(executable);
+            throwingCallable.call();
         }
     }
 
@@ -132,7 +133,7 @@ class ComposedConditionTest {
         await().atLeast(atLeastMillis, TimeUnit.MILLISECONDS)
                .atMost(atMostMillis, TimeUnit.MILLISECONDS)
                .until(() -> {
-                   assertTrue(condition.matches(ctx));
+                   assertThat(condition.matches(ctx)).isTrue();
                    return true;
                });
     }
@@ -155,7 +156,7 @@ class ComposedConditionTest {
         await().atLeast(atLeastMillis, TimeUnit.MILLISECONDS)
                .atMost(atMostMillis, TimeUnit.MILLISECONDS)
                .until(() -> {
-                   assertTrue(condition.matches(ctx));
+                   assertThat(condition.matches(ctx)).isTrue();
                    return true;
                });
     }

@@ -18,7 +18,7 @@ package com.linecorp.conditional;
 
 import static com.linecorp.conditional.Condition.falseCondition;
 import static com.linecorp.conditional.Condition.trueCondition;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
 
@@ -88,8 +88,7 @@ class ConditionComposerTest {
     @ParameterizedTest
     @MethodSource("complexCondition")
     void complex(Condition hardWay, Condition easyWay, boolean expectedMatches) {
-        final var ctx = ConditionContext.of();
-        assertEquals(expectedMatches, hardWay.matches(ctx));
-        assertEquals(expectedMatches, easyWay.matches(ctx));
+        assertThat(hardWay.matches(ConditionContext.of())).isEqualTo(expectedMatches);
+        assertThat(easyWay.matches(ConditionContext.of())).isEqualTo(expectedMatches);
     }
 }

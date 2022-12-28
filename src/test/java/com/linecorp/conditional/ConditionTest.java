@@ -20,14 +20,10 @@ import static com.linecorp.conditional.Condition.failed;
 import static com.linecorp.conditional.Condition.falseCondition;
 import static com.linecorp.conditional.Condition.trueCondition;
 import static java.util.Objects.requireNonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.time.Duration;
 import java.util.concurrent.Executors;
@@ -37,6 +33,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -54,14 +51,14 @@ class ConditionTest {
                 return ctx.var("result", Boolean.class);
             }
         };
-        assertTrue(condition.matches(ctx));
+        assertThat(condition.matches(ctx)).isTrue();
     }
 
     @Test
     void of() {
         final var ctx = ConditionContext.of("result", true);
         final var condition = Condition.of(ctx0 -> ctx0.var("result", Boolean.class));
-        assertTrue(condition.matches(ctx));
+        assertThat(condition.matches(ctx)).isTrue();
     }
 
     static Condition c(Supplier<Condition> supplier) {
@@ -137,7 +134,7 @@ class ConditionTest {
                .atMost(atMostMillis, TimeUnit.MILLISECONDS)
                .until(() -> {
                    final var ctx = ConditionContext.of();
-                   assertDoesNotThrow(() -> condition.matches(ctx));
+                   assertThatCode(() -> condition.matches(ctx)).doesNotThrowAnyException();
                    return true;
                });
     }
@@ -185,7 +182,7 @@ class ConditionTest {
                    try {
                        condition.matches(ctx);
                        if (timeout) {
-                           fail();
+                           Assertions.fail("If timeout is true, this code should not run.");
                        }
                    } catch (Exception e) {
                        if (timeout) {
@@ -196,9 +193,9 @@ class ConditionTest {
                                    break;
                                }
                            }
-                           assertTrue(raised);
+                           assertThat(raised).isTrue();
                        } else {
-                           fail(e);
+                           Assertions.fail("If timeout is false, this code should not run.", e);
                        }
                    }
                    return true;
@@ -233,7 +230,7 @@ class ConditionTest {
                });
 
         final var matchResults = ctx.logs();
-        assertEquals(3, matchResults.size());
+        assertThat(matchResults.size()).isEqualTo(3);
         assertDurationMillis(matchResults.get(0), 3000, 4000);
         assertDurationMillis(matchResults.get(1), 4000, 5000);
         assertDurationMillis(matchResults.get(2), 7000, 8000);
@@ -267,7 +264,7 @@ class ConditionTest {
                });
 
         final var matchResults = ctx.logs();
-        assertEquals(3, matchResults.size());
+        assertThat(matchResults.size()).isEqualTo(3);
         assertDurationMillis(matchResults.get(0), 3000, 4000);
         assertDurationMillis(matchResults.get(1), 4000, 5000);
         assertDurationMillis(matchResults.get(2), 4000, 5000);
@@ -275,9 +272,8 @@ class ConditionTest {
 
     @Test
     void completed() {
-        final var ctx = ConditionContext.of();
-        assertTrue(Condition.completed(true).matches(ctx));
-        assertFalse(Condition.completed(false).matches(ctx));
+        assertThat(Condition.completed(true).matches(ConditionContext.of())).isTrue();
+        assertThat(Condition.completed(false).matches(ConditionContext.of())).isFalse();
     }
 
     static Stream<Arguments> deadlocks() {
@@ -342,7 +338,7 @@ class ConditionTest {
         void AND_with_composer(Condition left, Condition right, boolean expected) {
             final var conditionComposer = Condition.composer(Operator.AND);
             final var condition = conditionComposer.with(left, right).compose();
-            assertEquals(expected, condition.matches(ConditionContext.of()));
+            assertThat(condition.matches(ConditionContext.of())).isEqualTo(expected);
         }
 
         @ParameterizedTest
@@ -350,14 +346,14 @@ class ConditionTest {
         void AND_with_chaining(Condition left, Condition right, boolean expected) {
             final var ctx = ConditionContext.of();
             final var condition = left.and(right);
-            assertEquals(expected, condition.matches(ctx));
+            assertThat(condition.matches(ctx)).isEqualTo(expected);
         }
 
         @ParameterizedTest
         @MethodSource("AND")
         void allOf(Condition left, Condition right, boolean expected) {
             final var allOf = Condition.allOf(left, right);
-            assertEquals(expected, allOf.matches(ConditionContext.of()));
+            assertThat(allOf.matches(ConditionContext.of())).isEqualTo(expected);
         }
 
         static Stream<Arguments> OR() {
@@ -388,20 +384,20 @@ class ConditionTest {
         void OR_with_composer(Condition left, Condition right, boolean expected) {
             final var conditionComposer = Condition.composer(Operator.OR);
             final var condition = conditionComposer.with(left, right).compose();
-            assertEquals(expected, condition.matches(ConditionContext.of()));
+            assertThat(condition.matches(ConditionContext.of())).isEqualTo(expected);
         }
 
         @ParameterizedTest
         @MethodSource("OR")
         void OR_with_chaining(Condition left, Condition right, boolean expected) {
-            assertEquals(expected, left.or(right).matches(ConditionContext.of()));
+            assertThat(left.or(right).matches(ConditionContext.of())).isEqualTo(expected);
         }
 
         @ParameterizedTest
         @MethodSource("OR")
         void anyOf(Condition left, Condition right, boolean expected) {
             final var anyOf = Condition.anyOf(left, right);
-            assertEquals(expected, anyOf.matches(ConditionContext.of()));
+            assertThat(anyOf.matches(ConditionContext.of())).isEqualTo(expected);
         }
 
         static Stream<Arguments> NOR() {
@@ -431,28 +427,32 @@ class ConditionTest {
         @MethodSource("NOR")
         void noneOf(Condition left, Condition right, boolean expected) {
             final var noneOf = Condition.noneOf(left, right);
-            assertEquals(expected, noneOf.matches(ConditionContext.of()));
+            assertThat(noneOf.matches(ConditionContext.of())).isEqualTo(expected);
         }
 
         @Test
         void failed_with_Throwable() {
             final var ctx = ConditionContext.of();
-            assertThrows(RuntimeException.class, () -> failed(new RuntimeException()).matches(ctx));
+            assertThatThrownBy(() -> failed(new RuntimeException()).matches(ctx))
+                    .isExactlyInstanceOf(RuntimeException.class);
         }
 
         @Test
         void failed_with_Supplier() {
             final var ctx = ConditionContext.of();
-            assertThrows(RuntimeException.class, () -> failed(() -> new RuntimeException()).matches(ctx));
+            assertThatThrownBy(() -> failed(() -> new RuntimeException()).matches(ctx))
+                    .isExactlyInstanceOf(RuntimeException.class);
         }
 
         @Test
         void failed_with_ContextAwareSupplier() {
             final var ctx = ConditionContext.of();
-            assertThrows(RuntimeException.class, () -> failed(ctx0 -> {
-                assertSame(ctx, ctx0);
-                return new RuntimeException();
-            }).matches(ctx));
+            assertThatThrownBy(() -> {
+                failed(ctx0 -> {
+                    assertThat(ctx0).isSameAs(ctx);
+                    return new RuntimeException();
+                }).matches(ctx);
+            }).isExactlyInstanceOf(RuntimeException.class);
         }
 
         static Stream<Arguments> precedence() {
@@ -467,7 +467,7 @@ class ConditionTest {
         @ParameterizedTest
         @MethodSource("precedence")
         void precedence(Condition condition, boolean expected) {
-            assertEquals(expected, condition.matches(ConditionContext.of()));
+            assertThat(condition.matches(ConditionContext.of())).isEqualTo(expected);
         }
 
         @Test
@@ -493,7 +493,7 @@ class ConditionTest {
             await().atLeast(Duration.ofMillis(7000L))
                    .atMost(Duration.ofMillis(8000L))
                    .until(() -> {
-                       assertTrue(condition.matches(ctx));
+                       assertThat(condition.matches(ctx)).isTrue();
                        return true;
                    });
         }
@@ -539,7 +539,7 @@ class ConditionTest {
         @ParameterizedTest
         @MethodSource("someConditions")
         void someConditions(Condition condition, String expected) {
-            assertEquals(expected, condition.toString());
+            assertThat(condition.toString()).isEqualTo(expected);
         }
     }
 
@@ -547,6 +547,6 @@ class ConditionTest {
                                      long atLeastMillisInclusive, long atMostMillisExclusive) {
         requireNonNull(conditionMatchResult, "conditionMatchResult");
         final var durationMillis = conditionMatchResult.durationMillis();
-        assertTrue(atLeastMillisInclusive <= durationMillis && durationMillis < atMostMillisExclusive);
+        assertThat(atLeastMillisInclusive <= durationMillis && durationMillis < atMostMillisExclusive).isTrue();
     }
 }
