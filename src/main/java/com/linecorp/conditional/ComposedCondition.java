@@ -315,8 +315,14 @@ public final class ComposedCondition extends Condition {
                 }
             });
         }
-        CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
-                         .thenRun(() -> complete(future, false));
+        if (!completed.get()) {
+            CompletableFuture.allOf(cfs.toArray(CompletableFuture[]::new))
+                             .thenRun(() -> {
+                                 if (completed.compareAndSet(false, true)) {
+                                     complete(future, false);
+                                 }
+                             });
+        }
         return future;
     }
 
