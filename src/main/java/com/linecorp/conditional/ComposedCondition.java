@@ -24,6 +24,7 @@ import java.util.StringJoiner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -298,14 +299,18 @@ public final class ComposedCondition extends Condition {
     private CompletableFuture<Boolean> completedAsync(List<CompletableFuture<Boolean>> cfs) {
         requireNonNull(cfs, "cfs");
         final var future = new CompletableFuture<Boolean>();
+        final var completed = new AtomicBoolean(false);
         for (var cf : cfs) {
+            if (completed.get()) {
+                break;
+            }
             cf.whenComplete((value, e) -> {
-                if (e != null) {
+                if (e != null && completed.compareAndSet(false, true)) {
                     completeExceptionally(future, e);
                     cancel(cfs);
                     return;
                 }
-                if (shortCircuit(operator, value)) {
+                if (shortCircuit(operator, value) && completed.compareAndSet(false, true)) {
                     complete(future, true);
                 }
             });
