@@ -333,7 +333,7 @@ public final class ComposedCondition extends Condition {
     private static void completeExceptionally(CompletableFuture<Boolean> cf, Throwable e) {
         requireNonNull(cf, "cf");
         requireNonNull(e, "e");
-        if (!cf.isDone() && !cf.isCompletedExceptionally()) {
+        if (!cf.isDone()) {
             cf.completeExceptionally(e);
         }
     }
@@ -344,7 +344,7 @@ public final class ComposedCondition extends Condition {
             return;
         }
         for (var cf : cfs) {
-            if (!cf.isDone() && !cf.isCancelled()) {
+            if (!cf.isDone()) {
                 cf.cancel(false);
             }
         }
