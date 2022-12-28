@@ -48,7 +48,7 @@ publishing {
             }
             pom {
                 name.set("conditional")
-                description.set("Conditional is a super lightweight library that helps you make conditional expressions.")
+                description.set("A super lightweight library that helps you to compose multiple conditional expressions and make them asynchronous easily")
                 url.set("https://github.com/line/conditional")
                 licenses {
                     license {
