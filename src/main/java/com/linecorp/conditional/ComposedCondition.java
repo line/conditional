@@ -301,8 +301,8 @@ public final class ComposedCondition extends Condition {
         for (var cf : cfs) {
             cf.whenComplete((value, e) -> {
                 if (e != null) {
-                    cancel(cfs);
                     completeExceptionally(future, e);
+                    cancel(cfs);
                     return;
                 }
                 if (shortCircuit(operator, value)) {
