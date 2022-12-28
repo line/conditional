@@ -79,15 +79,15 @@ public final class ComposedCondition extends Condition {
     }
 
     @Override
-    protected ComposedConditionAttributeMutator attributeMutator() {
-        return new ComposedConditionAttributeMutator(this);
+    protected ComposedConditionAttributeUpdater attributeUpdater() {
+        return new ComposedConditionAttributeUpdater(this);
     }
 
-    private ComposedCondition mutate(ComposedConditionAttributeMutatorConsumer consumer) {
-        requireNonNull(consumer, "consumer");
-        final var mutator = attributeMutator();
-        consumer.accept(mutator);
-        return mutator.mutate();
+    private ComposedCondition update(ComposedConditionAttributeUpdaterConsumer attributeUpdaterConsumer) {
+        requireNonNull(attributeUpdaterConsumer, "attributeUpdaterConsumer");
+        final var attributeUpdater = attributeUpdater();
+        attributeUpdaterConsumer.accept(attributeUpdater);
+        return attributeUpdater.update();
     }
 
     Operator operator() {
@@ -103,7 +103,7 @@ public final class ComposedCondition extends Condition {
     }
 
     /**
-     * Returns the {@link ComposedCondition} with {@code alias} mutated.
+     * Returns the {@link ComposedCondition} with {@code alias} updated.
      *
      * @see Condition#alias(String)
      */
@@ -123,7 +123,7 @@ public final class ComposedCondition extends Condition {
     }
 
     /**
-     * Returns the {@link ComposedCondition} with {@code async} mutated.
+     * Returns the {@link ComposedCondition} with {@code async} updated.
      *
      * @see Condition#async(boolean)
      */
@@ -133,7 +133,7 @@ public final class ComposedCondition extends Condition {
     }
 
     /**
-     * Returns the {@link ComposedCondition} with {@code executor} mutated.
+     * Returns the {@link ComposedCondition} with {@code executor} updated.
      *
      * @see Condition#executor(Executor)
      */
@@ -143,7 +143,7 @@ public final class ComposedCondition extends Condition {
     }
 
     /**
-     * Returns the {@link ComposedCondition} with {@code delay} attribute mutated.
+     * Returns the {@link ComposedCondition} with {@code delay} attribute updated.
      *
      * @see Condition#delay(long)
      */
@@ -153,7 +153,7 @@ public final class ComposedCondition extends Condition {
     }
 
     /**
-     * Returns the {@link ComposedCondition} with {@code delay} attribute mutated.
+     * Returns the {@link ComposedCondition} with {@code delay} attribute updated.
      *
      * @throws NullPointerException if the {@code unit} is null.
      * @see Condition#delay(long, TimeUnit)
@@ -164,7 +164,7 @@ public final class ComposedCondition extends Condition {
     }
 
     /**
-     * Returns the {@link ComposedCondition} with {@code timeout} attribute mutated.
+     * Returns the {@link ComposedCondition} with {@code timeout} attribute updated.
      *
      * @see Condition#timeout(long)
      */
@@ -174,7 +174,7 @@ public final class ComposedCondition extends Condition {
     }
 
     /**
-     * Returns the {@link ComposedCondition} with {@code timeout} attribute mutated.
+     * Returns the {@link ComposedCondition} with {@code timeout} attribute updated.
      *
      * @throws NullPointerException if the {@code unit} is null.
      * @see Condition#timeout(long, TimeUnit)
@@ -188,14 +188,14 @@ public final class ComposedCondition extends Condition {
      * Returns the {@link ComposedCondition} with {@code async} disabled for all nested {@link Condition}s.
      */
     public ComposedCondition sequential() {
-        return mutateAll(false, null);
+        return updateAll(false, null);
     }
 
     /**
      * Returns the {@link ComposedCondition} with {@code async} enabled for all nested {@link Condition}s.
      */
     public ComposedCondition parallel() {
-        return mutateAll(true, null);
+        return updateAll(true, null);
     }
 
     /**
@@ -207,11 +207,11 @@ public final class ComposedCondition extends Condition {
      */
     public ComposedCondition parallel(Executor executor) {
         requireNonNull(executor, "executor");
-        return mutateAll(true, executor);
+        return updateAll(true, executor);
     }
 
-    private ComposedCondition mutateAll(boolean async, @Nullable Executor executor) {
-        return mutate(mutator -> mutator.conditions(async(conditions, async, executor)));
+    private ComposedCondition updateAll(boolean async, @Nullable Executor executor) {
+        return update(attributeUpdater -> attributeUpdater.conditions(async(conditions, async, executor)));
     }
 
     private static List<Condition> async(List<Condition> conditions, boolean async,
@@ -220,7 +220,7 @@ public final class ComposedCondition extends Condition {
         return conditions.stream().map(condition -> {
             final var condition0 =
                     condition instanceof ComposedCondition composedCondition ?
-                    composedCondition.mutate(mutator -> mutator.conditions(
+                    composedCondition.update(attributeUpdater -> attributeUpdater.conditions(
                             async(composedCondition.conditions, async, executor))) : condition;
             return condition0.async(async).executor(async ? executor : null);
         }).toList();
@@ -232,7 +232,7 @@ public final class ComposedCondition extends Condition {
      * @see Condition#matches(ConditionContext)
      */
     public ComposedCondition cancellable(boolean cancellable) {
-        return mutate(mutator -> mutator.cancellable(cancellable));
+        return update(attributeUpdater -> attributeUpdater.cancellable(cancellable));
     }
 
     @Override

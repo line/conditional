@@ -17,7 +17,7 @@
 package com.linecorp.conditional;
 
 @FunctionalInterface
-interface ConditionAttributeMutatorConsumer {
+interface ConditionAttributeUpdaterConsumer {
 
-    void accept(ConditionAttributeMutator mutator);
+    void accept(ConditionAttributeUpdater attributeUpdater);
 }

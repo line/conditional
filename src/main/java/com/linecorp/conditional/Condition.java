@@ -532,22 +532,22 @@ public abstract class Condition {
         return of(ctx -> rethrow(exceptionSupplier.get(ctx))).alias(Aliases.FAILED);
     }
 
-    protected ConditionAttributeMutator attributeMutator() {
-        return new ConditionAttributeMutator(this);
+    protected ConditionAttributeUpdater attributeUpdater() {
+        return new ConditionAttributeUpdater(this);
     }
 
-    private Condition mutate(ConditionAttributeMutatorConsumer consumer) {
-        requireNonNull(consumer, "consumer");
-        final var mutator = attributeMutator();
-        consumer.accept(mutator);
-        return mutator.mutate();
+    private Condition update(ConditionAttributeUpdaterConsumer attributeUpdaterConsumer) {
+        requireNonNull(attributeUpdaterConsumer, "attributeUpdaterConsumer");
+        final var attributeUpdater = attributeUpdater();
+        attributeUpdaterConsumer.accept(attributeUpdater);
+        return attributeUpdater.update();
     }
 
     /**
-     * Returns the {@link Condition} with {@code alias} mutated.
+     * Returns the {@link Condition} with {@code alias} updated.
      */
     public Condition alias(@Nullable String alias) {
-        return mutate(mutator -> mutator.alias(alias));
+        return update(attributeUpdater -> attributeUpdater.alias(alias));
     }
 
     /**
@@ -566,10 +566,10 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with {@code async} mutated.
+     * Returns the {@link Condition} with {@code async} updated.
      */
     public Condition async(boolean async) {
-        return mutate(mutator -> mutator.async(async));
+        return update(attributeUpdater -> attributeUpdater.async(async));
     }
 
     /**
@@ -580,10 +580,10 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with {@code executor} mutated.
+     * Returns the {@link Condition} with {@code executor} updated.
      */
     public Condition executor(@Nullable Executor executor) {
-        return mutate(mutator -> mutator.executor(executor));
+        return update(attributeUpdater -> attributeUpdater.executor(executor));
     }
 
     /**
@@ -595,19 +595,19 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with {@code delay} attribute mutated.
+     * Returns the {@link Condition} with {@code delay} attribute updated.
      */
     public Condition delay(long delayMillis) {
-        return mutate(mutator -> mutator.delay(delayMillis));
+        return update(attributeUpdater -> attributeUpdater.delay(delayMillis));
     }
 
     /**
-     * Returns the {@link Condition} with {@code delay} attribute mutated.
+     * Returns the {@link Condition} with {@code delay} attribute updated.
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
     public Condition delay(long delay, TimeUnit unit) {
-        return mutate(mutator -> mutator.delay(delay, unit));
+        return update(attributeUpdater -> attributeUpdater.delay(delay, unit));
     }
 
     /**
@@ -618,19 +618,19 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with {@code timeout} attribute mutated.
+     * Returns the {@link Condition} with {@code timeout} attribute updated.
      */
     public Condition timeout(long timeoutMillis) {
-        return mutate(mutator -> mutator.timeout(timeoutMillis));
+        return update(attributeUpdater -> attributeUpdater.timeout(timeoutMillis));
     }
 
     /**
-     * Returns the {@link Condition} with {@code timeout} attribute mutated.
+     * Returns the {@link Condition} with {@code timeout} attribute updated.
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
     public Condition timeout(long timeout, TimeUnit unit) {
-        return mutate(mutator -> mutator.timeout(timeout, unit));
+        return update(attributeUpdater -> attributeUpdater.timeout(timeout, unit));
     }
 
     /**

@@ -20,12 +20,13 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
-class ConditionAttributeMutator {
+class ConditionAttributeUpdater {
 
-    private final Condition condition;
+    private final Function<ConditionContext, Boolean> function;
     @Nullable
     private volatile String alias;
     private volatile boolean async;
@@ -34,9 +35,9 @@ class ConditionAttributeMutator {
     private volatile long delayMillis;
     private volatile long timeoutMillis;
 
-    ConditionAttributeMutator(Condition condition) {
+    ConditionAttributeUpdater(Condition condition) {
         requireNonNull(condition, "condition");
-        this.condition = condition;
+        function = condition::match;
         alias = condition.alias();
         async = condition.isAsync();
         executor = condition.executor();
@@ -49,7 +50,7 @@ class ConditionAttributeMutator {
         return alias;
     }
 
-    final ConditionAttributeMutator alias(@Nullable String alias) {
+    final ConditionAttributeUpdater alias(@Nullable String alias) {
         this.alias = alias;
         return this;
     }
@@ -58,7 +59,7 @@ class ConditionAttributeMutator {
         return async;
     }
 
-    final ConditionAttributeMutator async(boolean async) {
+    final ConditionAttributeUpdater async(boolean async) {
         this.async = async;
         return this;
     }
@@ -68,7 +69,7 @@ class ConditionAttributeMutator {
         return executor;
     }
 
-    final ConditionAttributeMutator executor(@Nullable Executor executor) {
+    final ConditionAttributeUpdater executor(@Nullable Executor executor) {
         this.executor = executor;
         return this;
     }
@@ -77,12 +78,12 @@ class ConditionAttributeMutator {
         return delayMillis;
     }
 
-    final ConditionAttributeMutator delay(long delayMillis) {
+    final ConditionAttributeUpdater delay(long delayMillis) {
         this.delayMillis = delayMillis;
         return this;
     }
 
-    final ConditionAttributeMutator delay(long delay, TimeUnit unit) {
+    final ConditionAttributeUpdater delay(long delay, TimeUnit unit) {
         requireNonNull(unit, "unit");
         delayMillis = unit.toMillis(delay);
         return this;
@@ -92,22 +93,22 @@ class ConditionAttributeMutator {
         return timeoutMillis;
     }
 
-    final ConditionAttributeMutator timeout(long timeoutMillis) {
+    final ConditionAttributeUpdater timeout(long timeoutMillis) {
         this.timeoutMillis = timeoutMillis;
         return this;
     }
 
-    final ConditionAttributeMutator timeout(long timeout, TimeUnit unit) {
+    final ConditionAttributeUpdater timeout(long timeout, TimeUnit unit) {
         requireNonNull(unit, "unit");
         timeoutMillis = unit.toMillis(timeout);
         return this;
     }
 
-    Condition mutate() {
+    Condition update() {
         return new Condition(alias, async, executor, delayMillis, timeoutMillis) {
             @Override
             protected boolean match(ConditionContext ctx) {
-                return condition.match(ctx);
+                return function.apply(ctx);
             }
         };
     }

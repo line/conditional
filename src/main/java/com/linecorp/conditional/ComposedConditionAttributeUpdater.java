@@ -20,13 +20,13 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.List;
 
-final class ComposedConditionAttributeMutator extends ConditionAttributeMutator {
+final class ComposedConditionAttributeUpdater extends ConditionAttributeUpdater {
 
     private final Operator operator;
     private volatile List<Condition> conditions;
     private volatile boolean cancellable;
 
-    ComposedConditionAttributeMutator(ComposedCondition composedCondition) {
+    ComposedConditionAttributeUpdater(ComposedCondition composedCondition) {
         super(composedCondition);
         operator = composedCondition.operator();
         conditions = composedCondition.conditions();
@@ -37,7 +37,7 @@ final class ComposedConditionAttributeMutator extends ConditionAttributeMutator 
         return conditions;
     }
 
-    ComposedConditionAttributeMutator conditions(List<Condition> conditions) {
+    ComposedConditionAttributeUpdater conditions(List<Condition> conditions) {
         this.conditions = requireNonNull(conditions, "conditions");
         return this;
     }
@@ -46,13 +46,13 @@ final class ComposedConditionAttributeMutator extends ConditionAttributeMutator 
         return cancellable;
     }
 
-    ComposedConditionAttributeMutator cancellable(boolean cancellable) {
+    ComposedConditionAttributeUpdater cancellable(boolean cancellable) {
         this.cancellable = cancellable;
         return this;
     }
 
     @Override
-    ComposedCondition mutate() {
+    ComposedCondition update() {
         return new ComposedCondition(alias(), isAsync(), executor(), delayMillis(), timeoutMillis(),
                                      operator, conditions, cancellable);
     }
