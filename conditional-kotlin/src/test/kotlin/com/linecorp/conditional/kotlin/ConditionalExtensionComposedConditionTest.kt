@@ -31,7 +31,69 @@ import java.util.stream.Stream
 
 internal class ConditionalExtensionComposedConditionTest {
 
-    companion object {
+    @ParameterizedTest
+    @MethodSource("AND")
+    @Throws(Throwable::class)
+    fun matches_when_operator_AND(
+        condition: Condition,
+        expectedException: Class<out Throwable>?,
+        expectedMatches: Boolean?,
+    ) {
+        val ctx = ConditionContext.of()
+        val throwingCallable = ThrowingCallable { condition.matches(ctx) }
+        if (expectedException != null) {
+            Assertions.assertThatThrownBy(throwingCallable)
+                .isExactlyInstanceOf(expectedException)
+        } else {
+            Objects.requireNonNull(expectedMatches, "expectedMatches")
+            throwingCallable.call()
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("OR")
+    @Throws(Throwable::class)
+    fun matches_when_operator_OR(
+        condition: Condition,
+        expectedException: Class<out Throwable>?,
+        expectedMatches: Boolean?,
+    ) {
+        val ctx = ConditionContext.of()
+        val throwingCallable = ThrowingCallable { condition.matches(ctx) }
+        if (expectedException != null) {
+            Assertions.assertThatThrownBy(throwingCallable)
+                .isExactlyInstanceOf(expectedException)
+        } else {
+            Objects.requireNonNull(expectedMatches, "expectedMatches")
+            throwingCallable.call()
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("SEQUENTIAL")
+    fun sequential(condition: Condition, atLeastMillis: Long, atMostMillis: Long) {
+        val ctx = ConditionContext.of()
+        Awaitility.await().atLeast(atLeastMillis, TimeUnit.MILLISECONDS)
+            .atMost(atMostMillis, TimeUnit.MILLISECONDS)
+            .until {
+                Assertions.assertThat(condition.matches(ctx)).isTrue
+                true
+            }
+    }
+
+    @ParameterizedTest
+    @MethodSource("PARALLEL")
+    fun parallel(condition: Condition, atLeastMillis: Long, atMostMillis: Long) {
+        val ctx = ConditionContext.of()
+        Awaitility.await().atLeast(atLeastMillis, TimeUnit.MILLISECONDS)
+            .atMost(atMostMillis, TimeUnit.MILLISECONDS)
+            .until {
+                Assertions.assertThat(condition.matches(ctx)).isTrue
+                true
+            }
+    }
+
+    private companion object {
         private val trueCondition = Condition.trueCondition()
         private val falseCondition = Condition.falseCondition()
         private val failed = Condition.failed { _: ConditionContext -> RuntimeException() }
@@ -110,67 +172,5 @@ internal class ConditionalExtensionComposedConditionTest {
                 Arguments.of((a or b).parallel(executor), 2000, 3500)
             )
         }
-    }
-
-    @ParameterizedTest
-    @MethodSource("AND")
-    @Throws(Throwable::class)
-    fun matches_when_operator_AND(
-        condition: Condition,
-        expectedException: Class<out Throwable>?,
-        expectedMatches: Boolean?,
-    ) {
-        val ctx = ConditionContext.of()
-        val throwingCallable = ThrowingCallable { condition.matches(ctx) }
-        if (expectedException != null) {
-            Assertions.assertThatThrownBy(throwingCallable)
-                .isExactlyInstanceOf(expectedException)
-        } else {
-            Objects.requireNonNull(expectedMatches, "expectedMatches")
-            throwingCallable.call()
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("OR")
-    @Throws(Throwable::class)
-    fun matches_when_operator_OR(
-        condition: Condition,
-        expectedException: Class<out Throwable>?,
-        expectedMatches: Boolean?,
-    ) {
-        val ctx = ConditionContext.of()
-        val throwingCallable = ThrowingCallable { condition.matches(ctx) }
-        if (expectedException != null) {
-            Assertions.assertThatThrownBy(throwingCallable)
-                .isExactlyInstanceOf(expectedException)
-        } else {
-            Objects.requireNonNull(expectedMatches, "expectedMatches")
-            throwingCallable.call()
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource("SEQUENTIAL")
-    fun sequential(condition: Condition, atLeastMillis: Long, atMostMillis: Long) {
-        val ctx = ConditionContext.of()
-        Awaitility.await().atLeast(atLeastMillis, TimeUnit.MILLISECONDS)
-            .atMost(atMostMillis, TimeUnit.MILLISECONDS)
-            .until {
-                Assertions.assertThat(condition.matches(ctx)).isTrue
-                true
-            }
-    }
-
-    @ParameterizedTest
-    @MethodSource("PARALLEL")
-    fun parallel(condition: Condition, atLeastMillis: Long, atMostMillis: Long) {
-        val ctx = ConditionContext.of()
-        Awaitility.await().atLeast(atLeastMillis, TimeUnit.MILLISECONDS)
-            .atMost(atMostMillis, TimeUnit.MILLISECONDS)
-            .until {
-                Assertions.assertThat(condition.matches(ctx)).isTrue
-                true
-            }
     }
 }

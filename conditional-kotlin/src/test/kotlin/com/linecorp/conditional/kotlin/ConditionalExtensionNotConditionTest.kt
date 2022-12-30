@@ -32,7 +32,7 @@ internal class ConditionalExtensionNotConditionTest {
             .isExactlyInstanceOf(RuntimeException::class.java)
     }
 
-    companion object {
+    private companion object {
         private val trueCondition = Condition.trueCondition()
         private val falseCondition = Condition.falseCondition()
         private val failed = Condition.failed { _: ConditionContext -> RuntimeException() }
