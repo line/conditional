@@ -6,7 +6,7 @@ plugins {
 
 allprojects {
     group = "com.linecorp.conditional"
-    version = "0.9.8"
+    version = "0.9.9"
 
     repositories {
         mavenCentral()
@@ -50,7 +50,7 @@ subprojects {
                     }
                 }
                 pom {
-                    name.set("conditional")
+                    name.set(artifactId)
                     description.set("A super lightweight library that helps you to compose multiple conditional expressions and make them asynchronous easily")
                     url.set("https://github.com/line/conditional")
                     licenses {
