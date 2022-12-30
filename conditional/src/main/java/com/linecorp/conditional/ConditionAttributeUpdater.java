@@ -33,6 +33,7 @@ class ConditionAttributeUpdater {
     private volatile Executor executor;
     private volatile long delayMillis;
     private volatile long timeoutMillis;
+    private volatile boolean cancellable;
 
     ConditionAttributeUpdater(Condition condition) {
         requireNonNull(condition, "condition");
@@ -42,11 +43,7 @@ class ConditionAttributeUpdater {
         executor = condition.executor();
         delayMillis = condition.delayMillis();
         timeoutMillis = condition.timeoutMillis();
-    }
-
-    @Nullable
-    final String alias() {
-        return alias;
+        cancellable = condition.cancellable();
     }
 
     final ConditionAttributeUpdater alias(@Nullable String alias) {
@@ -54,8 +51,9 @@ class ConditionAttributeUpdater {
         return this;
     }
 
-    final boolean isAsync() {
-        return async;
+    @Nullable
+    final String alias() {
+        return alias;
     }
 
     final ConditionAttributeUpdater async(boolean async) {
@@ -63,9 +61,8 @@ class ConditionAttributeUpdater {
         return this;
     }
 
-    @Nullable
-    final Executor executor() {
-        return executor;
+    final boolean isAsync() {
+        return async;
     }
 
     final ConditionAttributeUpdater executor(@Nullable Executor executor) {
@@ -73,8 +70,9 @@ class ConditionAttributeUpdater {
         return this;
     }
 
-    final long delayMillis() {
-        return delayMillis;
+    @Nullable
+    final Executor executor() {
+        return executor;
     }
 
     final ConditionAttributeUpdater delay(long delayMillis) {
@@ -88,8 +86,8 @@ class ConditionAttributeUpdater {
         return this;
     }
 
-    final long timeoutMillis() {
-        return timeoutMillis;
+    final long delayMillis() {
+        return delayMillis;
     }
 
     final ConditionAttributeUpdater timeout(long timeoutMillis) {
@@ -103,8 +101,21 @@ class ConditionAttributeUpdater {
         return this;
     }
 
+    final long timeoutMillis() {
+        return timeoutMillis;
+    }
+
+    final ConditionAttributeUpdater cancellable(boolean cancellable) {
+        this.cancellable = cancellable;
+        return this;
+    }
+
+    final boolean cancellable() {
+        return cancellable;
+    }
+
     Condition update() {
-        return new Condition(alias, async, executor, delayMillis, timeoutMillis) {
+        return new Condition(alias, async, executor, delayMillis, timeoutMillis, cancellable) {
             @Override
             protected boolean match(ConditionContext ctx) {
                 return function.match(ctx);

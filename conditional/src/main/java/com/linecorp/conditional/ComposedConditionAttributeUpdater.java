@@ -24,13 +24,11 @@ final class ComposedConditionAttributeUpdater extends ConditionAttributeUpdater 
 
     private final Operator operator;
     private volatile List<Condition> conditions;
-    private volatile boolean cancellable;
 
     ComposedConditionAttributeUpdater(ComposedCondition composedCondition) {
         super(composedCondition);
         operator = composedCondition.operator();
         conditions = composedCondition.conditions();
-        cancellable = composedCondition.cancellable();
     }
 
     List<Condition> conditions() {
@@ -42,18 +40,10 @@ final class ComposedConditionAttributeUpdater extends ConditionAttributeUpdater 
         return this;
     }
 
-    boolean cancellable() {
-        return cancellable;
-    }
-
-    ComposedConditionAttributeUpdater cancellable(boolean cancellable) {
-        this.cancellable = cancellable;
-        return this;
-    }
-
     @Override
     ComposedCondition update() {
-        return new ComposedCondition(alias(), isAsync(), executor(), delayMillis(), timeoutMillis(),
-                                     operator, conditions, cancellable);
+        return new ComposedCondition(alias(), isAsync(), executor(),
+                                     delayMillis(), timeoutMillis(), cancellable(),
+                                     operator, conditions);
     }
 }

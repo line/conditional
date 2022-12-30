@@ -36,31 +36,24 @@ public final class ComposedCondition extends Condition {
 
     private final Operator operator;
     private final List<Condition> conditions = new ArrayList<>();
-    private final boolean cancellable;
 
     ComposedCondition(Operator operator, Condition... conditions) {
         this(operator, List.of(conditions));
     }
 
     ComposedCondition(Operator operator, List<Condition> conditions) {
-        this(operator, conditions, false);
-    }
-
-    ComposedCondition(Operator operator, List<Condition> conditions, boolean cancellable) {
         checkConstructorArguments(operator, conditions);
         this.operator = operator;
         this.conditions.addAll(conditions);
-        this.cancellable = cancellable;
     }
 
     ComposedCondition(@Nullable String alias, boolean async, @Nullable Executor executor,
-                      long delayMillis, long timeoutMillis,
-                      Operator operator, List<Condition> conditions, boolean cancellable) {
-        super(alias, async, executor, delayMillis, timeoutMillis);
+                      long delayMillis, long timeoutMillis, boolean cancellable,
+                      Operator operator, List<Condition> conditions) {
+        super(alias, async, executor, delayMillis, timeoutMillis, cancellable);
         checkConstructorArguments(operator, conditions);
         this.operator = operator;
         this.conditions.addAll(conditions);
-        this.cancellable = cancellable;
     }
 
     private static void checkConstructorArguments(Operator operator, List<Condition> conditions) {
@@ -82,7 +75,7 @@ public final class ComposedCondition extends Condition {
         return new ComposedConditionAttributeUpdater(this);
     }
 
-    private ComposedCondition update(ComposedConditionAttributeUpdaterConsumer attributeUpdaterConsumer) {
+    ComposedCondition update(ComposedConditionAttributeUpdaterConsumer attributeUpdaterConsumer) {
         requireNonNull(attributeUpdaterConsumer, "attributeUpdaterConsumer");
         final var attributeUpdater = attributeUpdater();
         attributeUpdaterConsumer.accept(attributeUpdater);
@@ -95,61 +88,6 @@ public final class ComposedCondition extends Condition {
 
     List<Condition> conditions() {
         return conditions;
-    }
-
-    boolean cancellable() {
-        return cancellable;
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code async} disabled for all nested {@link Condition}s.
-     */
-    public ComposedCondition sequential() {
-        return updateAll(false, null);
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code async} enabled for all nested {@link Condition}s.
-     */
-    public ComposedCondition parallel() {
-        return updateAll(true, null);
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code async} enabled for all nested {@link Condition}s.
-     *
-     * @param executor the executor to match all nested {@link Condition}s.
-     *
-     * @throws NullPointerException if the {@code executor} is null.
-     */
-    public ComposedCondition parallel(Executor executor) {
-        requireNonNull(executor, "executor");
-        return updateAll(true, executor);
-    }
-
-    private ComposedCondition updateAll(boolean async, @Nullable Executor executor) {
-        return update(attributeUpdater -> attributeUpdater.conditions(async(conditions, async, executor)));
-    }
-
-    private static List<Condition> async(List<Condition> conditions, boolean async,
-                                         @Nullable Executor executor) {
-        requireNonNull(conditions, "conditions");
-        return conditions.stream().map(condition -> {
-            final var condition0 =
-                    condition instanceof ComposedCondition composedCondition ?
-                    composedCondition.update(attributeUpdater -> attributeUpdater.conditions(
-                            async(composedCondition.conditions, async, executor))) : condition;
-            return condition0.async(async).executor(async ? executor : null);
-        }).toList();
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code cancellable} set to specific value.
-     *
-     * @see Condition#matches(ConditionContext)
-     */
-    public ComposedCondition cancellable(boolean cancellable) {
-        return update(attributeUpdater -> attributeUpdater.cancellable(cancellable));
     }
 
     @Override
@@ -254,7 +192,7 @@ public final class ComposedCondition extends Condition {
 
     private void cancel(List<CompletableFuture<Boolean>> cfs) {
         requireNonNull(cfs, "cfs");
-        if (!cancellable) {
+        if (!cancellable()) {
             return;
         }
         for (var cf : cfs) {

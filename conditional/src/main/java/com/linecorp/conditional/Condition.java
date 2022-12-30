@@ -66,13 +66,14 @@ public abstract class Condition {
     private final Executor executor;
     private final long delayMillis;
     private final long timeoutMillis;
+    private final boolean cancellable;
 
     protected Condition() {
-        this(null, false, null, DEFAULT_DELAY_MILLIS, DEFAULT_TIMEOUT_MILLIS);
+        this(null, false, null, DEFAULT_DELAY_MILLIS, DEFAULT_TIMEOUT_MILLIS, false);
     }
 
     Condition(@Nullable String alias, boolean async, @Nullable Executor executor,
-              long delayMillis, long timeoutMillis) {
+              long delayMillis, long timeoutMillis, boolean cancellable) {
         if (delayMillis < 0) {
             throw new IllegalArgumentException("delayMillis: " + delayMillis + " (expected >= 0)");
         }
@@ -84,6 +85,7 @@ public abstract class Condition {
         this.executor = executor;
         this.delayMillis = delayMillis;
         this.timeoutMillis = timeoutMillis;
+        this.cancellable = cancellable;
     }
 
     private static final class Aliases {
@@ -641,6 +643,31 @@ public abstract class Condition {
     }
 
     /**
+     * Returns the {@link Condition} with {@code cancellable} set to specific value
+     * for all nested {@link Condition}s and {@link Condition} itself.
+     *
+     * @see Condition#matches(ConditionContext)
+     */
+    public final Condition cancellable(boolean cancellable) {
+        if (this instanceof ComposedCondition this0) {
+            return this0.update(attributeUpdater -> {
+                attributeUpdater.cancellable(cancellable);
+                attributeUpdater.conditions(this0.conditions().stream().map(
+                        condition -> condition.cancellable(cancellable)).toList());
+            });
+        } else {
+            return update(attributeUpdater -> attributeUpdater.cancellable(cancellable));
+        }
+    }
+
+    /**
+     * Returns the {@code cancellable}.
+     */
+    public final boolean cancellable() {
+        return cancellable;
+    }
+
+    /**
      * Returns a newly created {@link ComposedCondition}.
      * This {@link ComposedCondition} is composed with the AND operator.
      *
@@ -681,6 +708,47 @@ public abstract class Condition {
      */
     public final Condition negate() {
         return not(this);
+    }
+
+    /**
+     * Returns the {@link Condition} with {@code async} disabled
+     * for all nested {@link Condition}s and {@link Condition} itself.
+     */
+    public final Condition sequential() {
+        return colored(false, null);
+    }
+
+    /**
+     * Returns the {@link Condition} with {@code async} enabled
+     * for all nested {@link Condition}s and {@link Condition} itself.
+     */
+    public final Condition parallel() {
+        return colored(true, null);
+    }
+
+    /**
+     * Returns the {@link Condition} with {@code async} enabled
+     * for all nested {@link Condition}s and {@link Condition} itself.
+     *
+     * @param executor the executor to match all nested {@link Condition}s.
+     *
+     * @throws NullPointerException if the {@code executor} is null.
+     */
+    public final Condition parallel(Executor executor) {
+        requireNonNull(executor, "executor");
+        return colored(true, executor);
+    }
+
+    private Condition colored(boolean async, @Nullable Executor executor) {
+        if (this instanceof ComposedCondition this0) {
+            return this0.update(attributeUpdater -> {
+                attributeUpdater.async(async).executor(async ? executor : null);
+                attributeUpdater.conditions(this0.conditions().stream().map(
+                        condition -> condition.colored(async, executor)).toList());
+            });
+        } else {
+            return update(attributeUpdater -> attributeUpdater.async(async).executor(async ? executor : null));
+        }
     }
 
     /**

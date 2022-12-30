@@ -32,6 +32,7 @@ public final class ConditionBuilder {
     private volatile Executor executor;
     private volatile long delayMillis;
     private volatile long timeoutMillis;
+    private volatile boolean cancellable;
 
     ConditionBuilder() {}
 
@@ -105,11 +106,19 @@ public final class ConditionBuilder {
     }
 
     /**
+     * Returns the {@link ConditionBuilder} with {@code cancellable} set.
+     */
+    public ConditionBuilder cancellable(boolean cancellable) {
+        this.cancellable = cancellable;
+        return this;
+    }
+
+    /**
      * Returns a newly created {@link Condition} by {@link ConditionBuilder}.
      */
     public Condition build(ConditionFunction function) {
         requireNonNull(function, "function");
-        return new Condition(alias, async, executor, delayMillis, timeoutMillis) {
+        return new Condition(alias, async, executor, delayMillis, timeoutMillis, cancellable) {
             @Override
             protected boolean match(ConditionContext ctx) {
                 return function.match(ctx);
