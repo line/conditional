@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -100,88 +99,6 @@ public final class ComposedCondition extends Condition {
 
     boolean cancellable() {
         return cancellable;
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code alias} updated.
-     *
-     * @see Condition#alias(String)
-     */
-    @Override
-    public ComposedCondition alias(@Nullable String alias) {
-        return (ComposedCondition) super.alias(alias);
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code async} enabled.
-     *
-     * @see Condition#async()
-     */
-    @Override
-    public ComposedCondition async() {
-        return (ComposedCondition) super.async();
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code async} updated.
-     *
-     * @see Condition#async(boolean)
-     */
-    @Override
-    public ComposedCondition async(boolean async) {
-        return (ComposedCondition) super.async(async);
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code executor} updated.
-     *
-     * @see Condition#executor(Executor)
-     */
-    @Override
-    public ComposedCondition executor(@Nullable Executor executor) {
-        return (ComposedCondition) super.executor(executor);
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code delay} attribute updated.
-     *
-     * @see Condition#delay(long)
-     */
-    @Override
-    public ComposedCondition delay(long delayMillis) {
-        return (ComposedCondition) super.delay(delayMillis);
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code delay} attribute updated.
-     *
-     * @throws NullPointerException if the {@code unit} is null.
-     * @see Condition#delay(long, TimeUnit)
-     */
-    @Override
-    public ComposedCondition delay(long delay, TimeUnit unit) {
-        return (ComposedCondition) super.delay(delay, unit);
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code timeout} attribute updated.
-     *
-     * @see Condition#timeout(long)
-     */
-    @Override
-    public ComposedCondition timeout(long timeoutMillis) {
-        return (ComposedCondition) super.timeout(timeoutMillis);
-    }
-
-    /**
-     * Returns the {@link ComposedCondition} with {@code timeout} attribute updated.
-     *
-     * @throws NullPointerException if the {@code unit} is null.
-     * @see Condition#timeout(long, TimeUnit)
-     */
-    @Override
-    public ComposedCondition timeout(long timeout, TimeUnit unit) {
-        return (ComposedCondition) super.timeout(timeout, unit);
     }
 
     /**
