@@ -759,9 +759,9 @@ public abstract class Condition {
      *
      * @throws NullPointerException if the {@code ctx} is null.
      * @throws IllegalStateException if the {@code delay} is greater than or equal to {@code timeout}.
-     * @throws CancellationException if the {@code cancellable} of {@link ComposedCondition} is {@code true},
+     * @throws CancellationException if the {@code cancellable} of {@link Condition} is {@code true},
      * and the {@link CompletableFuture} is cancelled because an exception is raised in a certain {@link Condition}.
-     * @see ComposedCondition#cancellable(boolean)
+     * @see Condition#cancellable(boolean)
      */
     public final boolean matches(ConditionContext ctx) {
         requireNonNull(ctx, "ctx");
