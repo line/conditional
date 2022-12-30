@@ -150,7 +150,7 @@ public abstract class Condition {
 
     /**
      * (Advanced users only) Returns a newly created asynchronous {@link Condition}.
-     * If the asynchronous {@link Condition}s are composed in a nested way,
+     * Note that if asynchronous {@link Condition}s are composed in a nested way,
      * deadlock may occur if the {@code executor} is incorrectly specified.
      * If you don't know what this means, use {@link Condition#async(ConditionFunction)}.
      *
@@ -178,7 +178,7 @@ public abstract class Condition {
 
     /**
      * (Advanced users only) Returns a newly created asynchronous {@link Condition}.
-     * If the asynchronous {@link Condition}s are composed in a nested way,
+     * Note that if asynchronous {@link Condition}s are composed in a nested way,
      * deadlock may occur if the {@code executor} is incorrectly specified.
      * If you don't know what this means, use {@link Condition#async(ConditionFunction, long)}.
      *
@@ -208,7 +208,7 @@ public abstract class Condition {
 
     /**
      * (Advanced users only) Returns a newly created asynchronous {@link Condition}.
-     * If the asynchronous {@link Condition}s are composed in a nested way,
+     * Note that if asynchronous {@link Condition}s are composed in a nested way,
      * deadlock may occur if the {@code executor} is incorrectly specified.
      * If you don't know what this means, use {@link Condition#async(ConditionFunction, long, TimeUnit)}.
      *
@@ -592,7 +592,7 @@ public abstract class Condition {
 
     /**
      * (Advanced users only) Returns the {@link Condition} with {@code executor} updated.
-     * If the asynchronous {@link Condition}s are composed in a nested way,
+     * Note that if asynchronous {@link Condition}s are composed in a nested way,
      * deadlock may occur if the {@code executor} is incorrectly specified.
      * If you don't know what this means, do not use this method.
      */
@@ -741,7 +741,7 @@ public abstract class Condition {
     /**
      * (Advanced users only) Returns the {@link Condition} with {@code async} enabled
      * for all nested {@link Condition}s and {@link Condition} itself.
-     * If the asynchronous {@link Condition}s are composed in a nested way,
+     * Note that if asynchronous {@link Condition}s are composed in a nested way,
      * deadlock may occur if the {@code executor} is incorrectly specified.
      * If you don't know what this means, use {@link Condition#parallel()}.
      *
@@ -825,7 +825,7 @@ public abstract class Condition {
     /**
      * (Advanced users only) Returns the {@link CompletableFuture}.
      * The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
-     * If the asynchronous {@link Condition}s are composed in a nested way,
+     * Note that if asynchronous {@link Condition}s are composed in a nested way,
      * deadlock may occur if the {@code executor} is incorrectly specified.
      * If you don't know what this means, use {@link Condition#matchesAsync(ConditionContext)}.
      *

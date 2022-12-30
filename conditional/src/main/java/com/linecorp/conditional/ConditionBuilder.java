@@ -61,7 +61,7 @@ public final class ConditionBuilder {
 
     /**
      * (Advanced users only) Returns the {@link ConditionBuilder} with {@code executor} set.
-     * If the asynchronous {@link Condition}s are composed in a nested way,
+     * Note that if asynchronous {@link Condition}s are composed in a nested way,
      * deadlock may occur if the {@code executor} is incorrectly specified.
      * If you don't know what this means, do not use this method.
      */
