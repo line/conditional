@@ -60,7 +60,10 @@ public final class ConditionBuilder {
     }
 
     /**
-     * Returns the {@link ConditionBuilder} with {@code executor} set.
+     * (Advanced users only) Returns the {@link ConditionBuilder} with {@code executor} set.
+     * If the asynchronous {@link Condition}s are composed in a nested way,
+     * deadlock may occur if the {@code executor} is incorrectly specified.
+     * If you don't know what this means, do not use this method.
      */
     public ConditionBuilder executor(@Nullable Executor executor) {
         this.executor = executor;
