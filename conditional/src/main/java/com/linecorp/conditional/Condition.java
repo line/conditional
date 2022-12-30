@@ -798,7 +798,8 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link CompletableFuture}. The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
+     * Returns the {@link CompletableFuture}.
+     * The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
      *
      * @param ctx the context for matching {@link Condition}.
      */
@@ -807,7 +808,8 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link CompletableFuture}. The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
+     * Returns the {@link CompletableFuture}.
+     * The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
      *
      * @param ctx the context for matching {@link Condition}.
      * @param executor the executor to match the {@link ConditionFunction}.
