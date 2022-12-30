@@ -227,6 +227,15 @@ public final class ConditionContext {
         return (T) var;
     }
 
+    /**
+     * Returns a newly created {@link ConditionContext} from existing {@link ConditionContext}.
+     * {@code contextVariables} is copied from the existing {@link ConditionContext}, but {@code logs} is not.
+     * This is useful when invoking {@link Condition#matches(ConditionContext)} related methods after initializing {@code logs}.
+     */
+    public ConditionContext copy() {
+        return of(contextVariables);
+    }
+
     void log(Thread thread, Condition condition, boolean matches, long startTimeMillis, long endTimeMillis) {
         logs.add(new ConditionMatchCompletion(thread, condition, matches, startTimeMillis, endTimeMillis));
     }

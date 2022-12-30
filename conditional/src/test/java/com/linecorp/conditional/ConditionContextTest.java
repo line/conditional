@@ -35,6 +35,25 @@ class ConditionContextTest {
     }
 
     @Test
+    void copy() {
+        final var a = Condition.of(ctx -> ctx.var("a", Boolean.class));
+        final var b = Condition.of(ctx -> ctx.var("b", Boolean.class));
+        final var condition = a.and(b);
+        final var ctx = ConditionContext.of("a", true, "b", true);
+        assertThat(condition.matches(ctx)).isTrue();
+        assertThat(ctx.var("a", Boolean.class)).isTrue();
+        assertThat(ctx.var("b", Boolean.class)).isTrue();
+        assertThat(ctx.logs()).isNotEmpty();
+
+        final var copy = ctx.copy();
+        assertThat(copy.var("a", Boolean.class)).isTrue();
+        assertThat(copy.var("b", Boolean.class)).isTrue();
+        assertThat(copy.logs()).isEmpty();
+        assertThat(condition.matches(copy)).isTrue();
+        assertThat(copy.logs()).isNotEmpty();
+    }
+
+    @Test
     void conditionMatchResult1() {
         // true
         final var condition = trueCondition();
