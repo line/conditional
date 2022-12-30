@@ -51,7 +51,8 @@ import javax.annotation.Nullable;
  * Alternatively, {@link ComposedCondition#parallel()} might also help.
  * </p><p>
  * Note that {@link Condition#matches(ConditionContext)} waits until matches of all nested {@link Condition}s are completed.
- * If you don't want to wait for matches to complete, use {@link Condition#matchesAsync(ConditionContext)}, {@link Condition#matchesAsync(ConditionContext, Executor)} instead.
+ * If you don't want to wait for matches to complete,
+ * use {@link Condition#matchesAsync(ConditionContext)}, {@link Condition#matchesAsync(ConditionContext, Executor)} instead.
  * </p>
  */
 public abstract class Condition {
