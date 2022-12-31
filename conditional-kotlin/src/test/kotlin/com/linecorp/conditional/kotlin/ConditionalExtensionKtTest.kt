@@ -18,9 +18,7 @@ package com.linecorp.conditional.kotlin
 
 import com.linecorp.conditional.Operator
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
-import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.TimeUnit
 
 class ConditionalExtensionKtTest {
@@ -54,104 +52,9 @@ class ConditionalExtensionKtTest {
     }
 
     @Test
-    fun asyncCondition() {
-        val condition = asyncCondition { true }
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun asyncCondition_with_executor() {
-        val executor = ForkJoinPool.commonPool()
-        val condition = asyncCondition(executor) { true }
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun asyncCondition_with_timeoutMillis() {
-        val condition = asyncCondition(1000) { true }
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun asyncCondition_with_timeoutMillis_and_executor() {
-        val executor = ForkJoinPool.commonPool()
-        val condition = asyncCondition(1000, executor) { true }
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun asyncCondition_with_timeout() {
-        val condition = asyncCondition(1000, TimeUnit.MILLISECONDS) { true }
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun asyncCondition_with_timeout_and_executor() {
-        val executor = ForkJoinPool.commonPool()
-        val condition = asyncCondition(1000, TimeUnit.MILLISECONDS, executor) { true }
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun asAsyncCondition() {
-        val condition = true.asAsyncCondition()
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun asAsyncCondition_with_executor() {
-        val executor = ForkJoinPool.commonPool()
-        val condition = true.asAsyncCondition(executor)
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun delayedCondition_with_delayMillis() {
-        val condition = delayedCondition(1000) { true }
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun delayedCondition_with_delay() {
-        val condition = delayedCondition(1000, TimeUnit.MILLISECONDS) { true }
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun asDelayedCondition_with_delayMillis() {
-        val condition = true.asDelayedCondition(1000)
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun asDelayedCondition_with_delay() {
-        val condition = true.asDelayedCondition(1000, TimeUnit.MILLISECONDS)
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
     fun conditionComposer() {
         val composer = conditionComposer(Operator.AND)
         val condition = composer.with(`true`(), `true`()).compose()
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun completed() {
-        val condition = completed(true)
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue
     }
@@ -168,22 +71,6 @@ class ConditionalExtensionKtTest {
         val condition = `false`()
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isFalse
-    }
-
-    @Test
-    fun failed_with_supplier() {
-        val condition = failed { RuntimeException() }
-        val ctx = conditionContext()
-        assertThatThrownBy { condition.matches(ctx) }
-            .isExactlyInstanceOf(RuntimeException::class.java)
-    }
-
-    @Test
-    fun failed_with_contextAwareSupplier() {
-        val condition = failed { _ -> RuntimeException() }
-        val ctx = conditionContext()
-        assertThatThrownBy { condition.matches(ctx) }
-            .isExactlyInstanceOf(RuntimeException::class.java)
     }
 
     @Test

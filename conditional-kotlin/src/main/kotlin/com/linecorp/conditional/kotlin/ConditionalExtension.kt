@@ -17,59 +17,103 @@
 package com.linecorp.conditional.kotlin
 
 import com.linecorp.conditional.*
-import java.util.concurrent.Executor
 import java.util.concurrent.TimeUnit
 
+/**
+ * Returns a newly created [ComposedCondition].
+ * This [ComposedCondition] is composed with the AND operator.
+ *
+ * @param condition the [Condition] to compose.
+ *
+ * @throws NullPointerException if the [condition] is null.
+ */
 infix fun Condition.and(condition: Condition): ComposedCondition = and(condition)
+
+/**
+ * Returns a newly created [ComposedCondition].
+ * This [ComposedCondition] is composed with the OR operator.
+ *
+ * @param condition the [Condition] to compose.
+ *
+ * @throws NullPointerException if the [condition] is null.
+ */
 infix fun Condition.or(condition: Condition): ComposedCondition = or(condition)
+
+/**
+ * Returns a newly created negative [Condition].
+ *
+ * @throws NullPointerException if the [condition] is null.
+ */
 operator fun Condition.not(): Condition = Condition.not(this)
 
+/**
+ * Returns a newly created [Condition].
+ *
+ * @param function the function to match the conditional expression.
+ *
+ * @throws NullPointerException if the [function] is null.
+ */
 fun condition(function: ConditionFunction): Condition = Condition.of(function)
+
+/**
+ * Returns a newly created [Condition].
+ *
+ * @param timeoutMillis the value to set timeout for the [function].
+ * @param function the function to match the conditional expression.
+ *
+ * @throws NullPointerException if the [function] is null.
+ */
 fun condition(timeoutMillis: Long, function: ConditionFunction): Condition =
     Condition.of(function, timeoutMillis)
 
+/**
+ * Returns a newly created [Condition].
+ *
+ * @param timeout the value to set timeout for the [function].
+ * @param unit the unit to set timeout for the [function].
+ * @param function the function to match the conditional expression.
+ *
+ * @throws NullPointerException if [function] or [unit] is null.
+ */
 fun condition(timeout: Long, unit: TimeUnit, function: ConditionFunction): Condition =
     Condition.of(function, timeout, unit)
 
+/**
+ * Returns a newly created [Condition] by [Boolean] value.
+ */
 fun Boolean.asCondition(): Condition = condition { this }
-fun asyncCondition(function: ConditionFunction): Condition = Condition.async(function)
-fun asyncCondition(executor: Executor, function: ConditionFunction): Condition =
-    Condition.async(function, executor)
 
-fun asyncCondition(timeoutMillis: Long, function: ConditionFunction): Condition =
-    Condition.async(function, timeoutMillis)
-
-fun asyncCondition(timeoutMillis: Long, executor: Executor, function: ConditionFunction): Condition =
-    Condition.async(function, timeoutMillis, executor)
-
-fun asyncCondition(timeout: Long, unit: TimeUnit, function: ConditionFunction): Condition =
-    Condition.async(function, timeout, unit)
-
-fun asyncCondition(timeout: Long, unit: TimeUnit, executor: Executor, function: ConditionFunction): Condition =
-    Condition.async(function, timeout, unit, executor)
-
-fun Boolean.asAsyncCondition(): Condition = asyncCondition { this }
-fun Boolean.asAsyncCondition(executor: Executor): Condition = asyncCondition(executor) { this }
-fun delayedCondition(delayMillis: Long, function: ConditionFunction): Condition =
-    Condition.delayed(function, delayMillis)
-
-fun delayedCondition(delay: Long, unit: TimeUnit, function: ConditionFunction): Condition =
-    Condition.delayed(function, delay, unit)
-
-fun Boolean.asDelayedCondition(delayMillis: Long): Condition = delayedCondition(delayMillis) { this }
-fun Boolean.asDelayedCondition(delay: Long, unit: TimeUnit): Condition = delayedCondition(delay, unit) { this }
-
+/**
+ * Returns the [ConditionComposer].
+ *
+ * @param operator the operator of [ComposedCondition].
+ *
+ * @throws NullPointerException if the [operator] is null.
+ */
 fun conditionComposer(operator: Operator): ConditionComposer = Condition.composer(operator)
 
-fun completed(value: Boolean): Condition = Condition.completed(value)
+/**
+ * Returns a newly created [Condition] with true.
+ */
 fun `true`(): Condition = Condition.trueCondition()
-fun `false`(): Condition = Condition.falseCondition()
-fun <T : Throwable> failed(exceptionSupplier: () -> T): Condition = Condition.failed(exceptionSupplier)
-fun <T : Throwable> failed(exceptionSupplier: ConditionContextAwareSupplier<T>): Condition =
-    Condition.failed(exceptionSupplier)
 
+/**
+ * Returns a newly created [Condition] with false.
+ */
+fun `false`(): Condition = Condition.falseCondition()
+
+/**
+ * Returns a newly created [ConditionContext].
+ */
 fun conditionContext(): ConditionContext = ConditionContext.of()
+
+/**
+ * Returns a newly created [ConditionContext] by [contextVariables].
+ */
 fun conditionContext(contextVariables: Map<String, Any>): ConditionContext =
     ConditionContext.of(contextVariables)
 
+/**
+ * Returns a newly created [ConditionContext] by [this].
+ */
 fun Map<String, Any>.asConditionContext(): ConditionContext = conditionContext(this)
