@@ -139,7 +139,7 @@ public final class ComposedCondition extends Condition {
 
     private boolean completed(CompletableFuture<Boolean> cf) {
         requireNonNull(cf, "cf");
-        return cf.isDone() ? shortCircuit(operator, cf.join()) : false;
+        return cf.isDone() && shortCircuit(operator, cf.join());
     }
 
     private CompletableFuture<Boolean> completedAsync(List<CompletableFuture<Boolean>> cfs) {
