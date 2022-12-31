@@ -48,7 +48,7 @@ import javax.annotation.Nullable;
  * If you need set timeout, use {@link Condition#timeout(long)}, {@link Condition#timeout(long, TimeUnit)}.
  * </p><p>
  * If you need asynchronous support, use {@link Condition#async()} related methods.
- * Alternatively, {@link ComposedCondition#parallel()} might also help.
+ * Alternatively, {@link Condition#parallel()} might also help.
  * </p><p>
  * Note that {@link Condition#matches(ConditionContext)} waits until matches of all nested {@link Condition}s are completed.
  * If you don't want to wait for matches to complete, use {@link Condition#matchesAsync(ConditionContext)} instead.
