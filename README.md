@@ -15,7 +15,7 @@ _Conditional_ is a super lightweight library that helps you make conditional exp
 To add a dependency on _Conditional_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:0.9.9")
+    implementation("com.linecorp.conditional:conditional:1.0.0")
 }
 ```
 
@@ -24,7 +24,7 @@ To add a dependency using Maven:
 <dependency>
     <groupId>com.linecorp.conditional</groupId>
     <artifactId>conditional</artifactId>
-    <version>0.9.9</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
