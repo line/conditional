@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
  *
  * @throws NullPointerException if the [condition] is null.
  */
-infix fun Condition.and(condition: Condition): ComposedCondition = and(condition)
+infix fun Condition.and(condition: Condition): ComposedCondition = this.and(condition)
 
 /**
  * Returns a newly created [ComposedCondition].
@@ -37,7 +37,7 @@ infix fun Condition.and(condition: Condition): ComposedCondition = and(condition
  *
  * @throws NullPointerException if the [condition] is null.
  */
-infix fun Condition.or(condition: Condition): ComposedCondition = or(condition)
+infix fun Condition.or(condition: Condition): ComposedCondition = this.or(condition)
 
 /**
  * Returns a newly created negative [Condition].
