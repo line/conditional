@@ -56,8 +56,12 @@ import javax.annotation.Nullable;
  */
 public abstract class Condition {
 
-    private static final long DEFAULT_DELAY_MILLIS = 0L;
-    private static final long DEFAULT_TIMEOUT_MILLIS = Long.MAX_VALUE;
+    public static final String DEFAULT_ALIAS = null;
+    public static final boolean DEFAULT_ASYNC_ENABLED = false;
+    public static final Executor DEFAULT_EXECUTOR = null;
+    public static final long DEFAULT_DELAY_MILLIS = 0L;
+    public static final long DEFAULT_TIMEOUT_MILLIS = Long.MAX_VALUE;
+    public static final boolean DEFAULT_CANCELLABLE_ENABLED = false;
 
     @Nullable
     private final String alias;
@@ -69,7 +73,8 @@ public abstract class Condition {
     private final boolean cancellable;
 
     protected Condition() {
-        this(null, false, null, DEFAULT_DELAY_MILLIS, DEFAULT_TIMEOUT_MILLIS, false);
+        this(DEFAULT_ALIAS, DEFAULT_ASYNC_ENABLED, DEFAULT_EXECUTOR,
+             DEFAULT_DELAY_MILLIS, DEFAULT_TIMEOUT_MILLIS, DEFAULT_CANCELLABLE_ENABLED);
     }
 
     Condition(@Nullable String alias, boolean async, @Nullable Executor executor,

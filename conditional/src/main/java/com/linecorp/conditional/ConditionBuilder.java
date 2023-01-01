@@ -16,6 +16,12 @@
 
 package com.linecorp.conditional;
 
+import static com.linecorp.conditional.Condition.DEFAULT_ALIAS;
+import static com.linecorp.conditional.Condition.DEFAULT_ASYNC_ENABLED;
+import static com.linecorp.conditional.Condition.DEFAULT_CANCELLABLE_ENABLED;
+import static com.linecorp.conditional.Condition.DEFAULT_DELAY_MILLIS;
+import static com.linecorp.conditional.Condition.DEFAULT_EXECUTOR;
+import static com.linecorp.conditional.Condition.DEFAULT_TIMEOUT_MILLIS;
 import static java.util.Objects.requireNonNull;
 
 import java.util.concurrent.Executor;
@@ -26,13 +32,13 @@ import javax.annotation.Nullable;
 public final class ConditionBuilder {
 
     @Nullable
-    private volatile String alias;
-    private volatile boolean async;
+    private volatile String alias = DEFAULT_ALIAS;
+    private volatile boolean async = DEFAULT_ASYNC_ENABLED;
     @Nullable
-    private volatile Executor executor;
-    private volatile long delayMillis;
-    private volatile long timeoutMillis;
-    private volatile boolean cancellable;
+    private volatile Executor executor = DEFAULT_EXECUTOR;
+    private volatile long delayMillis = DEFAULT_DELAY_MILLIS;
+    private volatile long timeoutMillis = DEFAULT_TIMEOUT_MILLIS;
+    private volatile boolean cancellable = DEFAULT_CANCELLABLE_ENABLED;
 
     ConditionBuilder() {}
 
