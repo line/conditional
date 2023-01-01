@@ -45,13 +45,6 @@ class ConditionalExtensionKtTest {
     }
 
     @Test
-    fun testAsCondition() {
-        val condition = true.asCondition()
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
     fun testConditionBuilder() {
         val condition = conditionBuilder().build { true }
         val ctx = conditionContext()
@@ -81,11 +74,47 @@ class ConditionalExtensionKtTest {
     }
 
     @Test
-    fun testAsConditionContext() {
+    fun testConditionContext() {
+        val condition = condition { true }
+        val ctx = conditionContext()
+        assertThat(condition.matches(ctx)).isTrue
+    }
+
+    @Test
+    fun testConditionContext_by_map() {
+        val condition = condition { ctx ->
+            ctx.`var`("a") as Boolean
+        }
+        val ctx = conditionContext(mapOf("a" to true))
+        assertThat(condition.matches(ctx)).isTrue
+    }
+
+    @Test
+    fun testConditionContext_by_pairs() {
+        val condition = condition { ctx ->
+            val a = ctx.`var`("a") as Boolean
+            val b = ctx.`var`("b") as Boolean
+            a and b
+        }
+        val ctx = conditionContext("a" to true, "b" to true)
+        assertThat(condition.matches(ctx)).isTrue
+    }
+
+    @Test
+    fun testAsConditionContext_by_map() {
         val condition = condition { ctx ->
             ctx.`var`("a") as Boolean
         }
         val ctx = mapOf("a" to true).asConditionContext()
+        assertThat(condition.matches(ctx)).isTrue
+    }
+
+    @Test
+    fun testAsConditionContext_by_pair() {
+        val condition = condition { ctx ->
+            ctx.`var`("a") as Boolean
+        }
+        val ctx = ("a" to true).asConditionContext()
         assertThat(condition.matches(ctx)).isTrue
     }
 }

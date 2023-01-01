@@ -79,11 +79,6 @@ fun condition(timeout: Long, unit: TimeUnit, function: ConditionFunction): Condi
     Condition.of(function, timeout, unit)
 
 /**
- * Returns a newly created [Condition] by [Boolean] value.
- */
-fun Boolean.asCondition(): Condition = condition { this }
-
-/**
  * Returns the [ConditionBuilder].
  */
 fun conditionBuilder(): ConditionBuilder = Condition.builder()
@@ -113,12 +108,23 @@ fun `false`(): Condition = Condition.falseCondition()
 fun conditionContext(): ConditionContext = ConditionContext.of()
 
 /**
- * Returns a newly created [ConditionContext] by [contextVariables].
+ * Returns a newly created [ConditionContext] by [Map].
  */
 fun conditionContext(contextVariables: Map<String, Any>): ConditionContext =
     ConditionContext.of(contextVariables)
 
 /**
- * Returns a newly created [ConditionContext] by [this].
+ * Returns a newly created [ConditionContext] by [Pair]s.
  */
-fun Map<String, Any>.asConditionContext(): ConditionContext = conditionContext(this)
+fun conditionContext(vararg contextVariables: Pair<String, Any>): ConditionContext =
+    ConditionContext.of(mapOf(*contextVariables))
+
+/**
+ * Returns a newly created [ConditionContext] by [Map].
+ */
+fun Map<String, Any>.asConditionContext(): ConditionContext = ConditionContext.of(this)
+
+/**
+ * Returns a newly created [ConditionContext] by [Pair].
+ */
+fun Pair<String, Any>.asConditionContext(): ConditionContext = ConditionContext.of(mapOf(this))
