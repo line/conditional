@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
@@ -133,8 +134,15 @@ public final class ComposedCondition extends Condition {
         requireNonNull(ctx, "ctx");
         final Supplier<Boolean> matches = () -> condition.matches(ctx);
         return condition.isAsync() ?
-               supplyAsync(matches, condition.executor()) :
+               supplyAsync(matches, condition instanceof ComposedCondition ?
+                                    PooledExecutor.INSTANCE : // Avoid deadlock
+                                    condition.executor()) :
                CompletableFuture.completedFuture(matches.get());
+    }
+
+    private static final class PooledExecutor {
+
+        private static final Executor INSTANCE = Executors.newWorkStealingPool();
     }
 
     private boolean completed(CompletableFuture<Boolean> cf) {

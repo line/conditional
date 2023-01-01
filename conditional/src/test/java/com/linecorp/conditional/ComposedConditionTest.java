@@ -19,13 +19,17 @@ package com.linecorp.conditional;
 import static com.linecorp.conditional.Condition.falseCondition;
 import static com.linecorp.conditional.Condition.trueCondition;
 import static java.util.Objects.requireNonNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -112,5 +116,45 @@ class ComposedConditionTest {
             requireNonNull(expectedMatches, "expectedMatches");
             throwingCallable.call();
         }
+    }
+
+    @Test
+    void avoid_deadlock() {
+        final var executor = Executors.newSingleThreadExecutor();
+        final var a = Condition.of(ctx -> true).delay(1000).alias("a");
+        final var b = Condition.of(ctx -> true).delay(1000).alias("b");
+        final var c = Condition.of(ctx -> true).delay(1000).alias("c");
+        final var d = Condition.of(ctx -> true).delay(1000).alias("d");
+        final var e = Condition.of(ctx -> true).delay(1000).alias("e");
+        final var f = Condition.of(ctx -> true).delay(1000).alias("f");
+        final var g = Condition.of(ctx -> true).delay(1000).alias("g");
+        final var h = Condition.of(ctx -> true).delay(1000).alias("h");
+        final var i = Condition.of(ctx -> true).delay(1000).alias("i");
+        final var j = Condition.of(ctx -> true).delay(1000).alias("j");
+        final var k = Condition.of(ctx -> true).delay(1000).alias("k");
+        final var l = Condition.of(ctx -> true).delay(1000).alias("l");
+        final var m = Condition.of(ctx -> true).delay(1000).alias("m");
+        final var n = Condition.of(ctx -> true).delay(1000).alias("n");
+        final var o = Condition.of(ctx -> true).delay(1000).alias("o");
+        final var p = Condition.of(ctx -> true).delay(1000).alias("p");
+        final var q = Condition.of(ctx -> true).delay(1000).alias("q");
+        final var r = Condition.of(ctx -> true).delay(1000).alias("r");
+        final var s = Condition.of(ctx -> true).delay(1000).alias("s");
+        final var t = Condition.of(ctx -> true).delay(1000).alias("t");
+        final var u = Condition.of(ctx -> true).delay(1000).alias("u");
+        final var v = Condition.of(ctx -> true).delay(1000).alias("v");
+        final var w = Condition.of(ctx -> true).delay(1000).alias("w");
+        final var x = Condition.of(ctx -> true).delay(1000).alias("x");
+        final var y = Condition.of(ctx -> true).delay(1000).alias("y");
+        final var z = Condition.of(ctx -> true).delay(1000).alias("z");
+        final var condition =
+                a.and(b.and(c.and(d.and(e.and(f.and(g.and(
+                         h.and(i.and(j.and(k.and(l.and(m.and(n.and(
+                                 o.and(p.and(q.and(r.and(s.and(t.and(u.and(
+                                         v.and(w.and(x.and(y.and(z)))))))))))))))))))))))))
+                 .parallel(executor)
+                 .timeout(30, TimeUnit.SECONDS);
+        final var ctx = ConditionContext.of();
+        assertThat(condition.matches(ctx)).isTrue();
     }
 }

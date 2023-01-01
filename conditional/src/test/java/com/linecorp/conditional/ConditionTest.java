@@ -276,37 +276,6 @@ class ConditionTest {
         assertThat(Condition.completed(false).matches(ConditionContext.of())).isFalse();
     }
 
-    static Stream<Arguments> deadlocks() {
-        final var executor = Executors.newSingleThreadExecutor();
-        final Supplier<Condition> async = () -> Condition.async(ctx -> true);
-        final Supplier<Condition> sync = () -> Condition.of(ctx -> true);
-        return Stream.of(
-                Arguments.of(c(async).executor(executor).and(c(sync)).executor(executor)),
-                Arguments.of(c(async).and(c(sync).executor(executor)).executor(executor)));
-    }
-
-    @ParameterizedTest
-    @MethodSource("deadlocks")
-    void avoid_deadlock_when_matches(Condition condition) {
-        await().atMost(1000, TimeUnit.MILLISECONDS)
-               .until(() -> {
-                   final var ctx = ConditionContext.of();
-                   condition.matches(ctx);
-                   return true;
-               });
-    }
-
-    @ParameterizedTest
-    @MethodSource("deadlocks")
-    void avoid_deadlock_when_matchesAsync(Condition condition) {
-        await().atMost(1000, TimeUnit.MILLISECONDS)
-               .until(() -> {
-                   final var ctx = ConditionContext.of();
-                   condition.matchesAsync(ctx).join();
-                   return true;
-               });
-    }
-
     static Stream<Arguments> SEQUENTIAL() {
         final var a = Condition.delayed(ctx -> true, 2000, TimeUnit.MILLISECONDS).alias("a");
         final var b = Condition.delayed(ctx -> true, 3000, TimeUnit.MILLISECONDS).alias("b");
