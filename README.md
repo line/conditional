@@ -178,43 +178,43 @@ try {
 // ConditionMatchFailure{condition=(a and b), cause=java.util.concurrent.CompletionException: java.lang.IllegalStateException, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672051528774ms, endTime=1672051528776ms, duration=2ms}
 ```
 
-## Easy to integrate with Spring Framework
+## Kotlin DSL support
+If you are using the [Kotlin programming language](https://kotlinlang.org), try to use _Conditional-Kotlin_. It makes it easier for you to make conditional expressions using the Kotlin DSL.
 
-If you are using [Spring Framework](https://spring.io/projects/spring-framework), you can also make conditional expressions like this:
-```java
-@Component
-class HelloCondition extends Condition {
-    
-    @Override
-    protected boolean match(ConditionContext ctx) {
-        return true;
-    }
-}
-
-@Component
-class WorldCondition extends Condition {
-
-    @Override
-    protected boolean match(ConditionContext ctx) {
-        return true;
-    }
-}
-
-@Component
-class HelloWorldCondition extends ComposableCondition {
-
-    @Autowired
-    HelloCondition helloCondition;
-
-    @Autowired
-    WorldCondition worldCondition;
-
-    @Override
-    protected Condition compose() {
-        return helloCondition.and(worldCondition);
-    }
+To add a dependency on _Conditional-Kotlin_ using Gradle, use the following:
+```groovy
+dependencies {
+    implementation("com.linecorp.conditional:conditional:1.0.0")
+    implementation("com.linecorp.conditional:conditional-kotlin:1.0.0")
 }
 ```
+
+To add a dependency using Maven:
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.linecorp.conditional</groupId>
+        <artifactId>conditional</artifactId>
+        <version>1.0.0</version>
+    </dependency>
+    <dependency>
+        <groupId>com.linecorp.conditional</groupId>
+        <artifactId>conditional-kotlin</artifactId>
+        <version>1.0.0</version>
+    </dependency>  
+</dependencies>
+```
+
+With _Conditional-Kotlin_, you can make conditional expressions like this:
+```kotlin
+val a = condition { ctx -> true }
+val b = condition { true }
+val condition = a and b
+val ctx = conditionContext()
+condition.matches(ctx)
+```
+
+If you want to know more about other DSLs provided by _Conditional-Kotlin_, please refer to [this](https://github.com/line/conditional/blob/main/conditional-kotlin/src/main/kotlin/com/linecorp/conditional/kotlin/ConditionalExtension.kt).
 
 ## How to contribute
 See [CONTRIBUTING](CONTRIBUTING.md).
@@ -237,3 +237,10 @@ If you believe you have discovered a vulnerability or have an issue related to s
    limitations under the License.
 ```
 See [LICENSE](LICENSE) for more details.
+
+## Contributors
+See [the complete list of our contributors](https://github.com/line/conditional/contributors).
+
+<a href="https://github.com/line/conditional/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=line/conditional" alt="Contributors" />
+</a>
