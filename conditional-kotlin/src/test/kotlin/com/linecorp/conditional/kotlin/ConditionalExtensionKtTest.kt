@@ -24,35 +24,42 @@ import java.util.concurrent.TimeUnit
 class ConditionalExtensionKtTest {
 
     @Test
-    fun condition() {
+    fun testCondition() {
         val condition = condition { true }
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue
     }
 
     @Test
-    fun condition_with_timeoutMillis() {
+    fun testCondition_with_timeoutMillis() {
         val condition = condition(1000) { true }
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue
     }
 
     @Test
-    fun condition_with_timeout() {
+    fun testCondition_with_timeout() {
         val condition = condition(1000, TimeUnit.MILLISECONDS) { true }
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue
     }
 
     @Test
-    fun asCondition() {
+    fun testAsCondition() {
         val condition = true.asCondition()
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue
     }
 
     @Test
-    fun conditionComposer() {
+    fun testConditionBuilder() {
+        val condition = conditionBuilder().build { true }
+        val ctx = conditionContext()
+        assertThat(condition.matches(ctx)).isTrue
+    }
+
+    @Test
+    fun testConditionComposer() {
         val composer = conditionComposer(Operator.AND)
         val condition = composer.with(`true`(), `true`()).compose()
         val ctx = conditionContext()
@@ -60,21 +67,21 @@ class ConditionalExtensionKtTest {
     }
 
     @Test
-    fun trueCondition() {
+    fun testTrueCondition() {
         val condition = `true`()
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue
     }
 
     @Test
-    fun falseCondition() {
+    fun testFalseCondition() {
         val condition = `false`()
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isFalse
     }
 
     @Test
-    fun asConditionContext() {
+    fun testAsConditionContext() {
         val condition = condition { ctx ->
             ctx.`var`("a") as Boolean
         }

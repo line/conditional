@@ -84,6 +84,11 @@ fun condition(timeout: Long, unit: TimeUnit, function: ConditionFunction): Condi
 fun Boolean.asCondition(): Condition = condition { this }
 
 /**
+ * Returns the [ConditionBuilder].
+ */
+fun conditionBuilder(): ConditionBuilder = Condition.builder()
+
+/**
  * Returns the [ConditionComposer].
  *
  * @param operator the operator of [ComposedCondition].
