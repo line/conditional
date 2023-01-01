@@ -154,10 +154,7 @@ public abstract class Condition {
     }
 
     /**
-     * (Advanced users only) Returns a newly created asynchronous {@link Condition}.
-     * Note that if asynchronous {@link Condition}s are composed in a nested way,
-     * deadlock may occur if the {@code executor} is incorrectly specified.
-     * If you don't know what this means, use {@link Condition#async(ConditionFunction)}.
+     * Returns a newly created asynchronous {@link Condition}.
      *
      * @param function the function to match the conditional expression.
      * @param executor the executor to match the {@code function}.
@@ -182,10 +179,7 @@ public abstract class Condition {
     }
 
     /**
-     * (Advanced users only) Returns a newly created asynchronous {@link Condition}.
-     * Note that if asynchronous {@link Condition}s are composed in a nested way,
-     * deadlock may occur if the {@code executor} is incorrectly specified.
-     * If you don't know what this means, use {@link Condition#async(ConditionFunction, long)}.
+     * Returns a newly created asynchronous {@link Condition}.
      *
      * @param function the function to match the conditional expression.
      * @param timeoutMillis the value to set timeout for the {@code function}.
@@ -212,10 +206,7 @@ public abstract class Condition {
     }
 
     /**
-     * (Advanced users only) Returns a newly created asynchronous {@link Condition}.
-     * Note that if asynchronous {@link Condition}s are composed in a nested way,
-     * deadlock may occur if the {@code executor} is incorrectly specified.
-     * If you don't know what this means, use {@link Condition#async(ConditionFunction, long, TimeUnit)}.
+     * Returns a newly created asynchronous {@link Condition}.
      *
      * @param function the function to match the conditional expression.
      * @param timeout the value to set timeout for the {@code function}.
@@ -596,10 +587,7 @@ public abstract class Condition {
     }
 
     /**
-     * (Advanced users only) Returns the {@link Condition} with {@code executor} updated.
-     * Note that if asynchronous {@link Condition}s are composed in a nested way,
-     * deadlock may occur if the {@code executor} is incorrectly specified.
-     * If you don't know what this means, do not use this method.
+     * Returns the {@link Condition} with {@code executor} updated.
      */
     public Condition executor(@Nullable Executor executor) {
         return update(attributeUpdater -> attributeUpdater.executor(executor));
@@ -744,11 +732,8 @@ public abstract class Condition {
     }
 
     /**
-     * (Advanced users only) Returns the {@link Condition} with {@code async} enabled
+     * Returns the {@link Condition} with {@code async} enabled
      * for all nested {@link Condition}s and {@link Condition} itself.
-     * Note that if asynchronous {@link Condition}s are composed in a nested way,
-     * deadlock may occur if the {@code executor} is incorrectly specified.
-     * If you don't know what this means, use {@link Condition#parallel()}.
      *
      * @param executor the executor to match all nested {@link Condition}s.
      *
@@ -828,11 +813,8 @@ public abstract class Condition {
     }
 
     /**
-     * (Advanced users only) Returns the {@link CompletableFuture}.
+     * Returns the {@link CompletableFuture}.
      * The returned {@link CompletableFuture} will be notified when the {@link Condition} is matched.
-     * Note that if asynchronous {@link Condition}s are composed in a nested way,
-     * deadlock may occur if the {@code executor} is incorrectly specified.
-     * If you don't know what this means, use {@link Condition#matchesAsync(ConditionContext)}.
      *
      * @param ctx the context for matching {@link Condition}.
      * @param executor the executor to match the {@link ConditionFunction}.
