@@ -23,8 +23,6 @@ import java.util.concurrent.TimeUnit
  * Returns a newly created [Condition].
  *
  * @param function the function to match the conditional expression.
- *
- * @throws NullPointerException if the [function] is null.
  */
 fun condition(function: ConditionFunction): Condition = Condition.of(function)
 
@@ -33,8 +31,6 @@ fun condition(function: ConditionFunction): Condition = Condition.of(function)
  *
  * @param timeoutMillis the value to set timeout for the [function].
  * @param function the function to match the conditional expression.
- *
- * @throws NullPointerException if the [function] is null.
  */
 fun condition(timeoutMillis: Long, function: ConditionFunction): Condition =
     Condition.of(function, timeoutMillis)
@@ -45,8 +41,6 @@ fun condition(timeoutMillis: Long, function: ConditionFunction): Condition =
  * @param timeout the value to set timeout for the [function].
  * @param unit the unit to set timeout for the [function].
  * @param function the function to match the conditional expression.
- *
- * @throws NullPointerException if [function] or [unit] is null.
  */
 fun condition(timeout: Long, unit: TimeUnit, function: ConditionFunction): Condition =
     Condition.of(function, timeout, unit)
@@ -60,8 +54,6 @@ fun conditionBuilder(): ConditionBuilder = Condition.builder()
  * Returns the [ConditionComposer].
  *
  * @param operator the operator of [ComposedCondition].
- *
- * @throws NullPointerException if the [operator] is null.
  */
 fun conditionComposer(operator: Operator): ConditionComposer = Condition.composer(operator)
 
@@ -80,8 +72,6 @@ fun `false`(): Condition = Condition.falseCondition()
  * This [ComposedCondition] is composed with the AND operator.
  *
  * @param condition the [Condition] to compose.
- *
- * @throws NullPointerException if the [condition] is null.
  */
 infix fun Condition.and(condition: Condition): ComposedCondition = this.and(condition)
 
@@ -90,15 +80,11 @@ infix fun Condition.and(condition: Condition): ComposedCondition = this.and(cond
  * This [ComposedCondition] is composed with the OR operator.
  *
  * @param condition the [Condition] to compose.
- *
- * @throws NullPointerException if the [condition] is null.
  */
 infix fun Condition.or(condition: Condition): ComposedCondition = this.or(condition)
 
 /**
  * Returns a newly created negative [Condition].
- *
- * @throws NullPointerException if the [condition] is null.
  */
 operator fun Condition.not(): Condition = Condition.not(this)
 
