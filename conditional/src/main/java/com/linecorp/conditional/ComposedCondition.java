@@ -135,12 +135,12 @@ public final class ComposedCondition extends Condition {
         final Supplier<Boolean> matches = () -> condition.matches(ctx);
         return condition.isAsync() ?
                supplyAsync(matches, condition instanceof ComposedCondition ?
-                                    PooledExecutor.INSTANCE : // Avoid deadlock
+                                    DeadlockAvoidancePooledExecutor.INSTANCE :
                                     condition.executor()) :
                CompletableFuture.completedFuture(matches.get());
     }
 
-    private static final class PooledExecutor {
+    private static final class DeadlockAvoidancePooledExecutor {
 
         private static final Executor INSTANCE = Executors.newWorkStealingPool();
     }
