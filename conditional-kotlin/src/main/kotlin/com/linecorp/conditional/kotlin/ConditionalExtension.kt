@@ -86,28 +86,23 @@ infix fun Condition.or(condition: Condition): ComposedCondition = this.or(condit
 operator fun Condition.not(): Condition = Condition.not(this)
 
 /**
- * Returns a newly created [ConditionContext].
- */
-fun conditionContext(): ConditionContext = ConditionContext.of()
-
-/**
  * Returns a newly created [ConditionContext] by [Map].
  */
-fun conditionContext(contextVariables: Map<String, Any>): ConditionContext =
+fun conditionContext(contextVariables: Map<String, Any> = mapOf()): ConditionContext =
     ConditionContext.of(contextVariables)
 
 /**
  * Returns a newly created [ConditionContext] by [Pair]s.
  */
 fun conditionContext(vararg contextVariables: Pair<String, Any>): ConditionContext =
-    ConditionContext.of(mapOf(*contextVariables))
+    conditionContext(mapOf(*contextVariables))
 
 /**
  * Returns a newly created [ConditionContext] by [Map].
  */
-fun Map<String, Any>.asConditionContext(): ConditionContext = ConditionContext.of(this)
+fun Map<String, Any>.asConditionContext(): ConditionContext = conditionContext(this)
 
 /**
  * Returns a newly created [ConditionContext] by [Pair].
  */
-fun Pair<String, Any>.asConditionContext(): ConditionContext = ConditionContext.of(mapOf(this))
+fun Pair<String, Any>.asConditionContext(): ConditionContext = conditionContext(this)
