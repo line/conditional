@@ -15,7 +15,7 @@ _Conditional_ is a super lightweight library that helps you make conditional exp
 To add a dependency on _Conditional_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:1.0.1")
+    implementation("com.linecorp.conditional:conditional:1.0.2")
 }
 ```
 
@@ -24,7 +24,7 @@ To add a dependency using Maven:
 <dependency>
     <groupId>com.linecorp.conditional</groupId>
     <artifactId>conditional</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -184,8 +184,8 @@ If you are using the [Kotlin programming language](https://kotlinlang.org), try 
 To add a dependency on _Conditional-Kotlin_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:1.0.1")
-    implementation("com.linecorp.conditional:conditional-kotlin:1.0.1")
+    implementation("com.linecorp.conditional:conditional:1.0.2")
+    implementation("com.linecorp.conditional:conditional-kotlin:1.0.2")
 }
 ```
 
@@ -195,12 +195,12 @@ To add a dependency using Maven:
     <dependency>
         <groupId>com.linecorp.conditional</groupId>
         <artifactId>conditional</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </dependency>
     <dependency>
         <groupId>com.linecorp.conditional</groupId>
         <artifactId>conditional-kotlin</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </dependency>  
 </dependencies>
 ```
