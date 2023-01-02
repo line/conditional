@@ -17,33 +17,30 @@
 package com.linecorp.conditional.kotlin
 
 import com.linecorp.conditional.*
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.Executor
 
 /**
  * Returns a newly created [Condition].
  *
- * @param function the function to match the conditional expression.
- */
-fun condition(function: ConditionFunction): Condition = Condition.of(function)
-
-/**
- * Returns a newly created [Condition].
- *
+ * @param alias the value to set alias for the [function].
+ * @param async the value to enable async for the [function].
+ * @param executor the executor to match the [function].
+ * @param delayMillis the value to set delay for the [function].
  * @param timeoutMillis the value to set timeout for the [function].
+ * @param cancellable the value to enable cancellable for the [function].
  * @param function the function to match the conditional expression.
  */
-fun condition(timeoutMillis: Long, function: ConditionFunction): Condition =
-    Condition.of(function, timeoutMillis)
-
-/**
- * Returns a newly created [Condition].
- *
- * @param timeout the value to set timeout for the [function].
- * @param unit the unit to set timeout for the [function].
- * @param function the function to match the conditional expression.
- */
-fun condition(timeout: Long, unit: TimeUnit, function: ConditionFunction): Condition =
-    Condition.of(function, timeout, unit)
+fun condition(
+    alias: String? = Condition.DEFAULT_ALIAS,
+    async: Boolean = Condition.DEFAULT_ASYNC_ENABLED,
+    executor: Executor? = Condition.DEFAULT_EXECUTOR,
+    delayMillis: Long = Condition.DEFAULT_DELAY_MILLIS,
+    timeoutMillis: Long = Condition.DEFAULT_TIMEOUT_MILLIS,
+    cancellable: Boolean = Condition.DEFAULT_CANCELLABLE_ENABLED,
+    function: ConditionFunction,
+): Condition = Condition.of(function)
+    .alias(alias).async(async).executor(executor)
+    .delay(delayMillis).timeout(timeoutMillis).cancellable(cancellable)
 
 /**
  * Returns the [ConditionBuilder].

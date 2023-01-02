@@ -109,6 +109,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code function} is null.
      */
     public static Condition of(ConditionFunction function) {
+        requireNonNull(function, "function");
         return new Condition() {
             @Override
             protected boolean match(ConditionContext ctx) {
@@ -140,6 +141,46 @@ public abstract class Condition {
      */
     public static Condition of(ConditionFunction function, long timeout, TimeUnit unit) {
         return of(function).timeout(timeout, unit);
+    }
+
+    /**
+     * Returns a newly created {@link Condition}.
+     *
+     * @param alias the value to set alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} is null.
+     */
+    public static Condition of(String alias, ConditionFunction function) {
+        requireNonNull(alias, "alias");
+        return of(function).alias(alias);
+    }
+
+    /**
+     * Returns a newly created {@link Condition}.
+     *
+     * @param alias the value to set alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     * @param timeoutMillis the value to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} is null.
+     */
+    public static Condition of(String alias, ConditionFunction function, long timeoutMillis) {
+        return of(alias, function).timeout(timeoutMillis);
+    }
+
+    /**
+     * Returns a newly created {@link Condition}.
+     *
+     * @param alias the value to set the alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     * @param timeout the value to set timeout for the {@code function}.
+     * @param unit the unit to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} or {@code unit} is null.
+     */
+    public static Condition of(String alias, ConditionFunction function, long timeout, TimeUnit unit) {
+        return of(alias, function).timeout(timeout, unit);
     }
 
     /**
@@ -225,10 +266,86 @@ public abstract class Condition {
     }
 
     /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param alias the value to set the alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} is null.
+     */
+    public static Condition async(String alias, ConditionFunction function) {
+        return async0(alias, function);
+    }
+
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param alias the value to set the alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     * @param timeoutMillis the value to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} is null.
+     */
+    public static Condition async(String alias, ConditionFunction function, long timeoutMillis) {
+        return async0(alias, function).timeout(timeoutMillis);
+    }
+
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param alias the value to set the alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     * @param timeoutMillis the value to set timeout for the {@code function}.
+     * @param executor the executor to match the {@code function}.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} or {@code executor} is null.
+     */
+    public static Condition async(String alias, ConditionFunction function, long timeoutMillis,
+                                  Executor executor) {
+        requireNonNull(executor, "executor");
+        return async0(alias, function).timeout(timeoutMillis).executor(executor);
+    }
+
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param alias the value to set the alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     * @param timeout the value to set timeout for the {@code function}.
+     * @param unit the unit to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} or {@code unit} is null.
+     */
+    public static Condition async(String alias, ConditionFunction function, long timeout, TimeUnit unit) {
+        return async0(alias, function).timeout(timeout, unit);
+    }
+
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param alias the value to set the alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     * @param timeout the value to set timeout for the {@code function}.
+     * @param unit the unit to set timeout for the {@code function}.
+     * @param executor the executor to match the {@code function}.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} or {@code unit} or {@code executor} is null.
+     */
+    public static Condition async(String alias, ConditionFunction function, long timeout, TimeUnit unit,
+                                  Executor executor) {
+        requireNonNull(executor, "executor");
+        return async0(alias, function).timeout(timeout, unit).executor(executor);
+    }
+
+    private static Condition async0(String alias, ConditionFunction function) {
+        return of(alias, function).async();
+    }
+
+    /**
      * Returns a newly created {@link Condition} with delay.
      *
      * @param function the function to match the conditional expression.
-     * @param delayMillis the milliseconds to set delay for the {@code function}.
+     * @param delayMillis the value to set delay for the {@code function}.
      *
      * @throws NullPointerException if the {@code function} is null.
      */
@@ -250,6 +367,33 @@ public abstract class Condition {
     }
 
     /**
+     * Returns a newly created {@link Condition} with delay.
+     *
+     * @param alias the value to set the alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     * @param delayMillis the value to set delay for the {@code function}.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} is null.
+     */
+    public static Condition delayed(String alias, ConditionFunction function, long delayMillis) {
+        return of(alias, function).delay(delayMillis);
+    }
+
+    /**
+     * Returns a newly created {@link Condition} with delay.
+     *
+     * @param alias the value to set the alias for the {@code function}.
+     * @param function the function to match the conditional expression.
+     * @param delay the value to set delay for the {@code function}.
+     * @param unit the unit to set delay for the {@code function}.
+     *
+     * @throws NullPointerException if {@code alias} or {@code function} or {@code unit} is null.
+     */
+    public static Condition delayed(String alias, ConditionFunction function, long delay, TimeUnit unit) {
+        return of(alias, function).delay(delay, unit);
+    }
+
+    /**
      * Returns a newly created {@link Condition} from {@link CompletableFuture}.
      *
      * @param future the {@link CompletableFuture} to match the conditional expression.
@@ -264,7 +408,7 @@ public abstract class Condition {
      * Returns a newly created {@link Condition} from {@link CompletableFuture}.
      *
      * @param future the {@link CompletableFuture} to match the conditional expression.
-     * @param timeoutMillis the milliseconds to set timeout for the {@code future}.
+     * @param timeoutMillis the value to set timeout for the {@code future}.
      *
      * @throws NullPointerException if the {@code future} is null.
      */

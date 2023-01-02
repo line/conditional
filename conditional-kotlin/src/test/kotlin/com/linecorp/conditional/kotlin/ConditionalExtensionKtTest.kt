@@ -19,7 +19,7 @@ package com.linecorp.conditional.kotlin
 import com.linecorp.conditional.Operator
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.ForkJoinPool
 
 class ConditionalExtensionKtTest {
 
@@ -31,15 +31,37 @@ class ConditionalExtensionKtTest {
     }
 
     @Test
-    fun testCondition_with_timeoutMillis() {
-        val condition = condition(1000) { true }
+    fun testCondition_with_alias() {
+        val condition = condition(alias = "condition") { true }
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue
     }
 
     @Test
-    fun testCondition_with_timeout() {
-        val condition = condition(1000, TimeUnit.MILLISECONDS) { true }
+    fun testCondition_with_executor() {
+        val executor = ForkJoinPool.commonPool()
+        val condition = condition(executor = executor) { true }
+        val ctx = conditionContext()
+        assertThat(condition.matches(ctx)).isTrue
+    }
+
+    @Test
+    fun testCondition_with_delayMillis() {
+        val condition = condition(delayMillis = 1000) { true }
+        val ctx = conditionContext()
+        assertThat(condition.matches(ctx)).isTrue
+    }
+
+    @Test
+    fun testCondition_with_timeoutMillis() {
+        val condition = condition(timeoutMillis = 1000) { true }
+        val ctx = conditionContext()
+        assertThat(condition.matches(ctx)).isTrue
+    }
+
+    @Test
+    fun testCondition_with_cancellable() {
+        val condition = condition(cancellable = false) { true }
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue
     }
