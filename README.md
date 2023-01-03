@@ -19,24 +19,25 @@ Let's make a simple conditional expression to see how _Conditional_ is useful:
 
 An asynchronous implementation of this would be:
 ```java
-var a = CompletableFuture.supplyAsync(() -> true);
-var b = CompletableFuture.supplyAsync(() -> true);
-var c = CompletableFuture.supplyAsync(() -> true);
-var d = CompletableFuture.supplyAsync(() -> true);
-var future = a.thenCombine(b, (ra, rb) -> ra && rb)
-              .thenCombine(c.thenCombine(d, (rc, rd) -> rc && rd), (rab, rcd) -> rab || rcd);
+CompletableFuture<Boolean> a = CompletableFuture.supplyAsync(() -> true);
+CompletableFuture<Boolean> b = CompletableFuture.supplyAsync(() -> true);
+CompletableFuture<Boolean> c = CompletableFuture.supplyAsync(() -> true);
+CompletableFuture<Boolean> d = CompletableFuture.supplyAsync(() -> true);
+CompletableFuture<Boolean> future =
+        a.thenCombine(b, (ra, rb) -> ra && rb)
+         .thenCombine(c.thenCombine(d, (rc, rd) -> rc && rd), (rab, rcd) -> rab || rcd); // 👈
 assert future.join() == true;
 ```
 
 It's a simple conditional expression, but not trivial to implement asynchronously.
 Let's try to use _Conditional_ to simplify this asynchronous implementation:
 ```java
-var a = Condition.of(ctx -> true);
-var b = Condition.of(ctx -> true);
-var c = Condition.of(ctx -> true);
-var d = Condition.of(ctx -> true);
-var condition = (a.and(b)).or(c.and(d));
-var ctx = ConditionContext.of();
+Condition a = Condition.of(ctx -> true);
+Condition b = Condition.of(ctx -> true);
+Condition c = Condition.of(ctx -> true);
+Condition d = Condition.of(ctx -> true);
+Condition condition = (a.and(b)).or(c.and(d)); // 👈
+ConditionContext ctx = ConditionContext.of();
 assert condition.parallel().matches(ctx) == true;
 ```
 
@@ -46,7 +47,7 @@ val a = condition { true }
 val b = condition { true }
 val c = condition { true }
 val d = condition { true }
-val condition = (a and b) or (c and d)
+val condition = (a and b) or (c and d) // 👈
 val ctx = conditionContext()
 assert(condition.parallel().matches(ctx) == true)
 ```
@@ -75,12 +76,12 @@ To add a dependency using Maven:
 It takes only 3 steps to make and match a conditional expression.
 ```java
 // Step 1: Make a conditional expression.
-var a = Condition.of(ctx -> ctx.var("a", Boolean.class));
-var b = Condition.of(ctx -> ctx.var("b", Boolean.class));
-var condition = a.and(b);
+Condition a = Condition.of(ctx -> ctx.var("a", Boolean.class));
+Condition b = Condition.of(ctx -> ctx.var("b", Boolean.class));
+Condition condition = a.and(b);
 
 // Step 2: Make a context for matching conditional expression.
-var ctx = ConditionContext.of("a", true, "b", true);
+ConditionContext ctx = ConditionContext.of("a", true, "b", true);
 
 // Step 3: Match a conditional expression.
 assert condition.matches(ctx) == true;
@@ -105,7 +106,7 @@ Condition.of(ctx -> true).timeout(3000, TimeUnit.MILLISECONDS);
 
 If timeout is exceeded, a `TimeoutException` is raised.
 ```java
-var condition = Condition.of(ctx -> {
+Condition condition = Condition.of(ctx -> {
     try {
         TimeUnit.MILLISECONDS.sleep(5000);
     } catch (InterruptedException e) {
@@ -113,13 +114,13 @@ var condition = Condition.of(ctx -> {
     }
     return true;
 }).timeout(3000, TimeUnit.MILLISECONDS);
-var ctx = ConditionContext.of();
+ConditionContext ctx = ConditionContext.of();
 condition.matches(ctx); // 👈 TimeoutException will be raised after 3 seconds.
 ```
 
 You can also set timeout for more complex conditional expression.
 ```java
-var a = Condition.of(ctx -> {
+Condition a = Condition.of(ctx -> {
     try {
         TimeUnit.MILLISECONDS.sleep(3000);
     } catch (InterruptedException e) {
@@ -127,7 +128,7 @@ var a = Condition.of(ctx -> {
     }
     return true;
 }).timeout(3500, TimeUnit.MILLISECONDS);
-var b = Condition.of(ctx -> {
+Condition b = Condition.of(ctx -> {
     try {
         TimeUnit.MILLISECONDS.sleep(4500);
     } catch (InterruptedException e) {
@@ -135,8 +136,8 @@ var b = Condition.of(ctx -> {
     }
     return true;
 }).timeout(4000, TimeUnit.MILLISECONDS);
-var condition = a.and(b).timeout(8000, TimeUnit.MILLISECONDS);
-var ctx = ConditionContext.of();
+Condition condition = a.and(b).timeout(8000, TimeUnit.MILLISECONDS);
+ConditionContext ctx = ConditionContext.of();
 condition.matches(ctx); // 👈 TimeoutException will be raised due to 'b' after 4 seconds.
 ```
 
@@ -144,19 +145,19 @@ condition.matches(ctx); // 👈 TimeoutException will be raised due to 'b' after
 
 _Conditional_ supports asynchronous for higher performance in I/O intensive operations. First, let's look at the simple synchronous conditional expressions.
 ```java
-var a = Condition.delayed(ctx -> true, 3000, TimeUnit.MILLISECONDS);
-var b = Condition.delayed(ctx -> true, 4000, TimeUnit.MILLISECONDS);
-var condition = a.and(b);
-var ctx = ConditionContext.of();
+Condition a = Condition.delayed(ctx -> true, 3000, TimeUnit.MILLISECONDS);
+Condition b = Condition.delayed(ctx -> true, 4000, TimeUnit.MILLISECONDS);
+Condition condition = a.and(b);
+ConditionContext ctx = ConditionContext.of();
 condition.matches(ctx); // 👈 This will probably take about 7 seconds...
 ```
 
 Below, let's take a look at making conditional expressions asynchronously.
 ```java
-var a = Condition.delayed(ctx -> true, 3000, TimeUnit.MILLISECONDS).async(); // 👈
-var b = Condition.delayed(ctx -> true, 4000, TimeUnit.MILLISECONDS).async(); // 👈
-var condition = a.and(b);
-var ctx = ConditionContext.of();
+Condition a = Condition.delayed(ctx -> true, 3000, TimeUnit.MILLISECONDS).async(); // 👈
+Condition b = Condition.delayed(ctx -> true, 4000, TimeUnit.MILLISECONDS).async(); // 👈
+Condition condition = a.and(b);
+ConditionContext ctx = ConditionContext.of();
 condition.matches(ctx); // 👈 This will probably take about 4 seconds!
 ```
 
@@ -167,17 +168,17 @@ Condition.async(ctx -> true);
 
 If you want to make all nested conditions asynchronous, you can also do like this:
 ```java
-var a = Condition.delayed(ctx -> true, 3000, TimeUnit.MILLISECONDS);
-var b = Condition.delayed(ctx -> true, 4000, TimeUnit.MILLISECONDS);
-var condition = a.and(b).parallel(); // 👈
-var ctx = ConditionContext.of();
+Condition a = Condition.delayed(ctx -> true, 3000, TimeUnit.MILLISECONDS);
+Condition b = Condition.delayed(ctx -> true, 4000, TimeUnit.MILLISECONDS);
+Condition condition = a.and(b).parallel(); // 👈
+ConditionContext ctx = ConditionContext.of();
 condition.matches(ctx); // 👈 This will probably take about 4 seconds!
 ```
 
 Furthermore, even if the colors of conditional expressions are different, they can be composed.
 ```java
-var sync = Condition.of(ctx -> true);
-var async = Condition.async(ctx -> true);
+Condition sync = Condition.of(ctx -> true);
+Condition async = Condition.async(ctx -> true);
 sync.and(async); // 👈
 async.and(sync); // 👈
 ```
@@ -187,13 +188,13 @@ async.and(sync); // 👈
 `ConditionContext` contains useful information for debugging conditional expression.
 Match logs of conditional expression can be seen in `ctx.logs()`. Here, let's look at the match logs for asynchronous conditional expression.
 ```java
-var a = Condition.async(ctx -> true).alias("a");
-var b = Condition.async(ctx -> false).alias("b");
-var condition = a.and(b);
-var ctx = ConditionContext.of();
+Condition a = Condition.async(ctx -> true).alias("a");
+Condition b = Condition.async(ctx -> false).alias("b");
+Condition condition = a.and(b);
+ConditionContext ctx = ConditionContext.of();
 condition.matches(ctx);
 
-for (var log : ctx.logs()) { // 👈
+for (ConditionMatchResult log : ctx.logs()) { // 👈
     System.out.println(log);
 }
 // ConditionMatchCompletion{condition=a, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672051484770ms, endTime=1672051484770ms, duration=0ms}
@@ -205,15 +206,15 @@ You can see in which thread each conditional expression was matched, how long it
 Also, it is easy to know whether an exception was raised in the process of matching the conditional expression.
 
 ```java
-var a = Condition.async(ctx -> true).alias("a");
-var b = Condition.failed(ctx -> new IllegalStateException()).async().alias("b");
-var condition = a.and(b);
-var ctx = ConditionContext.of();
+Condition a = Condition.async(ctx -> true).alias("a");
+Condition b = Condition.failed(ctx -> new IllegalStateException()).async().alias("b");
+Condition condition = a.and(b);
+ConditionContext ctx = ConditionContext.of();
 
 try {
     condition.matches(ctx);
 } catch (Exception e) {
-    for (var log : ctx.logs()) { // 👈
+    for (ConditionMatchResult log : ctx.logs()) { // 👈
         System.out.println(log);
     }
 }
