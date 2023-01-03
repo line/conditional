@@ -213,7 +213,7 @@ Why is there such a difference in execution time?
 Looking at the conditional expression above, `b` and `c` are false. So, regardless of the results of `a` and `d`, the result of the entire conditional expression is false.
 In this case, _Conditional_ does performance optimization internally for less computation, so the match result can be returned faster.
 
-## Easy to debug
+## Debug support
 
 `ConditionContext` contains useful information for debugging conditional expression.
 Match logs of conditional expression can be seen in `ctx.logs()`. Here, let's look at the match logs for asynchronous conditional expression.
