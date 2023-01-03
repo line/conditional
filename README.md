@@ -204,7 +204,7 @@ final var a = Condition.of(ctx -> { sleep(3000); return true; });
 final var b = Condition.of(ctx -> { sleep(1000); return false; });
 final var c = Condition.of(ctx -> { sleep(1500); return false; });
 final var d = Condition.of(ctx -> { sleep(2500); return true; });
-final var condition = a.and(b).or(c.and(d));
+final var condition = (a.and(b)).or(c.and(d));
 final var ctx = ConditionContext.of();
 condition.parallel().matches(ctx); // 👈 It takes about 1500 milliseconds.
 ```
