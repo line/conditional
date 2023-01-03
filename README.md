@@ -183,6 +183,36 @@ sync.and(async); // 👈
 async.and(sync); // 👈
 ```
 
+## Less computation
+_Conditional_ is optimized to do less computation. For example:
+```java
+// (a and b) or (c and d)
+CompletableFuture<Boolean> a = CompletableFuture.supplyAsync(() -> { sleep(3000); return true; });
+CompletableFuture<Boolean> b = CompletableFuture.supplyAsync(() -> { sleep(1000); return false; });
+CompletableFuture<Boolean> c = CompletableFuture.supplyAsync(() -> { sleep(1500); return false; });
+CompletableFuture<Boolean> d = CompletableFuture.supplyAsync(() -> { sleep(2500); return true; });
+CompletableFuture<Boolean> future =
+        a.thenCombine(b, (ra, rb) -> ra && rb)
+         .thenCombine(c.thenCombine(d, (rc, rd) -> rc && rd), (rab, rcd) -> rab || rcd);
+future.join(); // 👈 It takes about 3000 milliseconds.
+```
+
+Let's implement the above conditional expression as _Conditional_.
+```java
+// (a and b) or (c and d)
+final var a = Condition.of(ctx -> { sleep(3000); return true; });
+final var b = Condition.of(ctx -> { sleep(1000); return false; });
+final var c = Condition.of(ctx -> { sleep(1500); return false; });
+final var d = Condition.of(ctx -> { sleep(2500); return true; });
+final var condition = a.and(b).or(c.and(d));
+final var ctx = ConditionContext.of();
+condition.parallel().matches(ctx); // 👈 It takes about 1500 milliseconds.
+```
+
+Why is there such a difference in execution time?
+Looking at the conditional expression above, `b` and `c` are false. So, regardless of the results of `a` and `d`, the result of the entire conditional expression is false.
+In this case, _Conditional_ does performance optimization internally for less computation, so the match result can be returned faster.
+
 ## Easy to debug
 
 `ConditionContext` contains useful information for debugging conditional expression.
