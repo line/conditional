@@ -43,12 +43,12 @@ assert condition.parallel().matches(ctx) == true;
 
 It's much more readable than before. And if we are using the [Kotlin programming language](https://kotlinlang.org), we can make it even simpler with Kotlin DSL support of _Conditional_:
 ```kotlin
-val a = condition { true }
-val b = condition { true }
-val c = condition { true }
-val d = condition { true }
-val condition = (a and b) or (c and d) // 👈
-val ctx = conditionContext()
+val a: Condition = condition { true }
+val b: Condition = condition { true }
+val c: Condition = condition { true }
+val d: Condition = condition { true }
+val condition: Condition = (a and b) or (c and d) // 👈
+val ctx: ConditionContext = conditionContext()
 assert(condition.parallel().matches(ctx) == true)
 ```
 
