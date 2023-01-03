@@ -200,12 +200,12 @@ future.join(); // 👈 It takes about 3000 milliseconds...
 Let's implement the above conditional expression as _Conditional_.
 ```java
 // (a and b) or (c and d)
-final var a = Condition.of(ctx -> { sleep(3000); return true; });
-final var b = Condition.of(ctx -> { sleep(1000); return false; });
-final var c = Condition.of(ctx -> { sleep(1500); return false; });
-final var d = Condition.of(ctx -> { sleep(2500); return true; });
-final var condition = (a.and(b)).or(c.and(d));
-final var ctx = ConditionContext.of();
+Condition a = Condition.of(ctx -> { sleep(3000); return true; });
+Condition b = Condition.of(ctx -> { sleep(1000); return false; });
+Condition c = Condition.of(ctx -> { sleep(1500); return false; });
+Condition d = Condition.of(ctx -> { sleep(2500); return true; });
+Condition condition = (a.and(b)).or(c.and(d));
+ConditionContext ctx = ConditionContext.of();
 condition.parallel().matches(ctx); // 👈 It takes about 1500 milliseconds!
 ```
 
