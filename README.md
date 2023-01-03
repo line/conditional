@@ -206,7 +206,7 @@ final var c = Condition.of(ctx -> { sleep(1500); return false; });
 final var d = Condition.of(ctx -> { sleep(2500); return true; });
 final var condition = (a.and(b)).or(c.and(d));
 final var ctx = ConditionContext.of();
-condition.parallel().matches(ctx); // 👈 It takes about 1500 milliseconds.
+condition.parallel().matches(ctx); // 👈 It takes about 1500 milliseconds!
 ```
 
 Why is there such a difference in execution time?
