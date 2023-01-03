@@ -18,6 +18,7 @@ package com.linecorp.conditional.kotlin
 
 import com.linecorp.conditional.Operator
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.util.concurrent.ForkJoinPool
 
@@ -138,5 +139,42 @@ class ConditionalExtensionKtTest {
         }
         val ctx = ("a" to true).asConditionContext()
         assertThat(condition.matches(ctx)).isTrue
+    }
+
+    @Test
+    fun testVar() {
+        val ctx = conditionContext("a" to true)
+        assertThat(ctx.`var`("a")).isEqualTo(true)
+        assertThat(ctx.`var`("b")).isNull()
+        assertThat(ctx["a"]).isEqualTo(true)
+        assertThat(ctx["b"]).isNull()
+    }
+
+    @Test
+    fun testVar_with_cast_operator() {
+        val ctx = conditionContext("a" to true)
+        assertThat(ctx.`var`("a") as? Boolean).isTrue
+        assertThat(ctx.`var`("a") as Boolean).isTrue
+        assertThat(ctx.`var`("a") as? Long).isNull()
+        assertThatThrownBy { ctx.`var`("a") as Long }
+            .isExactlyInstanceOf(ClassCastException::class.java)
+    }
+
+    @Test
+    fun testMustVar() {
+        val ctx = conditionContext("a" to true)
+        assertThat(ctx.mustVar("a")).isEqualTo(true)
+        assertThatThrownBy { ctx.mustVar("b") }
+            .isExactlyInstanceOf(NullPointerException::class.java)
+    }
+
+    @Test
+    fun testMustVar_with_cast_operator() {
+        val ctx = conditionContext("a" to true)
+        assertThat(ctx.mustVar("a") as? Boolean).isTrue
+        assertThat(ctx.mustVar("a") as Boolean).isTrue
+        assertThat(ctx.mustVar("a") as? Long).isNull()
+        assertThatThrownBy { ctx.mustVar("a") as Long }
+            .isExactlyInstanceOf(ClassCastException::class.java)
     }
 }

@@ -106,3 +106,8 @@ fun Map<String, Any>.asConditionContext(): ConditionContext = conditionContext(t
  * Returns a newly created [ConditionContext] by [Pair].
  */
 fun Pair<String, Any>.asConditionContext(): ConditionContext = conditionContext(this)
+
+/**
+ * Returns the value corresponding to the [key].
+ */
+operator fun ConditionContext.get(key: String): Any? = this.`var`(key)
