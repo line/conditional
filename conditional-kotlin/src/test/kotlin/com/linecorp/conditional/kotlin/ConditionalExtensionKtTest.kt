@@ -182,4 +182,10 @@ class ConditionalExtensionKtTest {
         assertThatThrownBy { ctx.mustVar("a") as Long }
             .isExactlyInstanceOf(ClassCastException::class.java)
     }
+
+    @Test
+    fun testConditionContextBuilder() {
+        val ctx = conditionContextBuilder().with("a", true).build()
+        assertThat(ctx.`var`("a")).isEqualTo(true)
+    }
 }

@@ -111,3 +111,8 @@ fun Pair<String, Any>.asConditionContext(): ConditionContext = conditionContext(
  * Returns the value corresponding to the [key].
  */
 operator fun ConditionContext.get(key: String): Any? = this.`var`(key)
+
+/**
+ * Returns a newly created [ConditionContextBuilder].
+ */
+fun conditionContextBuilder(): ConditionContextBuilder = ConditionContext.builder()
