@@ -194,7 +194,7 @@ CompletableFuture<Boolean> d = CompletableFuture.supplyAsync(() -> { sleep(2500)
 CompletableFuture<Boolean> future =
         a.thenCombine(b, (ra, rb) -> ra && rb)
          .thenCombine(c.thenCombine(d, (rc, rd) -> rc && rd), (rab, rcd) -> rab || rcd);
-future.join(); // 👈 It takes about 3000 milliseconds.
+future.join(); // 👈 It takes about 3000 milliseconds...
 ```
 
 Let's implement the above conditional expression as _Conditional_.
