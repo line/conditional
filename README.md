@@ -206,7 +206,7 @@ Also, it is easy to know whether an exception was raised in the process of match
 
 ```java
 var a = Condition.async(ctx -> true).alias("a");
-var b = Condition.failed(ctx -> new RuntimeException()).async().alias("b");
+var b = Condition.failed(ctx -> new IllegalStateException()).async().alias("b");
 var condition = a.and(b);
 var ctx = ConditionContext.of();
 
