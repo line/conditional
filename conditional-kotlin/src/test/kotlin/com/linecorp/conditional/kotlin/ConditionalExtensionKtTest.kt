@@ -35,6 +35,7 @@ class ConditionalExtensionKtTest {
     fun testCondition_with_alias() {
         val condition = condition(alias = "condition") { true }
         val ctx = conditionContext()
+        assertThat(condition.alias()).isEqualTo("condition")
         assertThat(condition.matches(ctx)).isTrue
     }
 
@@ -43,6 +44,7 @@ class ConditionalExtensionKtTest {
         val executor = ForkJoinPool.commonPool()
         val condition = condition(executor = executor) { true }
         val ctx = conditionContext()
+        assertThat(condition.executor()).isEqualTo(executor)
         assertThat(condition.matches(ctx)).isTrue
     }
 
@@ -50,6 +52,7 @@ class ConditionalExtensionKtTest {
     fun testCondition_with_delayMillis() {
         val condition = condition(delayMillis = 1000) { true }
         val ctx = conditionContext()
+        assertThat(condition.delayMillis()).isEqualTo(1000)
         assertThat(condition.matches(ctx)).isTrue
     }
 
@@ -57,6 +60,7 @@ class ConditionalExtensionKtTest {
     fun testCondition_with_timeoutMillis() {
         val condition = condition(timeoutMillis = 1000) { true }
         val ctx = conditionContext()
+        assertThat(condition.timeoutMillis()).isEqualTo(1000)
         assertThat(condition.matches(ctx)).isTrue
     }
 
@@ -64,6 +68,7 @@ class ConditionalExtensionKtTest {
     fun testCondition_with_cancellable() {
         val condition = condition(cancellable = false) { true }
         val ctx = conditionContext()
+        assertThat(condition.cancellable()).isFalse
         assertThat(condition.matches(ctx)).isTrue
     }
 
