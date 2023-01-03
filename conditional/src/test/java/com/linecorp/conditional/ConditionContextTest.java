@@ -35,6 +35,39 @@ class ConditionContextTest {
     }
 
     @Test
+    void var() {
+        final var ctx = ConditionContext.of("a", true);
+        assertThat(ctx.var("a")).isEqualTo(true);
+        assertThat(ctx.var("b")).isNull();
+    }
+
+    @Test
+    void var_with_cast() {
+        final var ctx = ConditionContext.of("a", true);
+        assertThat(ctx.var("a", Boolean.class)).isTrue();
+        assertThat(ctx.var("a", Long.class)).isNull();
+        assertThat(ctx.var("b", Boolean.class)).isNull();
+    }
+
+    @Test
+    void mustVar() {
+        final var ctx = ConditionContext.of("a", true);
+        assertThat(ctx.mustVar("a")).isEqualTo(true);
+        assertThatThrownBy(() -> ctx.mustVar("b"))
+                .isExactlyInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void mustVar_with_cast() {
+        final var ctx = ConditionContext.of("a", true);
+        assertThat(ctx.mustVar("a", Boolean.class)).isTrue();
+        assertThatThrownBy(() -> ctx.mustVar("a", Long.class))
+                .isExactlyInstanceOf(ClassCastException.class);
+        assertThatThrownBy(() -> ctx.mustVar("b", Boolean.class))
+                .isExactlyInstanceOf(NullPointerException.class);
+    }
+
+    @Test
     void copy() {
         final var a = Condition.of(ctx -> ctx.var("a", Boolean.class));
         final var b = Condition.of(ctx -> ctx.var("b", Boolean.class));

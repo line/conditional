@@ -156,9 +156,48 @@ public final class ConditionContext {
      *
      * @param key the {@code key} to get {@code value} from {@code contextVariables}.
      *
-     * @throws NullPointerException if the {@code value} corresponding to the {@code key} is null.
+     * @return null if the {@code value} corresponding to the {@code key} does not exist.
+     *
+     * @throws NullPointerException if the {@code key} is null.
      */
+    @Nullable
     public Object var(String key) {
+        return contextVariables.get(key);
+    }
+
+    /**
+     * Returns the value corresponding to the key from {@code contextVariables} with type casting.
+     *
+     * @param key the {@code key} to get {@code value} from {@code contextVariables}.
+     * @param as the type to cast the {@code value}.
+     *
+     * @return null if the {@code value} corresponding to the {@code key} does not exist, or it cannot be cast to {@code as} type.
+     *
+     * @throws NullPointerException if {@code key} or {@code as} is null.
+     */
+    @Nullable
+    public <T> T var(String key, Class<T> as) {
+        return castOrNull(var(key), as);
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    private static <T> T castOrNull(@Nullable Object var, Class<T> as) {
+        requireNonNull(as, "as");
+        if (!as.isInstance(var)) {
+            return null;
+        }
+        return (T) var;
+    }
+
+    /**
+     * Returns the value corresponding to the key from {@code contextVariables} with type casting.
+     *
+     * @param key the {@code key} to get {@code value} from {@code contextVariables}.
+     *
+     * @throws NullPointerException if {@code key} or {@code value} corresponding to the {@code key} is null.
+     */
+    public Object mustVar(String key) {
         return must(contextVariables.get(key));
     }
 
@@ -168,11 +207,11 @@ public final class ConditionContext {
      * @param key the {@code key} to get {@code value} from {@code contextVariables}.
      * @param as the type to cast the {@code value}.
      *
-     * @throws NullPointerException if {@code as} or {@code value} corresponding to the {@code key} is null.
+     * @throws NullPointerException if {@code key} or {@code value} corresponding to the {@code key} or {@code as} is null.
      * @throws ClassCastException if the {@code value} cannot be cast to {@code as} type.
      */
-    public <T> T var(String key, Class<T> as) {
-        return castOrThrow(var(key), as);
+    public <T> T mustVar(String key, Class<T> as) {
+        return castOrThrow(mustVar(key), as);
     }
 
     private static <VAR> VAR must(VAR var) {
@@ -186,43 +225,6 @@ public final class ConditionContext {
         if (!as.isInstance(var)) {
             throw new ClassCastException("'" + var + "' cannot be cast to " + as.getName() +
                                          " (actual type is " + var.getClass().getName() + ')');
-        }
-        return (T) var;
-    }
-
-    /**
-     * Returns the value corresponding to the key from {@code contextVariables}.
-     *
-     * @param key the {@code key} to get {@code value} from {@code contextVariables}.
-     *
-     * @return null if the {@code value} corresponding to the {@code key} does not exist.
-     */
-    @Nullable
-    public Object safeVar(String key) {
-        return contextVariables.get(key);
-    }
-
-    /**
-     * Returns the value corresponding to the key from {@code contextVariables} with type casting.
-     *
-     * @param key the {@code key} to get {@code value} from {@code contextVariables}.
-     * @param as the type to cast the {@code value}.
-     *
-     * @return null if the {@code value} corresponding to the {@code key} cannot be cast to {@code as} type.
-     *
-     * @throws NullPointerException if the {@code as} is null.
-     */
-    @Nullable
-    public <T> T safeVar(String key, Class<T> as) {
-        return castOrNull(safeVar(key), as);
-    }
-
-    @Nullable
-    @SuppressWarnings("unchecked")
-    private static <T> T castOrNull(@Nullable Object var, Class<T> as) {
-        requireNonNull(as, "as");
-        if (!as.isInstance(var)) {
-            return null;
         }
         return (T) var;
     }
