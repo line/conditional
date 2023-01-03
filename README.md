@@ -282,10 +282,10 @@ To add a dependency using Maven:
 
 With _Conditional-Kotlin_, you can make conditional expressions like this:
 ```kotlin
-val a = condition { ctx -> true }
-val b = condition { true }
-val condition = a and b
-val ctx = conditionContext()
+val a: Condition = condition { ctx -> true }
+val b: Condition = condition { true }
+val condition: Condition = a and b
+val ctx: ConditionContext = conditionContext()
 condition.matches(ctx)
 ```
 
