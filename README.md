@@ -60,7 +60,7 @@ Let's dive into the _Conditional_.
 To add a dependency on _Conditional_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:1.0.3")
+    implementation("com.linecorp.conditional:conditional:1.0.4")
 }
 ```
 
@@ -69,7 +69,7 @@ To add a dependency using Maven:
 <dependency>
     <groupId>com.linecorp.conditional</groupId>
     <artifactId>conditional</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 
@@ -259,8 +259,8 @@ If you are using the [Kotlin programming language](https://kotlinlang.org), try 
 To add a dependency on _Conditional-Kotlin_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:1.0.3")
-    implementation("com.linecorp.conditional:conditional-kotlin:1.0.3")
+    implementation("com.linecorp.conditional:conditional:1.0.4")
+    implementation("com.linecorp.conditional:conditional-kotlin:1.0.4")
 }
 ```
 
@@ -270,12 +270,12 @@ To add a dependency using Maven:
     <dependency>
         <groupId>com.linecorp.conditional</groupId>
         <artifactId>conditional</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </dependency>
     <dependency>
         <groupId>com.linecorp.conditional</groupId>
         <artifactId>conditional-kotlin</artifactId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
     </dependency>  
 </dependencies>
 ```
