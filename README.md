@@ -14,36 +14,39 @@ _Conditional_ is a super lightweight library that helps you make conditional exp
 
 Let's make a simple conditional expression to see how _Conditional_ is useful:
 ```
-a and (b or c)
+(a and b) or (c and d)
 ```
 
-An asynchronous implementation of this by [CompletableFuture](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/CompletableFuture.html) would be:
+An asynchronous implementation of this would be:
 ```java
 var a = CompletableFuture.supplyAsync(() -> true);
 var b = CompletableFuture.supplyAsync(() -> true);
 var c = CompletableFuture.supplyAsync(() -> true);
-var future = a.thenCombine(b.thenCombine(c, (rb, rc) -> rb || rc), (ra, rbc) -> ra && rbc);
+var d = CompletableFuture.supplyAsync(() -> true);
+var future = a.thenCombine(b, (ra, rb) -> ra && rb)
+              .thenCombine(c.thenCombine(d, (rc, rd) -> rc && rd), (rab, rcd) -> rab || rcd);
 assert future.join() == true;
 ```
 
-It's a simple conditional expression, but using [CompletableFuture.thenCombine](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/CompletableFuture.html#thenCombine(java.util.concurrent.CompletionStage,java.util.function.BiFunction)) well is quite complex.
+It's a simple conditional expression, but not trivial to implement asynchronously.
 Let's try to use _Conditional_ to simplify this asynchronous implementation:
 ```java
 var a = Condition.of(ctx -> true);
 var b = Condition.of(ctx -> true);
 var c = Condition.of(ctx -> true);
-var condition = a.and(b.or(c));
+var d = Condition.of(ctx -> true);
+var condition = (a.and(b)).or(c.and(d));
 var ctx = ConditionContext.of();
 assert condition.parallel().matches(ctx) == true;
 ```
 
-Much more readable than using [CompletableFuture.thenCombine](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/CompletableFuture.html#thenCombine(java.util.concurrent.CompletionStage,java.util.function.BiFunction)).
-Also, if we are using the [Kotlin programming language](https://kotlinlang.org), we can make it even simpler with Kotlin DSL support of _Conditional_:
+It's much more readable than before. And if we are using the [Kotlin programming language](https://kotlinlang.org), we can make it even simpler with Kotlin DSL support of _Conditional_:
 ```kotlin
 val a = condition { true }
 val b = condition { true }
 val c = condition { true }
-val condition = a and (b or c)
+val d = condition { true }
+val condition = (a and b) or (c and d)
 val ctx = conditionContext()
 assert(condition.parallel().matches(ctx) == true)
 ```
