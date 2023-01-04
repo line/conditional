@@ -1039,10 +1039,14 @@ public abstract class Condition {
                       match.get() :
                       CompletableFuture.supplyAsync(match).orTimeout(timeout, TimeUnit.MILLISECONDS).join();
         } catch (Exception e) {
-            ctx.log(thread, condition, e, startTimeMillis, System.currentTimeMillis());
+            if (e instanceof CancellationException) {
+                ctx.cancelled(thread, condition, e, startTimeMillis, System.currentTimeMillis());
+            } else {
+                ctx.failed(thread, condition, e, startTimeMillis, System.currentTimeMillis());
+            }
             return rethrow(e);
         }
-        ctx.log(thread, condition, matches, startTimeMillis, System.currentTimeMillis());
+        ctx.completed(thread, condition, matches, startTimeMillis, System.currentTimeMillis());
         return matches;
     }
 

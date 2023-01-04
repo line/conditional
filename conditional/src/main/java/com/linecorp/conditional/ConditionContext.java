@@ -238,11 +238,18 @@ public final class ConditionContext {
         return of(contextVariables);
     }
 
-    void log(Thread thread, Condition condition, boolean matches, long startTimeMillis, long endTimeMillis) {
-        logs.add(new ConditionMatchCompletion(thread, condition, matches, startTimeMillis, endTimeMillis));
+    void completed(Thread thread, Condition condition, boolean matches,
+                   long startTimeMillis, long endTimeMillis) {
+        logs.add(ConditionMatchResult.completed(thread, condition, matches, startTimeMillis, endTimeMillis));
     }
 
-    void log(Thread thread, Condition condition, Throwable cause, long startTimeMillis, long endTimeMillis) {
-        logs.add(new ConditionMatchFailure(thread, condition, cause, startTimeMillis, endTimeMillis));
+    void failed(Thread thread, Condition condition, Throwable cause,
+                long startTimeMillis, long endTimeMillis) {
+        logs.add(ConditionMatchResult.failed(thread, condition, cause, startTimeMillis, endTimeMillis));
+    }
+
+    void cancelled(Thread thread, Condition condition, Throwable cause,
+                   long startTimeMillis, long endTimeMillis) {
+        logs.add(ConditionMatchResult.cancelled(thread, condition, cause, startTimeMillis, endTimeMillis));
     }
 }

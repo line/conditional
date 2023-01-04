@@ -18,67 +18,142 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class ConditionMatchResult {
+import javax.annotation.Nullable;
+
+public final class ConditionMatchResult {
 
     private final Thread thread;
     private final Condition condition;
+    private final ConditionMatchState state;
+    @Nullable
+    private final Boolean matches;
+    @Nullable
+    private final Throwable cause;
     private final long startTimeMillis;
     private final long endTimeMillis;
     private final long durationMillis;
 
-    protected ConditionMatchResult(Thread thread, Condition condition,
-                                   long startTimeMillis, long endTimeMillis) {
+    private ConditionMatchResult(Thread thread, Condition condition, ConditionMatchState state,
+                                 @Nullable Boolean matches, @Nullable Throwable cause,
+                                 long startTimeMillis, long endTimeMillis) {
         requireNonNull(thread, "thread");
         requireNonNull(condition, "condition");
+        requireNonNull(state, "state");
+        switch (state) {
+            case COMPLETED -> requireNonNull(matches, "matches");
+            case FAILED, CANCELLED -> requireNonNull(cause, "cause");
+        }
         if (startTimeMillis > endTimeMillis) {
             throw new IllegalArgumentException("startTimeMillis > endTimeMillis (expected <= endTimeMillis)");
         }
         this.thread = thread;
         this.condition = condition;
+        this.state = state;
+        this.matches = matches;
+        this.cause = cause;
         this.startTimeMillis = startTimeMillis;
         this.endTimeMillis = endTimeMillis;
         durationMillis = endTimeMillis - startTimeMillis;
     }
 
+    static ConditionMatchResult completed(Thread thread, Condition condition, boolean matches,
+                                          long startTimeMillis, long endTimeMillis) {
+        return new ConditionMatchResult(thread, condition, ConditionMatchState.COMPLETED,
+                                        matches, null, startTimeMillis, endTimeMillis);
+    }
+
+    static ConditionMatchResult failed(Thread thread, Condition condition, Throwable cause,
+                                       long startTimeMillis, long endTimeMillis) {
+        return new ConditionMatchResult(thread, condition, ConditionMatchState.FAILED,
+                                        null, cause, startTimeMillis, endTimeMillis);
+    }
+
+    static ConditionMatchResult cancelled(Thread thread, Condition condition, Throwable cause,
+                                          long startTimeMillis, long endTimeMillis) {
+        return new ConditionMatchResult(thread, condition, ConditionMatchState.CANCELLED,
+                                        null, cause, startTimeMillis, endTimeMillis);
+    }
+
     /**
      * Returns the {@code thread}.
      */
-    public final Thread thread() {
+    public Thread thread() {
         return thread;
     }
 
     /**
      * Returns the {@code condition}.
      */
-    public final Condition condition() {
+    public Condition condition() {
         return condition;
+    }
+
+    /**
+     * Returns the {@code state}.
+     */
+    public ConditionMatchState state() {
+        return state;
+    }
+
+    /**
+     * Returns the {@code matches}.
+     */
+    @Nullable
+    public Boolean matches() {
+        return matches;
+    }
+
+    /**
+     * Returns the {@code cause}.
+     */
+    @Nullable
+    public Throwable cause() {
+        return cause;
     }
 
     /**
      * Returns the {@code startTimeMillis}.
      */
-    public final long startTimeMillis() {
+    public long startTimeMillis() {
         return startTimeMillis;
     }
 
     /**
      * Returns the {@code endTimeMillis}.
      */
-    public final long endTimeMillis() {
+    public long endTimeMillis() {
         return endTimeMillis;
     }
 
     /**
      * Returns the {@code durationMillis}.
      */
-    public final long durationMillis() {
+    public long durationMillis() {
         return durationMillis;
     }
 
-    protected static String millisAsString(long millis) {
+    private static String millisAsString(long millis) {
         return millis == Long.MAX_VALUE ? "INF" : millis + "ms";
     }
 
     @Override
-    public abstract String toString();
+    public String toString() {
+        final var builder = new StringBuilder();
+        builder.append("ConditionMatchResult{")
+               .append("condition=").append(condition)
+               .append(", state=").append(state);
+        switch (state) {
+            case COMPLETED -> builder.append(", matches=").append(matches);
+            case FAILED, CANCELLED -> builder.append(", cause=").append(cause);
+        }
+        builder.append(", async=").append(condition.isAsync())
+               .append(", thread=").append(thread.getName())
+               .append(", delay=").append(millisAsString(condition.delayMillis()))
+               .append(", timeout=").append(millisAsString(condition.timeoutMillis()))
+               .append(", startTime=").append(millisAsString(startTimeMillis))
+               .append(", endTime=").append(millisAsString(endTimeMillis))
+               .append(", duration=").append(millisAsString(durationMillis))
+               .append('}');
+        return builder.toString();
+    }
 }

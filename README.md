@@ -202,9 +202,9 @@ condition.matches(ctx);
 for (ConditionMatchResult log : ctx.logs()) { // 👈
     System.out.println(log);
 }
-// ConditionMatchCompletion{condition=a, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672051484770ms, endTime=1672051484770ms, duration=0ms}
-// ConditionMatchCompletion{condition=b, matches=false, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672051484770ms, endTime=1672051484770ms, duration=0ms}
-// ConditionMatchCompletion{condition=(a and b), matches=false, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672051484768ms, endTime=1672051484770ms, duration=2ms}
+// ConditionMatchResult{condition=b, state=COMPLETED, matches=false, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672838844830ms, endTime=1672838844830ms, duration=0ms}
+// ConditionMatchResult{condition=a, state=COMPLETED, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672838844830ms, endTime=1672838844830ms, duration=0ms}
+// ConditionMatchResult{condition=(a and b), state=COMPLETED, matches=false, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672838844828ms, endTime=1672838844831ms, duration=3ms}
 ```
 
 You can see in which thread each conditional expression was matched, how long it took, and what the result was.
@@ -223,9 +223,9 @@ try {
         System.out.println(log);
     }
 }
-// ConditionMatchCompletion{condition=a, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672051528775ms, endTime=1672051528775ms, duration=0ms}
-// ConditionMatchFailure{condition=b, cause=java.lang.IllegalStateException, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672051528776ms, endTime=1672051528776ms, duration=0ms}
-// ConditionMatchFailure{condition=(a and b), cause=java.util.concurrent.CompletionException: java.lang.IllegalStateException, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672051528774ms, endTime=1672051528776ms, duration=2ms}
+// ConditionMatchResult{condition=a, state=COMPLETED, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672838872919ms, endTime=1672838872919ms, duration=0ms}
+// ConditionMatchResult{condition=b, state=FAILED, cause=java.lang.IllegalStateException, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672838872919ms, endTime=1672838872919ms, duration=0ms}
+// ConditionMatchResult{condition=(a and b), state=FAILED, cause=java.util.concurrent.CompletionException: java.lang.IllegalStateException, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672838872917ms, endTime=1672838872919ms, duration=2ms}
 ```
 
 ## Kotlin DSL support
