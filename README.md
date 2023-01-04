@@ -264,7 +264,7 @@ val ctx: ConditionContext = conditionContext()
 condition.matches(ctx)
 ```
 
-If you want to know more about other DSLs provided by _Conditional-Kotlin_, please refer to [this](https://github.com/line/conditional/blob/main/conditional-kotlin/src/main/kotlin/com/linecorp/conditional/kotlin/ConditionalExtension.kt).
+If you want to know more about other DSL functions provided by _Conditional-Kotlin_, please refer to [this](https://github.com/line/conditional/blob/main/conditional-kotlin/src/main/kotlin/com/linecorp/conditional/kotlin/ConditionalExtension.kt).
 
 ## How to contribute
 See [CONTRIBUTING](CONTRIBUTING.md).
