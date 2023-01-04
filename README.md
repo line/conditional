@@ -188,7 +188,7 @@ sync.and(async); // 👈
 async.and(sync); // 👈
 ```
 
-## Debug support
+## Easy to debug
 
 `ConditionContext` contains useful information for debugging conditional expression.
 Match logs of conditional expression can be seen in `ctx.logs()`. Here, let's look at the match logs for asynchronous conditional expression.
