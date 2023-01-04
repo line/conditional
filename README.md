@@ -19,40 +19,46 @@ Let's make a simple conditional expression to see how _Conditional_ is useful:
 
 An asynchronous implementation of this would be:
 ```java
-CompletableFuture<Boolean> a = CompletableFuture.supplyAsync(() -> true);
-CompletableFuture<Boolean> b = CompletableFuture.supplyAsync(() -> true);
-CompletableFuture<Boolean> c = CompletableFuture.supplyAsync(() -> true);
-CompletableFuture<Boolean> d = CompletableFuture.supplyAsync(() -> true);
+CompletableFuture<Boolean> a = CompletableFuture.supplyAsync(() -> { sleep(3000); return true; });
+CompletableFuture<Boolean> b = CompletableFuture.supplyAsync(() -> { sleep(1000); return false; });
+CompletableFuture<Boolean> c = CompletableFuture.supplyAsync(() -> { sleep(1500); return false; });
+CompletableFuture<Boolean> d = CompletableFuture.supplyAsync(() -> { sleep(2500); return true; });
 CompletableFuture<Boolean> future =
         a.thenCombine(b, (ra, rb) -> ra && rb)
-         .thenCombine(c.thenCombine(d, (rc, rd) -> rc && rd), (rab, rcd) -> rab || rcd); // 👈
-assert future.join() == true;
+         .thenCombine(c.thenCombine(d, (rc, rd) -> rc && rd), (rab, rcd) -> rab || rcd);
+assert future.join() == true; // 👈 It takes about 3000 milliseconds...
 ```
 
 It's a simple conditional expression, but not trivial to implement asynchronously.
 Let's try to use _Conditional_ to simplify this asynchronous implementation:
 ```java
-Condition a = Condition.of(ctx -> true);
-Condition b = Condition.of(ctx -> true);
-Condition c = Condition.of(ctx -> true);
-Condition d = Condition.of(ctx -> true);
-Condition condition = (a.and(b)).or(c.and(d)); // 👈
+Condition a = Condition.of(ctx -> { sleep(3000); return true; });
+Condition b = Condition.of(ctx -> { sleep(1000); return false; });
+Condition c = Condition.of(ctx -> { sleep(1500); return false; });
+Condition d = Condition.of(ctx -> { sleep(2500); return true; });
+Condition condition = (a.and(b)).or(c.and(d));
 ConditionContext ctx = ConditionContext.of();
-assert condition.parallel().matches(ctx) == true;
+assert condition.parallel().matches(ctx) == true; // 👈 It takes about 1500 milliseconds!
 ```
 
-It's much more readable than before. And if we are using the [Kotlin programming language](https://kotlinlang.org), we can make it even simpler with Kotlin DSL support of _Conditional_:
+It's much more readable than before. Also, there is a difference in execution time.
+_Conditional_ is optimized to do less computation.
+Looking at the conditional expression above, `b` and `c` are false. So, regardless of the results of `a` and `d`, the result of the entire conditional expression is false.
+In this case, _Conditional_ does performance optimization internally for less computation, so the match result can be returned faster.
+
+And if we are using the [Kotlin programming language](https://kotlinlang.org), we can make it even simpler with Kotlin DSL support of _Conditional_:
 ```kotlin
-val a: Condition = condition { true }
-val b: Condition = condition { true }
-val c: Condition = condition { true }
-val d: Condition = condition { true }
+val a: Condition = condition { sleep(3000); true }
+val b: Condition = condition { sleep(1000); true }
+val c: Condition = condition { sleep(1500); true }
+val d: Condition = condition { sleep(2500); true }
 val condition: Condition = (a and b) or (c and d) // 👈
 val ctx: ConditionContext = conditionContext()
 assert(condition.parallel().matches(ctx) == true)
 ```
 
 As above, we can make conditional expressions more elegant by using _Conditional_.
+
 Let's dive into the _Conditional_.
 
 ## Getting started
@@ -182,36 +188,6 @@ Condition async = Condition.async(ctx -> true);
 sync.and(async); // 👈
 async.and(sync); // 👈
 ```
-
-## Less computation
-_Conditional_ is optimized to do less computation. For example:
-```java
-// (a and b) or (c and d)
-CompletableFuture<Boolean> a = CompletableFuture.supplyAsync(() -> { sleep(3000); return true; });
-CompletableFuture<Boolean> b = CompletableFuture.supplyAsync(() -> { sleep(1000); return false; });
-CompletableFuture<Boolean> c = CompletableFuture.supplyAsync(() -> { sleep(1500); return false; });
-CompletableFuture<Boolean> d = CompletableFuture.supplyAsync(() -> { sleep(2500); return true; });
-CompletableFuture<Boolean> future =
-        a.thenCombine(b, (ra, rb) -> ra && rb)
-         .thenCombine(c.thenCombine(d, (rc, rd) -> rc && rd), (rab, rcd) -> rab || rcd);
-future.join(); // 👈 It takes about 3000 milliseconds...
-```
-
-Let's implement the above conditional expression as _Conditional_.
-```java
-// (a and b) or (c and d)
-Condition a = Condition.of(ctx -> { sleep(3000); return true; });
-Condition b = Condition.of(ctx -> { sleep(1000); return false; });
-Condition c = Condition.of(ctx -> { sleep(1500); return false; });
-Condition d = Condition.of(ctx -> { sleep(2500); return true; });
-Condition condition = (a.and(b)).or(c.and(d));
-ConditionContext ctx = ConditionContext.of();
-condition.parallel().matches(ctx); // 👈 It takes about 1500 milliseconds!
-```
-
-Why is there such a difference in execution time?
-Looking at the conditional expression above, `b` and `c` are false. So, regardless of the results of `a` and `d`, the result of the entire conditional expression is false.
-In this case, _Conditional_ does performance optimization internally for less computation, so the match result can be returned faster.
 
 ## Debug support
 
