@@ -96,6 +96,27 @@ public final class ConditionMatchResult {
     }
 
     /**
+     * Returns whether the match result is {@code ConditionMatchState.COMPLETED}.
+     */
+    public boolean completed() {
+        return state == ConditionMatchState.COMPLETED;
+    }
+
+    /**
+     * Returns whether the match result is {@code ConditionMatchState.FAILED}.
+     */
+    public boolean failed() {
+        return state == ConditionMatchState.FAILED;
+    }
+
+    /**
+     * Returns whether the match result is {@code ConditionMatchState.CANCELLED}.
+     */
+    public boolean cancelled() {
+        return state == ConditionMatchState.CANCELLED;
+    }
+
+    /**
      * Returns the {@code matches}.
      */
     @Nullable
