@@ -43,8 +43,8 @@ assert condition.parallel().matches(ctx) == false; // 👈 It takes about 1500 m
 
 It's much more readable than before. Also, there is a difference in execution time.
 _Conditional_ is optimized to do less computation.
-Looking at the conditional expression above, `b` and `c` are false. So, regardless of the results of `a` and `d`, the result of the entire conditional expression is false.
-In this case, _Conditional_ does performance optimization internally for less computation, so the match result can be returned faster.
+Looking at the conditional expression above, `b` and `c` are `false`. So, regardless of the results of `a` and `d`, the result of the entire conditional expression is `false`.
+In this case, _Conditional_ does performance optimization internally for less computation, so the result can be returned faster.
 
 And if we are using the [Kotlin programming language](https://kotlinlang.org), we can make it even simpler with Kotlin DSL support of _Conditional_:
 ```kotlin
