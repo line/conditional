@@ -555,10 +555,10 @@ class ConditionTest {
         }
     }
 
-    static void assertDurationMillis(ConditionMatchResult conditionMatchResult,
+    static void assertDurationMillis(ConditionMatchLog conditionMatchLog,
                                      long atLeastMillisInclusive, long atMostMillisExclusive) {
-        requireNonNull(conditionMatchResult, "conditionMatchResult");
-        final var durationMillis = conditionMatchResult.durationMillis();
+        requireNonNull(conditionMatchLog, "conditionMatchLog");
+        final var durationMillis = conditionMatchLog.durationMillis();
         assertThat(atLeastMillisInclusive <= durationMillis && durationMillis < atMostMillisExclusive).isTrue();
     }
 }

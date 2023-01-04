@@ -87,7 +87,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult1() {
+    void conditionMatchLog1() {
         // true
         final var condition = trueCondition();
         final var ctx = ConditionContext.of();
@@ -103,7 +103,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult2() {
+    void conditionMatchLog2() {
         // false
         final var condition = falseCondition();
         final var ctx = ConditionContext.of();
@@ -119,7 +119,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult3() {
+    void conditionMatchLog3() {
         // failed
         final var condition = failed(unused -> new RuntimeException());
         final var ctx = ConditionContext.of();
@@ -136,7 +136,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult4() {
+    void conditionMatchLog4() {
         // true and false
         final var condition = trueCondition().and(falseCondition());
         final var ctx = ConditionContext.of();
@@ -162,7 +162,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult5() {
+    void conditionMatchLog5() {
         // true or false
         final var condition = trueCondition().or(falseCondition());
         final var ctx = ConditionContext.of();
@@ -183,7 +183,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult6() {
+    void conditionMatchLog6() {
         // false and true
         final var condition = falseCondition().and(trueCondition());
         final var ctx = ConditionContext.of();
@@ -204,7 +204,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult7() {
+    void conditionMatchLog7() {
         // false or true
         final var condition = falseCondition().or(trueCondition());
         final var ctx = ConditionContext.of();
@@ -230,7 +230,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult8() {
+    void conditionMatchLog8() {
         // true and failed
         final var condition = trueCondition().and(failed(unused -> new RuntimeException()));
         final var ctx = ConditionContext.of();
@@ -259,7 +259,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult9() {
+    void conditionMatchLog9() {
         // true or failed
         final var condition = trueCondition().or(failed(unused -> new RuntimeException()));
         final var ctx = ConditionContext.of();
@@ -282,7 +282,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult10() {
+    void conditionMatchLog10() {
         // (true and false) or (false or failed)
         final var condition = trueCondition().and(falseCondition())
                                              .or(falseCondition().or(failed(unused -> new RuntimeException())));
@@ -335,7 +335,7 @@ class ConditionContextTest {
     }
 
     @Test
-    void conditionMatchResult11() {
+    void conditionMatchLog11() {
         // (true and false) or (false and failed)
         final var condition = trueCondition().and(falseCondition())
                                              .or(falseCondition().and(
