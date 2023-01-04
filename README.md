@@ -57,8 +57,7 @@ val ctx: ConditionContext = conditionContext()
 assert(condition.parallel().matches(ctx) == false)
 ```
 
-As above, we can make conditional expressions more elegant by using _Conditional_.
-Let's dive into the _Conditional_.
+As above, we can make conditional expressions more elegant. Let's dive into the _Conditional_.
 
 ## Getting started
 
