@@ -26,7 +26,7 @@ CompletableFuture<Boolean> d = CompletableFuture.supplyAsync(() -> { sleep(2500)
 CompletableFuture<Boolean> future =
         a.thenCombine(b, (ra, rb) -> ra && rb)
          .thenCombine(c.thenCombine(d, (rc, rd) -> rc && rd), (rab, rcd) -> rab || rcd);
-assert future.join() == true; // 👈 It takes about 3000 milliseconds...
+assert future.join() == false; // 👈 It takes about 3000 milliseconds...
 ```
 
 It's a simple conditional expression, but not trivial to implement asynchronously.
@@ -38,7 +38,7 @@ Condition c = Condition.of(ctx -> { sleep(1500); return false; });
 Condition d = Condition.of(ctx -> { sleep(2500); return true; });
 Condition condition = (a.and(b)).or(c.and(d));
 ConditionContext ctx = ConditionContext.of();
-assert condition.parallel().matches(ctx) == true; // 👈 It takes about 1500 milliseconds!
+assert condition.parallel().matches(ctx) == false; // 👈 It takes about 1500 milliseconds!
 ```
 
 It's much more readable than before. Also, there is a difference in execution time.
@@ -49,12 +49,12 @@ In this case, _Conditional_ does performance optimization internally for less co
 And if we are using the [Kotlin programming language](https://kotlinlang.org), we can make it even simpler with Kotlin DSL support of _Conditional_:
 ```kotlin
 val a: Condition = condition { sleep(3000); true }
-val b: Condition = condition { sleep(1000); true }
-val c: Condition = condition { sleep(1500); true }
+val b: Condition = condition { sleep(1000); false }
+val c: Condition = condition { sleep(1500); false }
 val d: Condition = condition { sleep(2500); true }
 val condition: Condition = (a and b) or (c and d) // 👈
 val ctx: ConditionContext = conditionContext()
-assert(condition.parallel().matches(ctx) == true)
+assert(condition.parallel().matches(ctx) == false)
 ```
 
 As above, we can make conditional expressions more elegant by using _Conditional_.
