@@ -52,13 +52,12 @@ val a: Condition = condition { sleep(3000); true }
 val b: Condition = condition { sleep(1000); false }
 val c: Condition = condition { sleep(1500); false }
 val d: Condition = condition { sleep(2500); true }
-val condition: Condition = (a and b) or (c and d) // 👈
+val condition: Condition = (a and b) or (c and d)
 val ctx: ConditionContext = conditionContext()
 assert(condition.parallel().matches(ctx) == false)
 ```
 
 As above, we can make conditional expressions more elegant by using _Conditional_.
-
 Let's dive into the _Conditional_.
 
 ## Getting started
