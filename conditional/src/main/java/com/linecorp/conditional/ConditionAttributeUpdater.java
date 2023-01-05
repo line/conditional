@@ -18,6 +18,7 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.Duration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
@@ -86,6 +87,12 @@ class ConditionAttributeUpdater {
         return this;
     }
 
+    final ConditionAttributeUpdater delay(Duration delay) {
+        requireNonNull(delay, "delay");
+        delayMillis = delay.toMillis();
+        return this;
+    }
+
     final long delayMillis() {
         return delayMillis;
     }
@@ -98,6 +105,12 @@ class ConditionAttributeUpdater {
     final ConditionAttributeUpdater timeout(long timeout, TimeUnit unit) {
         requireNonNull(unit, "unit");
         timeoutMillis = unit.toMillis(timeout);
+        return this;
+    }
+
+    final ConditionAttributeUpdater timeout(Duration timeout) {
+        requireNonNull(timeout, "timeout");
+        timeoutMillis = timeout.toMillis();
         return this;
     }
 

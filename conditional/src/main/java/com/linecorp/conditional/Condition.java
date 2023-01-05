@@ -18,6 +18,7 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -148,6 +149,18 @@ public abstract class Condition {
      * Returns a newly created {@link Condition}.
      *
      * @param function the function to match the conditional expression.
+     * @param timeout the duration to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if {@code function} or {@code timeout} is null.
+     */
+    public static Condition of(ConditionFunction function, Duration timeout) {
+        return of(function).timeout(timeout);
+    }
+
+    /**
+     * Returns a newly created {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
      * @param alias the value to set alias for the {@code function}.
      *
      * @throws NullPointerException if {@code function} or {@code alias} is null.
@@ -182,6 +195,19 @@ public abstract class Condition {
      */
     public static Condition of(ConditionFunction function, String alias, long timeout, TimeUnit unit) {
         return of(function, alias).timeout(timeout, unit);
+    }
+
+    /**
+     * Returns a newly created {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param alias the value to set the alias for the {@code function}.
+     * @param timeout the duration to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if {@code function} or {@code alias} or {@code timeout} is null.
+     */
+    public static Condition of(ConditionFunction function, String alias, Duration timeout) {
+        return of(function, alias).timeout(timeout);
     }
 
     /**
@@ -245,6 +271,31 @@ public abstract class Condition {
      */
     public static Condition async(ConditionFunction function, long timeout, TimeUnit unit, Executor executor) {
         return async(function, executor).timeout(timeout, unit);
+    }
+
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param timeout the duration to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if {@code function} or {@code timeout} is null.
+     */
+    public static Condition async(ConditionFunction function, Duration timeout) {
+        return async(function).timeout(timeout);
+    }
+
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param timeout the duration to set timeout for the {@code function}.
+     * @param executor the executor to match the {@code function}.
+     *
+     * @throws NullPointerException if {@code function} or {@code timeout} or {@code executor} is null.
+     */
+    public static Condition async(ConditionFunction function, Duration timeout, Executor executor) {
+        return async(function, executor).timeout(timeout);
     }
 
     /**
@@ -334,6 +385,35 @@ public abstract class Condition {
     }
 
     /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param alias the value to set the alias for the {@code function}.
+     * @param timeout the duration to set timeout for the {@code function}.
+     *
+     * @throws NullPointerException if {@code function} or {@code alias} or {@code timeout} is null.
+     */
+    public static Condition async(ConditionFunction function, String alias, Duration timeout) {
+        return async(function, alias).timeout(timeout);
+    }
+
+    /**
+     * Returns a newly created asynchronous {@link Condition}.
+     *
+     * @param function the function to match the conditional expression.
+     * @param alias the value to set the alias for the {@code function}.
+     * @param timeout the duration to set timeout for the {@code function}.
+     * @param executor the executor to match the {@code function}.
+     *
+     * @throws NullPointerException if {@code function} or {@code alias} or {@code timeout} or {@code executor} is null.
+     */
+    public static Condition async(ConditionFunction function, String alias, Duration timeout,
+                                  Executor executor) {
+        requireNonNull(executor, "executor");
+        return async(function, alias).timeout(timeout).executor(executor);
+    }
+
+    /**
      * Returns a newly created {@link Condition} with delay.
      *
      * @param function the function to match the conditional expression.
@@ -362,6 +442,18 @@ public abstract class Condition {
      * Returns a newly created {@link Condition} with delay.
      *
      * @param function the function to match the conditional expression.
+     * @param delay the duration to set delay for the {@code function}.
+     *
+     * @throws NullPointerException if {@code function} or {@code delay} is null.
+     */
+    public static Condition delayed(ConditionFunction function, Duration delay) {
+        return of(function).delay(delay);
+    }
+
+    /**
+     * Returns a newly created {@link Condition} with delay.
+     *
+     * @param function the function to match the conditional expression.
      * @param alias the value to set the alias for the {@code function}.
      * @param delayMillis the value to set delay for the {@code function}.
      *
@@ -383,6 +475,19 @@ public abstract class Condition {
      */
     public static Condition delayed(ConditionFunction function, String alias, long delay, TimeUnit unit) {
         return of(function, alias).delay(delay, unit);
+    }
+
+    /**
+     * Returns a newly created {@link Condition} with delay.
+     *
+     * @param function the function to match the conditional expression.
+     * @param alias the value to set the alias for the {@code function}.
+     * @param delay the duration to set delay for the {@code function}.
+     *
+     * @throws NullPointerException if {@code function} or {@code alias} or {@code delay} is null.
+     */
+    public static Condition delayed(ConditionFunction function, String alias, Duration delay) {
+        return of(function, alias).delay(delay);
     }
 
     /**
@@ -847,19 +952,28 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with {@code delay} attribute updated.
+     * Returns the {@link Condition} with {@code delayMillis} attribute updated.
      */
     public Condition delay(long delayMillis) {
         return update(attributeUpdater -> attributeUpdater.delay(delayMillis));
     }
 
     /**
-     * Returns the {@link Condition} with {@code delay} attribute updated.
+     * Returns the {@link Condition} with {@code delayMillis} attribute updated.
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
     public Condition delay(long delay, TimeUnit unit) {
         return update(attributeUpdater -> attributeUpdater.delay(delay, unit));
+    }
+
+    /**
+     * Returns the {@link Condition} with {@code delayMillis} attribute updated.
+     *
+     * @throws NullPointerException if the {@code delay} is null.
+     */
+    public Condition delay(Duration delay) {
+        return update(attributeUpdater -> attributeUpdater.delay(delay));
     }
 
     /**
@@ -870,19 +984,28 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the {@link Condition} with {@code timeout} attribute updated.
+     * Returns the {@link Condition} with {@code timeoutMillis} attribute updated.
      */
     public Condition timeout(long timeoutMillis) {
         return update(attributeUpdater -> attributeUpdater.timeout(timeoutMillis));
     }
 
     /**
-     * Returns the {@link Condition} with {@code timeout} attribute updated.
+     * Returns the {@link Condition} with {@code timeoutMillis} attribute updated.
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
     public Condition timeout(long timeout, TimeUnit unit) {
         return update(attributeUpdater -> attributeUpdater.timeout(timeout, unit));
+    }
+
+    /**
+     * Returns the {@link Condition} with {@code timeoutMillis} attribute updated.
+     *
+     * @throws NullPointerException if the {@code timeout} is null.
+     */
+    public Condition timeout(Duration timeout) {
+        return update(attributeUpdater -> attributeUpdater.timeout(timeout));
     }
 
     /**
