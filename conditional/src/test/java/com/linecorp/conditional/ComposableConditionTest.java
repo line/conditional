@@ -19,8 +19,6 @@ package com.linecorp.conditional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.concurrent.CompletionException;
-
 import org.junit.jupiter.api.Test;
 
 class ComposableConditionTest {
@@ -38,8 +36,7 @@ class ComposableConditionTest {
         }.alias("Composed");
         final var ctx = ConditionContext.of();
         assertThatThrownBy(() -> condition.matches(ctx))
-                .isExactlyInstanceOf(CompletionException.class)
-                .hasCauseInstanceOf(RuntimeException.class);
+                .isExactlyInstanceOf(RuntimeException.class);
         assertThat(ctx.logs().size()).isEqualTo(4);
     }
 }
