@@ -24,6 +24,7 @@ import static com.linecorp.conditional.Condition.DEFAULT_EXECUTOR;
 import static com.linecorp.conditional.Condition.DEFAULT_TIMEOUT_MILLIS;
 import static java.util.Objects.requireNonNull;
 
+import java.time.Duration;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
@@ -82,13 +83,24 @@ public final class ConditionBuilder {
     }
 
     /**
-     * Returns the {@link ConditionBuilder} with {@code delay} and {@code unit} set.
+     * Returns the {@link ConditionBuilder} with {@code delayMillis} set.
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
     public ConditionBuilder delay(long delay, TimeUnit unit) {
         requireNonNull(unit, "unit");
         delayMillis = unit.toMillis(delay);
+        return this;
+    }
+
+    /**
+     * Returns the {@link ConditionBuilder} with {@code delayMillis} set.
+     *
+     * @throws NullPointerException if the {@code delay} is null.
+     */
+    public ConditionBuilder delay(Duration delay) {
+        requireNonNull(delay, "delay");
+        delayMillis = delay.toMillis();
         return this;
     }
 
@@ -101,13 +113,24 @@ public final class ConditionBuilder {
     }
 
     /**
-     * Returns the {@link ConditionBuilder} with {@code timeout} and {@code unit} set.
+     * Returns the {@link ConditionBuilder} with {@code timeoutMillis} set.
      *
      * @throws NullPointerException if the {@code unit} is null.
      */
     public ConditionBuilder timeout(long timeout, TimeUnit unit) {
         requireNonNull(unit, "unit");
         timeoutMillis = unit.toMillis(timeout);
+        return this;
+    }
+
+    /**
+     * Returns the {@link ConditionBuilder} with {@code timeoutMillis} set.
+     *
+     * @throws NullPointerException if the {@code timeout} is null.
+     */
+    public ConditionBuilder timeout(Duration timeout) {
+        requireNonNull(timeout, "timeout");
+        timeoutMillis = timeout.toMillis();
         return this;
     }
 
