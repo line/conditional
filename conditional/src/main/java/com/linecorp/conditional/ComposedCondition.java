@@ -35,14 +35,14 @@ public final class ComposedCondition extends Condition {
     private static final String DELIMITER_AND = " and ";
     private static final String DELIMITER_OR = " or ";
 
-    private final Operator operator;
+    private final ConditionOperator operator;
     private final List<Condition> conditions = new ArrayList<>();
 
-    ComposedCondition(Operator operator, Condition... conditions) {
+    ComposedCondition(ConditionOperator operator, Condition... conditions) {
         this(operator, List.of(conditions));
     }
 
-    ComposedCondition(Operator operator, List<Condition> conditions) {
+    ComposedCondition(ConditionOperator operator, List<Condition> conditions) {
         checkConstructorArguments(operator, conditions);
         this.operator = operator;
         this.conditions.addAll(conditions);
@@ -50,14 +50,14 @@ public final class ComposedCondition extends Condition {
 
     ComposedCondition(@Nullable String alias, boolean async, @Nullable Executor executor,
                       long delayMillis, long timeoutMillis, boolean cancellable,
-                      Operator operator, List<Condition> conditions) {
+                      ConditionOperator operator, List<Condition> conditions) {
         super(alias, async, executor, delayMillis, timeoutMillis, cancellable);
         checkConstructorArguments(operator, conditions);
         this.operator = operator;
         this.conditions.addAll(conditions);
     }
 
-    private static void checkConstructorArguments(Operator operator, List<Condition> conditions) {
+    private static void checkConstructorArguments(ConditionOperator operator, List<Condition> conditions) {
         requireNonNull(operator, "operator");
         requireNonNull(conditions, "conditions");
         if (conditions.isEmpty()) {
@@ -83,7 +83,7 @@ public final class ComposedCondition extends Condition {
         return attributeUpdater.update();
     }
 
-    Operator operator() {
+    ConditionOperator operator() {
         return operator;
     }
 
@@ -175,7 +175,7 @@ public final class ComposedCondition extends Condition {
         return future;
     }
 
-    private static boolean shortCircuit(Operator operator, boolean value) {
+    private static boolean shortCircuit(ConditionOperator operator, boolean value) {
         requireNonNull(operator, "operator");
         return switch (operator) {
             case AND -> !value;

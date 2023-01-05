@@ -52,7 +52,7 @@ fun conditionBuilder(): ConditionBuilder = Condition.builder()
  *
  * @param operator the operator of [ComposedCondition].
  */
-fun conditionComposer(operator: Operator): ConditionComposer = Condition.composer(operator)
+fun conditionComposer(operator: ConditionOperator): ConditionComposer = Condition.composer(operator)
 
 /**
  * Returns a newly created [Condition] with true.

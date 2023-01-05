@@ -348,7 +348,7 @@ class ConditionTest {
         @ParameterizedTest
         @MethodSource("AND")
         void AND_with_composer(Condition left, Condition right, boolean expected) {
-            final var conditionComposer = Condition.composer(Operator.AND);
+            final var conditionComposer = Condition.composer(ConditionOperator.AND);
             final var condition = conditionComposer.with(left, right).compose();
             assertThat(condition.matches(ConditionContext.of())).isEqualTo(expected);
         }
@@ -394,7 +394,7 @@ class ConditionTest {
         @ParameterizedTest
         @MethodSource("OR")
         void OR_with_composer(Condition left, Condition right, boolean expected) {
-            final var conditionComposer = Condition.composer(Operator.OR);
+            final var conditionComposer = Condition.composer(ConditionOperator.OR);
             final var condition = conditionComposer.with(left, right).compose();
             assertThat(condition.matches(ConditionContext.of())).isEqualTo(expected);
         }
@@ -524,9 +524,9 @@ class ConditionTest {
                     Arguments.of(failed(unused -> new RuntimeException()), "FailedCondition"),
                     Arguments.of(trueCondition(), "TrueCondition"),
                     Arguments.of(falseCondition(), "FalseCondition"),
-                    Arguments.of(Condition.composer(Operator.AND).with(trueCondition()).compose(),
+                    Arguments.of(Condition.composer(ConditionOperator.AND).with(trueCondition()).compose(),
                                  "TrueCondition"),
-                    Arguments.of(Condition.composer(Operator.OR).with(trueCondition()).compose(),
+                    Arguments.of(Condition.composer(ConditionOperator.OR).with(trueCondition()).compose(),
                                  "TrueCondition"),
                     Arguments.of(trueCondition().and(falseCondition()),
                                  "(TrueCondition and FalseCondition)"),

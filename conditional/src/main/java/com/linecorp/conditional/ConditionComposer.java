@@ -23,10 +23,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public final class ConditionComposer {
 
-    private final Operator operator;
+    private final ConditionOperator operator;
     private final List<Condition> conditions = new CopyOnWriteArrayList<>();
 
-    ConditionComposer(Operator operator) {
+    ConditionComposer(ConditionOperator operator) {
         this.operator = requireNonNull(operator, "operator");
     }
 

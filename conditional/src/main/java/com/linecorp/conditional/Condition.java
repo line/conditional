@@ -731,7 +731,7 @@ public abstract class Condition {
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
     public static ComposedCondition allOf(Condition... conditions) {
-        return new ComposedCondition(Operator.AND, conditions);
+        return new ComposedCondition(ConditionOperator.AND, conditions);
     }
 
     /**
@@ -744,7 +744,7 @@ public abstract class Condition {
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
     public static ComposedCondition allOf(List<Condition> conditions) {
-        return new ComposedCondition(Operator.AND, conditions);
+        return new ComposedCondition(ConditionOperator.AND, conditions);
     }
 
     /**
@@ -756,7 +756,7 @@ public abstract class Condition {
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
     public static ComposedCondition anyOf(Condition... conditions) {
-        return new ComposedCondition(Operator.OR, conditions);
+        return new ComposedCondition(ConditionOperator.OR, conditions);
     }
 
     /**
@@ -769,7 +769,7 @@ public abstract class Condition {
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
     public static ComposedCondition anyOf(List<Condition> conditions) {
-        return new ComposedCondition(Operator.OR, conditions);
+        return new ComposedCondition(ConditionOperator.OR, conditions);
     }
 
     /**
@@ -782,7 +782,7 @@ public abstract class Condition {
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
     public static ComposedCondition noneOf(Condition... conditions) {
-        return new ComposedCondition(Operator.AND, negateAll(conditions));
+        return new ComposedCondition(ConditionOperator.AND, negateAll(conditions));
     }
 
     /**
@@ -796,7 +796,7 @@ public abstract class Condition {
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
     public static ComposedCondition noneOf(List<Condition> conditions) {
-        return new ComposedCondition(Operator.AND, negateAll(conditions));
+        return new ComposedCondition(ConditionOperator.AND, negateAll(conditions));
     }
 
     private static List<Condition> negateAll(Condition... conditions) {
@@ -833,7 +833,7 @@ public abstract class Condition {
      *
      * @throws NullPointerException if the {@code operator} is null.
      */
-    public static ConditionComposer composer(Operator operator) {
+    public static ConditionComposer composer(ConditionOperator operator) {
         return new ConditionComposer(operator);
     }
 
@@ -1049,7 +1049,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code condition} is null.
      */
     public final ComposedCondition and(Condition condition) {
-        return composeWith(Operator.AND, condition);
+        return composeWith(ConditionOperator.AND, condition);
     }
 
     /**
@@ -1061,10 +1061,10 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code condition} is null.
      */
     public final ComposedCondition or(Condition condition) {
-        return composeWith(Operator.OR, condition);
+        return composeWith(ConditionOperator.OR, condition);
     }
 
-    private ComposedCondition composeWith(Operator operator, Condition condition) {
+    private ComposedCondition composeWith(ConditionOperator operator, Condition condition) {
         requireNonNull(operator, "operator");
         requireNonNull(condition, "condition");
         if (this instanceof ComposedCondition this0) {

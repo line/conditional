@@ -16,7 +16,7 @@
 
 package com.linecorp.conditional.kotlin
 
-import com.linecorp.conditional.Operator
+import com.linecorp.conditional.ConditionOperator
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -81,7 +81,7 @@ class ConditionalExtensionKtTest {
 
     @Test
     fun testConditionComposer() {
-        val composer = conditionComposer(Operator.AND)
+        val composer = conditionComposer(ConditionOperator.AND)
         val condition = composer.with(`true`(), `true`()).compose()
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue

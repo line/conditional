@@ -16,7 +16,7 @@
 
 package com.linecorp.conditional;
 
-public enum Operator {
+public enum ConditionOperator {
 
     AND,
     OR

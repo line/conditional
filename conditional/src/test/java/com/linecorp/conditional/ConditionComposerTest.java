@@ -32,19 +32,19 @@ class ConditionComposerTest {
         return Stream.of(
                 Arguments.of(
                         // (true or false) and (true and true) = true
-                        Condition.composer(Operator.AND)
-                                 .with(Condition.composer(Operator.OR)
+                        Condition.composer(ConditionOperator.AND)
+                                 .with(Condition.composer(ConditionOperator.OR)
                                                 .with(trueCondition(), falseCondition())
                                                 .compose(),
-                                       Condition.composer(Operator.AND)
+                                       Condition.composer(ConditionOperator.AND)
                                                 .with(trueCondition(), trueCondition())
                                                 .compose()).compose(),
                         trueCondition().or(falseCondition()).and(trueCondition().and(trueCondition())),
                         true),
                 Arguments.of(
                         // (true or false) and true = true
-                        Condition.composer(Operator.AND)
-                                 .with(Condition.composer(Operator.OR)
+                        Condition.composer(ConditionOperator.AND)
+                                 .with(Condition.composer(ConditionOperator.OR)
                                                 .with(trueCondition(), falseCondition())
                                                 .compose(),
                                        trueCondition()).compose(),
@@ -52,18 +52,18 @@ class ConditionComposerTest {
                         true),
                 Arguments.of(
                         // true and (true or false) = true
-                        Condition.composer(Operator.AND)
+                        Condition.composer(ConditionOperator.AND)
                                  .with(trueCondition(),
-                                       Condition.composer(Operator.OR)
+                                       Condition.composer(ConditionOperator.OR)
                                                 .with(trueCondition(), falseCondition())
                                                 .compose()).compose(),
                         trueCondition().and(trueCondition().or(falseCondition())),
                         true),
                 Arguments.of(
                         // ((true or false) and true) or false = true
-                        Condition.composer(Operator.OR)
-                                 .with(Condition.composer(Operator.AND)
-                                                .with(Condition.composer(Operator.OR)
+                        Condition.composer(ConditionOperator.OR)
+                                 .with(Condition.composer(ConditionOperator.AND)
+                                                .with(Condition.composer(ConditionOperator.OR)
                                                                .with(trueCondition(), falseCondition())
                                                                .compose(),
                                                       trueCondition()).compose(), falseCondition()).compose(),
@@ -72,11 +72,11 @@ class ConditionComposerTest {
                         true),
                 Arguments.of(
                         // true and (false or (true and false)) = false
-                        Condition.composer(Operator.AND)
+                        Condition.composer(ConditionOperator.AND)
                                  .with(trueCondition(),
-                                       Condition.composer(Operator.OR)
+                                       Condition.composer(ConditionOperator.OR)
                                                 .with(falseCondition(),
-                                                      Condition.composer(Operator.AND)
+                                                      Condition.composer(ConditionOperator.AND)
                                                                .with(trueCondition(),
                                                                      falseCondition()).compose())
                                                 .compose()).compose(),

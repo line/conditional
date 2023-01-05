@@ -22,7 +22,7 @@ import java.util.List;
 
 final class ComposedConditionAttributeUpdater extends ConditionAttributeUpdater {
 
-    private final Operator operator;
+    private final ConditionOperator operator;
     private volatile List<Condition> conditions;
 
     ComposedConditionAttributeUpdater(ComposedCondition composedCondition) {
