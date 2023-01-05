@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
 
 import javax.annotation.Nullable;
 
-public final class ConditionMatchLog {
+public final class ConditionMatchResult {
 
     private final Thread thread;
     private final Condition condition;
@@ -33,15 +33,15 @@ public final class ConditionMatchLog {
     private final long endTimeMillis;
     private final long durationMillis;
 
-    private ConditionMatchLog(Thread thread, Condition condition, ConditionMatchState state,
-                              @Nullable Boolean matches, @Nullable Throwable cause,
-                              long startTimeMillis, long endTimeMillis) {
+    private ConditionMatchResult(Thread thread, Condition condition, ConditionMatchState state,
+                                 @Nullable Boolean matches, @Nullable Throwable cause,
+                                 long startTimeMillis, long endTimeMillis) {
         requireNonNull(thread, "thread");
         requireNonNull(condition, "condition");
         requireNonNull(state, "state");
         switch (state) {
             case COMPLETED -> requireNonNull(matches, "matches");
-            case FAILED, CANCELLED -> requireNonNull(cause, "cause");
+            case FAILED, CANCELLED, TIMED_OUT -> requireNonNull(cause, "cause");
         }
         if (startTimeMillis > endTimeMillis) {
             throw new IllegalArgumentException("startTimeMillis > endTimeMillis (expected <= endTimeMillis)");
@@ -56,22 +56,28 @@ public final class ConditionMatchLog {
         durationMillis = endTimeMillis - startTimeMillis;
     }
 
-    static ConditionMatchLog completed(Thread thread, Condition condition, boolean matches,
-                                       long startTimeMillis, long endTimeMillis) {
-        return new ConditionMatchLog(thread, condition, ConditionMatchState.COMPLETED,
-                                     matches, null, startTimeMillis, endTimeMillis);
+    static ConditionMatchResult completed(Thread thread, Condition condition, boolean matches,
+                                          long startTimeMillis, long endTimeMillis) {
+        return new ConditionMatchResult(thread, condition, ConditionMatchState.COMPLETED,
+                                        matches, null, startTimeMillis, endTimeMillis);
     }
 
-    static ConditionMatchLog failed(Thread thread, Condition condition, Throwable cause,
-                                    long startTimeMillis, long endTimeMillis) {
-        return new ConditionMatchLog(thread, condition, ConditionMatchState.FAILED,
-                                     null, cause, startTimeMillis, endTimeMillis);
+    static ConditionMatchResult failed(Thread thread, Condition condition, Throwable cause,
+                                       long startTimeMillis, long endTimeMillis) {
+        return new ConditionMatchResult(thread, condition, ConditionMatchState.FAILED,
+                                        null, cause, startTimeMillis, endTimeMillis);
     }
 
-    static ConditionMatchLog cancelled(Thread thread, Condition condition, Throwable cause,
-                                       long startTimeMillis, long endTimeMillis) {
-        return new ConditionMatchLog(thread, condition, ConditionMatchState.CANCELLED,
-                                     null, cause, startTimeMillis, endTimeMillis);
+    static ConditionMatchResult cancelled(Thread thread, Condition condition, Throwable cause,
+                                          long startTimeMillis, long endTimeMillis) {
+        return new ConditionMatchResult(thread, condition, ConditionMatchState.CANCELLED,
+                                        null, cause, startTimeMillis, endTimeMillis);
+    }
+
+    static ConditionMatchResult timedOut(Thread thread, Condition condition, Throwable cause,
+                                         long startTimeMillis, long endTimeMillis) {
+        return new ConditionMatchResult(thread, condition, ConditionMatchState.TIMED_OUT,
+                                        null, cause, startTimeMillis, endTimeMillis);
     }
 
     /**
@@ -114,6 +120,13 @@ public final class ConditionMatchLog {
      */
     public boolean cancelled() {
         return state == ConditionMatchState.CANCELLED;
+    }
+
+    /**
+     * Returns whether the match result is {@code ConditionMatchState.TIMED_OUT}.
+     */
+    public boolean timedOut() {
+        return state == ConditionMatchState.TIMED_OUT;
     }
 
     /**
@@ -160,12 +173,12 @@ public final class ConditionMatchLog {
     @Override
     public String toString() {
         final var builder = new StringBuilder();
-        builder.append("ConditionMatchLog{")
+        builder.append("ConditionMatchResult{")
                .append("condition=").append(condition)
                .append(", state=").append(state);
         switch (state) {
             case COMPLETED -> builder.append(", matches=").append(matches);
-            case FAILED, CANCELLED -> builder.append(", cause=").append(cause);
+            case FAILED, CANCELLED, TIMED_OUT -> builder.append(", cause=").append(cause);
         }
         builder.append(", async=").append(condition.isAsync())
                .append(", thread=").append(thread.getName())

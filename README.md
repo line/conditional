@@ -198,12 +198,12 @@ Condition condition = a.and(b);
 ConditionContext ctx = ConditionContext.of();
 condition.matches(ctx);
 
-for (ConditionMatchLog log : ctx.logs()) { // 👈
+for (ConditionMatchResult log : ctx.logs()) { // 👈
     System.out.println(log);
 }
-// ConditionMatchLog{condition=a, state=COMPLETED, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672842795619ms, endTime=1672842795619ms, duration=0ms}
-// ConditionMatchLog{condition=b, state=COMPLETED, matches=false, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672842795619ms, endTime=1672842795619ms, duration=0ms}
-// ConditionMatchLog{condition=(a and b), state=COMPLETED, matches=false, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672842795617ms, endTime=1672842795619ms, duration=2ms}
+// ConditionMatchResult{condition=a, state=COMPLETED, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672842795619ms, endTime=1672842795619ms, duration=0ms}
+// ConditionMatchResult{condition=b, state=COMPLETED, matches=false, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672842795619ms, endTime=1672842795619ms, duration=0ms}
+// ConditionMatchResult{condition=(a and b), state=COMPLETED, matches=false, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672842795617ms, endTime=1672842795619ms, duration=2ms}
 ```
 
 You can see in which thread each conditional expression was matched, how long it took, and what the result was.
@@ -218,13 +218,13 @@ ConditionContext ctx = ConditionContext.of();
 try {
     condition.matches(ctx);
 } catch (Exception e) {
-    for (ConditionMatchLog log : ctx.logs()) { // 👈
+    for (ConditionMatchResult log : ctx.logs()) { // 👈
         System.out.println(log);
     }
 }
-// ConditionMatchLog{condition=a, state=COMPLETED, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672842908325ms, endTime=1672842908325ms, duration=0ms}
-// ConditionMatchLog{condition=b, state=FAILED, cause=java.lang.IllegalStateException, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672842908325ms, endTime=1672842908325ms, duration=0ms}
-// ConditionMatchLog{condition=(a and b), state=FAILED, cause=java.util.concurrent.CompletionException: java.lang.IllegalStateException, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672842908324ms, endTime=1672842908326ms, duration=2ms}
+// ConditionMatchResult{condition=a, state=COMPLETED, matches=true, async=true, thread=ForkJoinPool.commonPool-worker-1, delay=0ms, timeout=INF, startTime=1672842908325ms, endTime=1672842908325ms, duration=0ms}
+// ConditionMatchResult{condition=b, state=FAILED, cause=java.lang.IllegalStateException, async=true, thread=ForkJoinPool.commonPool-worker-2, delay=0ms, timeout=INF, startTime=1672842908325ms, endTime=1672842908325ms, duration=0ms}
+// ConditionMatchResult{condition=(a and b), state=FAILED, cause=java.util.concurrent.CompletionException: java.lang.IllegalStateException, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672842908324ms, endTime=1672842908326ms, duration=2ms}
 ```
 
 ## Kotlin DSL support

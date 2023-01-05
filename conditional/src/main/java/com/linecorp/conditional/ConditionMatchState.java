@@ -20,5 +20,6 @@ public enum ConditionMatchState {
 
     COMPLETED,
     FAILED,
-    CANCELLED
+    CANCELLED,
+    TIMED_OUT
 }

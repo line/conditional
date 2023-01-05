@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 
 public final class ConditionContext {
 
-    private final List<ConditionMatchLog> logs = new CopyOnWriteArrayList<>();
+    private final List<ConditionMatchResult> logs = new CopyOnWriteArrayList<>();
     private final Map<String, Object> contextVariables;
 
     ConditionContext(Map<String, Object> contextVariables) {
@@ -147,7 +147,7 @@ public final class ConditionContext {
     /**
      * Returns the match logs of {@link Condition}.
      */
-    public List<ConditionMatchLog> logs() {
+    public List<ConditionMatchResult> logs() {
         return List.copyOf(logs);
     }
 
@@ -240,16 +240,21 @@ public final class ConditionContext {
 
     void completed(Thread thread, Condition condition, boolean matches,
                    long startTimeMillis, long endTimeMillis) {
-        logs.add(ConditionMatchLog.completed(thread, condition, matches, startTimeMillis, endTimeMillis));
+        logs.add(ConditionMatchResult.completed(thread, condition, matches, startTimeMillis, endTimeMillis));
     }
 
     void failed(Thread thread, Condition condition, Throwable cause,
                 long startTimeMillis, long endTimeMillis) {
-        logs.add(ConditionMatchLog.failed(thread, condition, cause, startTimeMillis, endTimeMillis));
+        logs.add(ConditionMatchResult.failed(thread, condition, cause, startTimeMillis, endTimeMillis));
     }
 
     void cancelled(Thread thread, Condition condition, Throwable cause,
                    long startTimeMillis, long endTimeMillis) {
-        logs.add(ConditionMatchLog.cancelled(thread, condition, cause, startTimeMillis, endTimeMillis));
+        logs.add(ConditionMatchResult.cancelled(thread, condition, cause, startTimeMillis, endTimeMillis));
+    }
+
+    void timedOut(Thread thread, Condition condition, Throwable cause,
+                  long startTimeMillis, long endTimeMillis) {
+        logs.add(ConditionMatchResult.timedOut(thread, condition, cause, startTimeMillis, endTimeMillis));
     }
 }

@@ -21,6 +21,7 @@ import static java.util.Objects.requireNonNull;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -1039,12 +1040,18 @@ public abstract class Condition {
                       match.get() :
                       CompletableFuture.supplyAsync(match).orTimeout(timeout, TimeUnit.MILLISECONDS).join();
         } catch (Exception e) {
-            if (e instanceof CancellationException) {
-                ctx.cancelled(thread, condition, e, startTimeMillis, System.currentTimeMillis());
-            } else {
-                ctx.failed(thread, condition, e, startTimeMillis, System.currentTimeMillis());
+            Throwable cause = e;
+            if (e instanceof CompletionException) {
+                cause = e.getCause();
             }
-            return rethrow(e);
+            if (cause instanceof CancellationException) {
+                ctx.cancelled(thread, condition, cause, startTimeMillis, System.currentTimeMillis());
+            } else if (cause instanceof TimeoutException) {
+                ctx.timedOut(thread, condition, cause, startTimeMillis, System.currentTimeMillis());
+            } else {
+                ctx.failed(thread, condition, cause, startTimeMillis, System.currentTimeMillis());
+            }
+            return rethrow(cause);
         }
         ctx.completed(thread, condition, matches, startTimeMillis, System.currentTimeMillis());
         return matches;

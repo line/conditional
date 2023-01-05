@@ -23,6 +23,7 @@ import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.fail;
 import static org.awaitility.Awaitility.await;
 
 import java.time.Duration;
@@ -33,7 +34,6 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -182,7 +182,7 @@ class ConditionTest {
                    try {
                        condition.matches(ctx);
                        if (timeout) {
-                           Assertions.fail("If timeout is true, this code should not run.");
+                           fail("If timeout is true, this code should not run.");
                        }
                    } catch (Exception e) {
                        if (timeout) {
@@ -195,7 +195,7 @@ class ConditionTest {
                            }
                            assertThat(raised).isTrue();
                        } else {
-                           Assertions.fail("If timeout is false, this code should not run.", e);
+                           fail("If timeout is false, this code should not run.", e);
                        }
                    }
                    return true;
@@ -555,10 +555,10 @@ class ConditionTest {
         }
     }
 
-    static void assertDurationMillis(ConditionMatchLog conditionMatchLog,
+    static void assertDurationMillis(ConditionMatchResult conditionMatchResult,
                                      long atLeastMillisInclusive, long atMostMillisExclusive) {
-        requireNonNull(conditionMatchLog, "conditionMatchLog");
-        final var durationMillis = conditionMatchLog.durationMillis();
+        requireNonNull(conditionMatchResult, "conditionMatchResult");
+        final var durationMillis = conditionMatchResult.durationMillis();
         assertThat(atLeastMillisInclusive <= durationMillis && durationMillis < atMostMillisExclusive).isTrue();
     }
 }
