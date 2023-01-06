@@ -16,6 +16,35 @@
 
 package com.linecorp.conditional.kotlin
 
+/**
+ * [ComposableCoroutineCondition] is a class to compose multiple [CoroutineCondition]s.
+ * If you don't use [ComposableCoroutineCondition], you can compose like the code below:
+ *
+ * ```
+ * class TestCoroutineCondition : CoroutineCondition() {
+ *     lateinit var a: CoroutineCondition
+ *     lateinit var b: CoroutineCondition
+ *
+ *     override suspend fun match(ctx: CoroutineConditionContext): Boolean {
+ *         // You have to invoke `matches` method manually.
+ *         return (a and b).matches(ctx)
+ *     }
+ * }
+ * ```
+ *
+ * Otherwise, if you use [ComposableCoroutineCondition]:
+ * ```
+ * class TestCoroutineCondition : ComposableCoroutineCondition() {
+ *     lateinit var a: CoroutineCondition
+ *     lateinit var b: CoroutineCondition
+ *
+ *     override suspend fun compose(): CoroutineCondition {
+ *         // You don't have to invoke `matches` method manually.
+ *         return a and b
+ *     }
+ * }
+ * ```
+ */
 @UnstableApi
 abstract class ComposableCoroutineCondition(
     alias: String? = DEFAULT_ALIAS,
