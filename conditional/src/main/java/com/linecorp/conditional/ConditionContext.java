@@ -145,14 +145,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns the match logs of {@link Condition}.
-     */
-    public List<ConditionMatchResult> logs() {
-        return List.copyOf(logs);
-    }
-
-    /**
-     * Returns the value corresponding to the key from {@code contextVariables}.
+     * Returns the value corresponding to the {@code key} from {@code contextVariables}.
      *
      * @param key the {@code key} to get {@code value} from {@code contextVariables}.
      *
@@ -166,7 +159,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns the value corresponding to the key from {@code contextVariables} with type casting.
+     * Returns the value corresponding to the {@code key} from {@code contextVariables} with type casting.
      *
      * @param key the {@code key} to get {@code value} from {@code contextVariables}.
      * @param as the type to cast the {@code value}.
@@ -191,7 +184,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns the value corresponding to the key from {@code contextVariables} with type casting.
+     * Returns the value corresponding to the {@code key} from {@code contextVariables} with type casting.
      *
      * @param key the {@code key} to get {@code value} from {@code contextVariables}.
      *
@@ -202,7 +195,7 @@ public final class ConditionContext {
     }
 
     /**
-     * Returns the value corresponding to the key from {@code contextVariables} with type casting.
+     * Returns the value corresponding to the {@code key} from {@code contextVariables} with type casting.
      *
      * @param key the {@code key} to get {@code value} from {@code contextVariables}.
      * @param as the type to cast the {@code value}.
@@ -238,23 +231,15 @@ public final class ConditionContext {
         return of(contextVariables);
     }
 
-    void completed(Thread thread, Condition condition, boolean matches,
-                   long startTimeMillis, long endTimeMillis) {
-        logs.add(ConditionMatchResult.completed(thread, condition, matches, startTimeMillis, endTimeMillis));
+    /**
+     * Returns the match logs of {@link Condition}.
+     */
+    public List<ConditionMatchResult> logs() {
+        return List.copyOf(logs);
     }
 
-    void failed(Thread thread, Condition condition, Throwable cause,
-                long startTimeMillis, long endTimeMillis) {
-        logs.add(ConditionMatchResult.failed(thread, condition, cause, startTimeMillis, endTimeMillis));
-    }
-
-    void cancelled(Thread thread, Condition condition, Throwable cause,
-                   long startTimeMillis, long endTimeMillis) {
-        logs.add(ConditionMatchResult.cancelled(thread, condition, cause, startTimeMillis, endTimeMillis));
-    }
-
-    void timedOut(Thread thread, Condition condition, Throwable cause,
-                  long startTimeMillis, long endTimeMillis) {
-        logs.add(ConditionMatchResult.timedOut(thread, condition, cause, startTimeMillis, endTimeMillis));
+    void log(ConditionMatchResult log) {
+        requireNonNull(log, "log");
+        logs.add(log);
     }
 }

@@ -22,12 +22,12 @@ import java.util.concurrent.Executor
 /**
  * Returns a newly created [Condition].
  *
- * @param alias the value to set alias for the [function].
- * @param async the value to enable async for the [function].
- * @param executor the executor to match the [function].
- * @param delayMillis the value to set delay for the [function].
- * @param timeoutMillis the value to set timeout for the [function].
- * @param cancellable the value to enable cancellable for the [function].
+ * @param alias the value to set alias for the [Condition].
+ * @param async the value to enable async for the [Condition].
+ * @param executor the executor to match the [Condition].
+ * @param delayMillis the value to set delay for the [Condition].
+ * @param timeoutMillis the value to set timeout for the [Condition].
+ * @param cancellable the value to enable cancellable for the [Condition].
  * @param function the function to match the conditional expression.
  */
 fun condition(

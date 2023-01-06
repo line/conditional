@@ -6,6 +6,7 @@ plugins {
 
 dependencies {
     implementation(project(":conditional"))
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
 }
 
 tasks.withType<KotlinCompile> {

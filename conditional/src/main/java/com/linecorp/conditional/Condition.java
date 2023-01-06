@@ -1132,51 +1132,53 @@ public abstract class Condition {
      *
      * @throws NullPointerException if the {@code ctx} is null.
      * @throws IllegalStateException if the {@code delay} is greater than or equal to {@code timeout}.
-     * @throws CancellationException if the {@code cancellable} of {@link Condition} is {@code true},
-     * and the {@link CompletableFuture} is cancelled because an exception is raised in a certain {@link Condition}.
+     * @throws CancellationException if the {@link Condition} is cancelled.
      * @see Condition#cancellable(boolean)
      */
     public final boolean matches(ConditionContext ctx) {
         requireNonNull(ctx, "ctx");
         final var startTimeMillis = System.currentTimeMillis();
         final var thread = Thread.currentThread();
-        final var condition = this;
         final boolean matches;
         try {
-            final var delay = delayMillis;
-            final var timeout = timeoutMillis;
-            assert delay >= 0 && timeout > 0;
-            if (delay >= timeout) {
-                throw new IllegalStateException("delay >= timeout (expected delay < timeout)");
+            assert delayMillis >= 0 && timeoutMillis > 0;
+            if (delayMillis >= timeoutMillis) {
+                throw new IllegalStateException(
+                        "delayMillis >= timeoutMillis (expected delayMillis < timeoutMillis)");
             }
             final Supplier<Boolean> match = () -> {
-                if (delay > 0) {
+                if (delayMillis > 0) {
                     try {
-                        TimeUnit.MILLISECONDS.sleep(delay);
+                        TimeUnit.MILLISECONDS.sleep(delayMillis);
                     } catch (InterruptedException e) {
                         return rethrow(e);
                     }
                 }
                 return match(ctx);
             };
-            matches = timeout == DEFAULT_TIMEOUT_MILLIS ?
+            matches = timeoutMillis == DEFAULT_TIMEOUT_MILLIS ?
                       match.get() :
-                      CompletableFuture.supplyAsync(match).orTimeout(timeout, TimeUnit.MILLISECONDS).join();
+                      CompletableFuture.supplyAsync(match).orTimeout(timeoutMillis, TimeUnit.MILLISECONDS)
+                                       .join();
         } catch (Exception e) {
             Throwable cause = e;
             if (e instanceof CompletionException) {
                 cause = e.getCause();
             }
+            final ConditionMatchState state;
             if (cause instanceof CancellationException) {
-                ctx.cancelled(thread, condition, cause, startTimeMillis, System.currentTimeMillis());
+                state = ConditionMatchState.CANCELLED;
             } else if (cause instanceof TimeoutException) {
-                ctx.timedOut(thread, condition, cause, startTimeMillis, System.currentTimeMillis());
+                state = ConditionMatchState.TIMED_OUT;
             } else {
-                ctx.failed(thread, condition, cause, startTimeMillis, System.currentTimeMillis());
+                state = ConditionMatchState.FAILED;
             }
+            ctx.log(new ConditionMatchResult(thread, this, state,
+                                             null, cause, startTimeMillis, System.currentTimeMillis()));
             return rethrow(cause);
         }
-        ctx.completed(thread, condition, matches, startTimeMillis, System.currentTimeMillis());
+        ctx.log(new ConditionMatchResult(thread, this, ConditionMatchState.COMPLETED,
+                                         matches, null, startTimeMillis, System.currentTimeMillis()));
         return matches;
     }
 
@@ -1219,7 +1221,6 @@ public abstract class Condition {
 
     @Override
     public String toString() {
-        final var alias = this.alias;
         return alias != null && !alias.isBlank() ? alias : classNameOf(this, "Undefined");
     }
 

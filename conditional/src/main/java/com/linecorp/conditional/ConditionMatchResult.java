@@ -33,9 +33,9 @@ public final class ConditionMatchResult {
     private final long endTimeMillis;
     private final long durationMillis;
 
-    private ConditionMatchResult(Thread thread, Condition condition, ConditionMatchState state,
-                                 @Nullable Boolean matches, @Nullable Throwable cause,
-                                 long startTimeMillis, long endTimeMillis) {
+    ConditionMatchResult(Thread thread, Condition condition, ConditionMatchState state,
+                         @Nullable Boolean matches, @Nullable Throwable cause,
+                         long startTimeMillis, long endTimeMillis) {
         requireNonNull(thread, "thread");
         requireNonNull(condition, "condition");
         requireNonNull(state, "state");
@@ -54,30 +54,6 @@ public final class ConditionMatchResult {
         this.startTimeMillis = startTimeMillis;
         this.endTimeMillis = endTimeMillis;
         durationMillis = endTimeMillis - startTimeMillis;
-    }
-
-    static ConditionMatchResult completed(Thread thread, Condition condition, boolean matches,
-                                          long startTimeMillis, long endTimeMillis) {
-        return new ConditionMatchResult(thread, condition, ConditionMatchState.COMPLETED,
-                                        matches, null, startTimeMillis, endTimeMillis);
-    }
-
-    static ConditionMatchResult failed(Thread thread, Condition condition, Throwable cause,
-                                       long startTimeMillis, long endTimeMillis) {
-        return new ConditionMatchResult(thread, condition, ConditionMatchState.FAILED,
-                                        null, cause, startTimeMillis, endTimeMillis);
-    }
-
-    static ConditionMatchResult cancelled(Thread thread, Condition condition, Throwable cause,
-                                          long startTimeMillis, long endTimeMillis) {
-        return new ConditionMatchResult(thread, condition, ConditionMatchState.CANCELLED,
-                                        null, cause, startTimeMillis, endTimeMillis);
-    }
-
-    static ConditionMatchResult timedOut(Thread thread, Condition condition, Throwable cause,
-                                         long startTimeMillis, long endTimeMillis) {
-        return new ConditionMatchResult(thread, condition, ConditionMatchState.TIMED_OUT,
-                                        null, cause, startTimeMillis, endTimeMillis);
     }
 
     /**
