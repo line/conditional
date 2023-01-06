@@ -161,10 +161,9 @@ public final class ComposedCondition extends Condition {
                 if (e != null) {
                     completeExceptionally(future, e);
                     cancel(cfs);
-                    return;
-                }
-                if (shortCircuit(operator, value)) {
+                } else if (shortCircuit(operator, value)) {
                     complete(future, true);
+                    cancel(cfs);
                 }
             });
         }
