@@ -46,17 +46,6 @@ _Conditional_ is optimized to do less computation.
 Looking at the conditional expression above, `b` and `c` are `false`. So, regardless of the results of `a` and `d`, the result of the entire conditional expression is `false`.
 In this case, _Conditional_ does performance optimization internally for less computation, so the result can be returned faster.
 
-And if we are using the [Kotlin programming language](https://kotlinlang.org), we can make it even simpler with Kotlin DSL support of _Conditional_:
-```kotlin
-val a: Condition = condition { sleep(3000); true }
-val b: Condition = condition { sleep(1000); false }
-val c: Condition = condition { sleep(1500); false }
-val d: Condition = condition { sleep(2500); true }
-val condition: Condition = (a and b) or (c and d)
-val ctx: ConditionContext = conditionContext()
-assert(condition.parallel().matches(ctx) == false)
-```
-
 As above, we can make conditional expressions more elegant. Let's dive into the _Conditional_.
 
 ## Getting started
@@ -64,7 +53,7 @@ As above, we can make conditional expressions more elegant. Let's dive into the 
 To add a dependency on _Conditional_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:1.0.6")
+    implementation("com.linecorp.conditional:conditional:1.1.0")
 }
 ```
 
@@ -73,7 +62,7 @@ To add a dependency using Maven:
 <dependency>
     <groupId>com.linecorp.conditional</groupId>
     <artifactId>conditional</artifactId>
-    <version>1.0.6</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -227,14 +216,14 @@ try {
 // ConditionMatchResult{condition=(a and b), state=FAILED, cause=java.lang.IllegalStateException, async=false, thread=Test worker, delay=0ms, timeout=INF, startTime=1672914835661ms, endTime=1672914835663ms, duration=2ms}
 ```
 
-## Kotlin DSL support
-If you are using the [Kotlin programming language](https://kotlinlang.org), try to use _Conditional-Kotlin_. It makes it easier for you to make conditional expressions using the Kotlin DSL.
+## Kotlin support
+If you are using the [Kotlin programming language](https://kotlinlang.org), try to use _Conditional-Kotlin_. It makes it easier for you to make conditional expressions.
 
 To add a dependency on _Conditional-Kotlin_ using Gradle, use the following:
 ```groovy
 dependencies {
-    implementation("com.linecorp.conditional:conditional:1.0.6")
-    implementation("com.linecorp.conditional:conditional-kotlin:1.0.6")
+    implementation("com.linecorp.conditional:conditional:1.1.0")
+    implementation("com.linecorp.conditional:conditional-kotlin:1.1.0")
 }
 ```
 
@@ -244,12 +233,12 @@ To add a dependency using Maven:
     <dependency>
         <groupId>com.linecorp.conditional</groupId>
         <artifactId>conditional</artifactId>
-        <version>1.0.6</version>
+        <version>1.1.0</version>
     </dependency>
     <dependency>
         <groupId>com.linecorp.conditional</groupId>
         <artifactId>conditional-kotlin</artifactId>
-        <version>1.0.6</version>
+        <version>1.1.0</version>
     </dependency>  
 </dependencies>
 ```
@@ -260,10 +249,17 @@ val a: Condition = condition { ctx -> true }
 val b: Condition = condition { true }
 val condition: Condition = a and b
 val ctx: ConditionContext = conditionContext()
-condition.matches(ctx)
+assert(condition.matches(ctx) == true)
 ```
 
-If you want to know more about other DSL functions provided by _Conditional-Kotlin_, please refer to [this](https://github.com/line/conditional/blob/main/conditional-kotlin/src/main/kotlin/com/linecorp/conditional/kotlin/ConditionalExtension.kt).
+And it also supports [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html):
+```kotlin
+val a: CoroutineCondition = coroutineCondition { ctx -> true }
+val b: CoroutineCondition = coroutineCondition { true }
+val condition: CoroutineCondition = a and b
+val ctx: CoroutineConditionContext = coroutineConditionContext()
+assert(condition.matches(ctx) == true)
+```
 
 ## How to contribute
 See [CONTRIBUTING](CONTRIBUTING.md).
