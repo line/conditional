@@ -30,19 +30,19 @@ class CoroutineConditionContext internal constructor(
      *
      * @return null if the value corresponding to the [key] does not exist.
      */
-    fun `var`(key: String): Any? = contextVariables[key]
+    fun `var`(key: String) = contextVariables[key]
 
     /**
      * Returns a newly created [CoroutineConditionContext] from existing [CoroutineConditionContext].
      * [contextVariables] is copied from the existing [CoroutineConditionContext], but [logs] is not.
      * This is useful when invoking [CoroutineCondition.matches] methods after initializing [logs].
      */
-    fun copy(): CoroutineConditionContext = coroutineConditionContext(contextVariables)
+    fun copy() = coroutineConditionContext(contextVariables)
 
     /**
      * Returns the match logs of [CoroutineCondition].
      */
-    fun logs(): List<CoroutineConditionMatchResult> = logs.toList()
+    fun logs() = logs.toList()
 
     internal fun log(log: CoroutineConditionMatchResult) {
         logs += log
@@ -52,31 +52,31 @@ class CoroutineConditionContext internal constructor(
 /**
  * Returns a newly created [CoroutineConditionContext].
  */
-fun coroutineConditionContext(): CoroutineConditionContext = CoroutineConditionContext()
+fun coroutineConditionContext() = CoroutineConditionContext()
 
 /**
  * Returns a newly created [CoroutineConditionContext] by [Map].
  */
-fun coroutineConditionContext(contextVariables: Map<String, Any> = mapOf()): CoroutineConditionContext =
+fun coroutineConditionContext(contextVariables: Map<String, Any> = mapOf()) =
     CoroutineConditionContext(contextVariables)
 
 /**
  * Returns a newly created [CoroutineConditionContext] by [Pair]s.
  */
-fun coroutineConditionContext(vararg contextVariables: Pair<String, Any>): CoroutineConditionContext =
+fun coroutineConditionContext(vararg contextVariables: Pair<String, Any>) =
     coroutineConditionContext(mapOf(*contextVariables))
 
 /**
  * Returns a newly created [CoroutineConditionContext] by [Map].
  */
-fun Map<String, Any>.asCoroutineConditionContext(): CoroutineConditionContext = coroutineConditionContext(this)
+fun Map<String, Any>.asCoroutineConditionContext() = coroutineConditionContext(this)
 
 /**
  * Returns a newly created [CoroutineConditionContext] by [Pair].
  */
-fun Pair<String, Any>.asCoroutineConditionContext(): CoroutineConditionContext = coroutineConditionContext(this)
+fun Pair<String, Any>.asCoroutineConditionContext() = coroutineConditionContext(this)
 
 /**
  * Returns the value corresponding to the [key].
  */
-operator fun CoroutineConditionContext.get(key: String): Any? = this.`var`(key)
+operator fun CoroutineConditionContext.get(key: String) = this.`var`(key)

@@ -60,5 +60,5 @@ class CoroutineConditionMatchResult internal constructor(
         toString()
     }
 
-    private fun millisAsString(millis: Long): String = if (millis == Long.MAX_VALUE) "INF" else "${millis}ms"
+    private fun millisAsString(millis: Long) = if (millis == Long.MAX_VALUE) "INF" else "${millis}ms"
 }

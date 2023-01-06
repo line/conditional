@@ -28,44 +28,42 @@ class CoroutineConditionBuilder internal constructor(
     /**
      * Returns the [CoroutineConditionBuilder] with [alias] set.
      */
-    fun alias(alias: String?): CoroutineConditionBuilder = also { this.alias = alias }
+    fun alias(alias: String?) = also { this.alias = alias }
 
     /**
      * Returns the [CoroutineConditionBuilder] with [delayMillis] is set.
      */
-    fun delay(delayMillis: Long): CoroutineConditionBuilder = also { this.delayMillis = delayMillis }
+    fun delay(delayMillis: Long) = also { this.delayMillis = delayMillis }
 
     /**
      * Returns the [CoroutineConditionBuilder] with [delayMillis] is set.
      */
-    fun delay(delay: Long, unit: TimeUnit): CoroutineConditionBuilder =
-        also { delayMillis = unit.toMillis(delay) }
+    fun delay(delay: Long, unit: TimeUnit) = also { delayMillis = unit.toMillis(delay) }
 
     /**
      * Returns the [CoroutineConditionBuilder] with [delayMillis] is set.
      */
-    fun delay(delay: Duration): CoroutineConditionBuilder = also { delayMillis = delay.toMillis() }
+    fun delay(delay: Duration) = also { delayMillis = delay.toMillis() }
 
     /**
      * Returns the [CoroutineConditionBuilder] with [timeoutMillis] is set.
      */
-    fun timeout(timeoutMillis: Long): CoroutineConditionBuilder = also { this.timeoutMillis = timeoutMillis }
+    fun timeout(timeoutMillis: Long) = also { this.timeoutMillis = timeoutMillis }
 
     /**
      * Returns the [CoroutineConditionBuilder] with [timeoutMillis] is set.
      */
-    fun timeout(timeout: Long, unit: TimeUnit): CoroutineConditionBuilder =
-        also { timeoutMillis = unit.toMillis(timeout) }
+    fun timeout(timeout: Long, unit: TimeUnit) = also { timeoutMillis = unit.toMillis(timeout) }
 
     /**
      * Returns the [CoroutineConditionBuilder] with [timeoutMillis] is set.
      */
-    fun timeout(timeout: Duration): CoroutineConditionBuilder = also { timeoutMillis = timeout.toMillis() }
+    fun timeout(timeout: Duration) = also { timeoutMillis = timeout.toMillis() }
 
     /**
      * Returns a newly created [CoroutineCondition] by [CoroutineConditionBuilder].
      */
-    fun build(function: CoroutineConditionFunction): CoroutineCondition =
+    fun build(function: CoroutineConditionFunction) =
         object : CoroutineCondition(alias, delayMillis, timeoutMillis) {
             override suspend fun match(ctx: CoroutineConditionContext): Boolean = function(ctx)
         }

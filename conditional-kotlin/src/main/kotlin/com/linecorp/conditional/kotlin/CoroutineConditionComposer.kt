@@ -28,21 +28,21 @@ class CoroutineConditionComposer internal constructor(
      *
      * @param conditions the [conditions] to compose.
      */
-    fun with(vararg conditions: CoroutineCondition): CoroutineConditionComposer = with(conditions.toList())
+    fun with(vararg conditions: CoroutineCondition) = with(conditions.toList())
 
     /**
      * Returns the [CoroutineConditionComposer] composed by [conditions].
      *
      * @param conditions the [conditions] to compose.
      */
-    fun with(conditions: List<CoroutineCondition>): CoroutineConditionComposer = also {
+    fun with(conditions: List<CoroutineCondition>) = also {
         if (conditions.isNotEmpty()) this.conditions += conditions
     }
 
     /**
      * Returns a newly created [ComposedCoroutineCondition] by [CoroutineConditionComposer].
      */
-    fun compose(): CoroutineCondition = ComposedCoroutineCondition(operator, conditions)
+    fun compose() = ComposedCoroutineCondition(operator, conditions)
 }
 
 /**

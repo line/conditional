@@ -37,8 +37,7 @@ abstract class CoroutineCondition(
      *
      * @param condition the [CoroutineCondition] to compose.
      */
-    fun and(condition: CoroutineCondition): CoroutineCondition =
-        composeWith(CoroutineConditionOperator.AND, condition)
+    fun and(condition: CoroutineCondition) = composeWith(CoroutineConditionOperator.AND, condition)
 
     /**
      * Returns a newly created [CoroutineCondition].
@@ -46,8 +45,7 @@ abstract class CoroutineCondition(
      *
      * @param condition the [CoroutineCondition] to compose.
      */
-    fun or(condition: CoroutineCondition): CoroutineCondition =
-        composeWith(CoroutineConditionOperator.OR, condition)
+    fun or(condition: CoroutineCondition) = composeWith(CoroutineConditionOperator.OR, condition)
 
     private fun composeWith(
         operator: CoroutineConditionOperator,
@@ -57,7 +55,7 @@ abstract class CoroutineCondition(
     /**
      * Returns a newly created negative [CoroutineCondition].
      */
-    fun negate(): CoroutineCondition = coroutineCondition("!${this.alias}") { !this.matches(it) }
+    fun negate() = coroutineCondition("!${this.alias}") { !this.matches(it) }
 
     /**
      * Returns the matched result of the [CoroutineCondition].
@@ -73,15 +71,10 @@ abstract class CoroutineCondition(
         val startTimeMillis = System.currentTimeMillis()
         val matches = try {
             assert(delayMillis >= 0 && timeoutMillis > 0)
-            if (delayMillis >= timeoutMillis) {
+            if (delayMillis >= timeoutMillis)
                 throw IllegalStateException("delayMillis >= timeoutMillis (expected delayMillis < timeoutMillis)")
-            }
-            if (delayMillis > 0) {
-                delay(delayMillis)
-            }
-            withTimeout(timeoutMillis) {
-                async { match(ctx) }.await()
-            }
+            if (delayMillis > 0) delay(delayMillis)
+            withTimeout(timeoutMillis) { async { match(ctx) }.await() }
         } catch (e: Exception) {
             when (e) {
                 is TimeoutCancellationException -> CoroutineConditionMatchState.TIMED_OUT
@@ -133,10 +126,9 @@ fun coroutineCondition(
     delayMillis: Long = CoroutineCondition.DEFAULT_DELAY_MILLIS,
     timeoutMillis: Long = CoroutineCondition.DEFAULT_TIMEOUT_MILLIS,
     function: CoroutineConditionFunction,
-): CoroutineCondition =
-    object : CoroutineCondition(alias = alias, delayMillis = delayMillis, timeoutMillis = timeoutMillis) {
-        override suspend fun match(ctx: CoroutineConditionContext): Boolean = function(ctx)
-    }
+) = object : CoroutineCondition(alias = alias, delayMillis = delayMillis, timeoutMillis = timeoutMillis) {
+    override suspend fun match(ctx: CoroutineConditionContext): Boolean = function(ctx)
+}
 
 
 /**
@@ -145,7 +137,7 @@ fun coroutineCondition(
  *
  * @param condition the [CoroutineCondition] to compose.
  */
-infix fun CoroutineCondition.and(condition: CoroutineCondition): CoroutineCondition = this.and(condition)
+infix fun CoroutineCondition.and(condition: CoroutineCondition) = this.and(condition)
 
 /**
  * Returns a newly created [CoroutineCondition].
@@ -153,9 +145,9 @@ infix fun CoroutineCondition.and(condition: CoroutineCondition): CoroutineCondit
  *
  * @param condition the [CoroutineCondition] to compose.
  */
-infix fun CoroutineCondition.or(condition: CoroutineCondition): CoroutineCondition = this.or(condition)
+infix fun CoroutineCondition.or(condition: CoroutineCondition) = this.or(condition)
 
 /**
  * Returns a newly created negative [CoroutineCondition].
  */
-operator fun CoroutineCondition.not(): CoroutineCondition = this.negate()
+operator fun CoroutineCondition.not() = this.negate()
