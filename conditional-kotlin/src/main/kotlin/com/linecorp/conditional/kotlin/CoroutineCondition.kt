@@ -130,7 +130,6 @@ fun coroutineCondition(
     override suspend fun match(ctx: CoroutineConditionContext): Boolean = function(ctx)
 }
 
-
 /**
  * Returns a newly created [CoroutineCondition].
  * This [CoroutineCondition] is composed with the AND operator.

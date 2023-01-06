@@ -40,6 +40,11 @@ class CoroutineConditionContext internal constructor(
     fun copy() = coroutineConditionContext(contextVariables)
 
     /**
+     * Returns the [contextVariables].
+     */
+    fun contextVariables() = contextVariables
+
+    /**
      * Returns the match logs of [CoroutineCondition].
      */
     fun logs() = logs.toList()

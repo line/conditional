@@ -26,8 +26,8 @@ import javax.annotation.Nullable;
 
 public final class ConditionContext {
 
-    private final List<ConditionMatchResult> logs = new CopyOnWriteArrayList<>();
     private final Map<String, Object> contextVariables;
+    private final List<ConditionMatchResult> logs = new CopyOnWriteArrayList<>();
 
     ConditionContext(Map<String, Object> contextVariables) {
         this.contextVariables = requireNonNull(contextVariables, "contextVariables");
@@ -229,6 +229,13 @@ public final class ConditionContext {
      */
     public ConditionContext copy() {
         return of(contextVariables);
+    }
+
+    /**
+     * Returns the {@code contextVariables}.
+     */
+    public Map<String, Object> contextVariables() {
+        return contextVariables;
     }
 
     /**
