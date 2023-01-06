@@ -23,12 +23,13 @@ import org.junit.jupiter.api.Test
 class ComposableCoroutineConditionTest {
 
     @Test
-    fun compose_matches() {
+    fun matches() {
         val condition = object : ComposableCoroutineCondition() {
             override suspend fun compose(): CoroutineCondition =
                 coroutineCondition("a") { true } and coroutineCondition("b") { true }
         }
         val ctx = coroutineConditionContext()
         runBlocking { condition.matches(ctx) }.also { assertThat(it).isTrue }
+        assertThat(ctx.logs().size).isEqualTo(4)
     }
 }
