@@ -126,7 +126,7 @@ fun coroutineCondition(
     delayMillis: Long = CoroutineCondition.DEFAULT_DELAY_MILLIS,
     timeoutMillis: Long = CoroutineCondition.DEFAULT_TIMEOUT_MILLIS,
     function: CoroutineConditionFunction,
-) = object : CoroutineCondition(alias = alias, delayMillis = delayMillis, timeoutMillis = timeoutMillis) {
+) = object : CoroutineCondition(alias, delayMillis, timeoutMillis) {
     override suspend fun match(ctx: CoroutineConditionContext): Boolean = function(ctx)
 }
 
