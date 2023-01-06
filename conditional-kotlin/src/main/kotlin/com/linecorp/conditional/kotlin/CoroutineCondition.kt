@@ -95,7 +95,7 @@ abstract class CoroutineCondition(
         return matches
     }
 
-    abstract suspend fun match(ctx: CoroutineConditionContext): Boolean
+    protected abstract suspend fun match(ctx: CoroutineConditionContext): Boolean
 
     override fun toString(): String = if (alias.isNullOrBlank()) classNameOf(this, "Undefined") else alias
     private fun classNameOf(obj: Any, defaultValue: String): String =
