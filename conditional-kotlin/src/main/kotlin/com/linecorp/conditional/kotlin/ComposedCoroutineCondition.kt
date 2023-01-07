@@ -68,9 +68,7 @@ class ComposedCoroutineCondition internal constructor(
     private suspend fun completedAsync(ds: List<Deferred<Boolean>>) = coroutineScope {
         val deferred = CompletableDeferred<Boolean>()
         for (d in ds) {
-            if (d.isCompleted) {
-                break
-            }
+            if (deferred.isCompleted) break
             d.invokeOnCompletion { e ->
                 if (e != null) {
                     completeExceptionally(deferred, e)
@@ -81,11 +79,9 @@ class ComposedCoroutineCondition internal constructor(
                 }
             }
         }
-        if (!deferred.isCompleted) {
-            launch {
-                ds.awaitAll()
-                complete(deferred, false)
-            }
+        if (!deferred.isCompleted) launch {
+            ds.awaitAll()
+            complete(deferred, false)
         }
         deferred
     }
