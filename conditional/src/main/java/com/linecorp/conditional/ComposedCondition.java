@@ -237,7 +237,7 @@ public final class ComposedCondition extends Condition {
         return joiner.toString();
     }
 
-    static final class AttributeUpdaterImpl extends Condition.AttributeUpdater {
+    static final class AttributeUpdaterImpl extends AttributeUpdater {
 
         private final ConditionOperator operator;
         private volatile List<Condition> conditions;
