@@ -101,7 +101,7 @@ class ComposedCoroutineCondition internal constructor(
         return value()
     }
 
-    private suspend fun MutableList<Deferred<Boolean>>.await() = with(iterator()) {
+    private suspend fun List<Deferred<Boolean>>.await() = with(iterator()) {
         var value = next().await()
         while (hasNext()) {
             val next = next().await()
