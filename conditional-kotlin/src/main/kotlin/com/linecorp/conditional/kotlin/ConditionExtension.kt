@@ -55,16 +55,6 @@ fun conditionBuilder(): ConditionBuilder = Condition.builder()
 fun conditionComposer(operator: ConditionOperator): ConditionComposer = Condition.composer(operator)
 
 /**
- * Returns a newly created [Condition] with true.
- */
-fun `true`(): Condition = Condition.trueCondition()
-
-/**
- * Returns a newly created [Condition] with false.
- */
-fun `false`(): Condition = Condition.falseCondition()
-
-/**
  * Returns a newly created [Condition].
  * This [Condition] is composed with the AND operator.
  *

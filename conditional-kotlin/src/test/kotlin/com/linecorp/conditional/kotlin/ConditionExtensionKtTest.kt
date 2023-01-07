@@ -82,23 +82,9 @@ class ConditionExtensionKtTest {
     @Test
     fun testConditionComposer() {
         val composer = conditionComposer(ConditionOperator.AND)
-        val condition = composer.with(`true`(), `true`()).compose()
+        val condition = composer.with(condition { true }, condition { true }).compose()
         val ctx = conditionContext()
         assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun testTrueCondition() {
-        val condition = `true`()
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isTrue
-    }
-
-    @Test
-    fun testFalseCondition() {
-        val condition = `false`()
-        val ctx = conditionContext()
-        assertThat(condition.matches(ctx)).isFalse
     }
 
     @Test
