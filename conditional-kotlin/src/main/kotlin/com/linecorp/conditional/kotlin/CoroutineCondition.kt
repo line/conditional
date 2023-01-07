@@ -34,12 +34,6 @@ abstract class CoroutineCondition(
     }
 
     /**
-     * Returns a newly created [CoroutineCondition] with attributes updated.
-     */
-    fun attributes(block: (AttributeUpdater) -> Unit) =
-        with(AttributeUpdater(this)) { block(this).run { update() } }
-
-    /**
      * Returns a newly created [CoroutineCondition] with [alias] updated.
      */
     fun alias(block: () -> String?) = attributes { it.alias(block()) }
@@ -63,6 +57,9 @@ abstract class CoroutineCondition(
      * Returns a newly created [CoroutineCondition] with [timeoutMillis] updated.
      */
     fun timeout(block: () -> Duration) = attributes { it.timeout(block()) }
+
+    private fun attributes(block: (AttributeUpdater) -> Unit) =
+        with(AttributeUpdater(this)) { block(this).run { update() } }
 
     /**
      * Returns a newly created [CoroutineCondition].

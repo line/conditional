@@ -70,26 +70,6 @@ class CoroutineConditionTest {
     }
 
     @Test
-    fun update_attributes() {
-        val condition = coroutineCondition { true }
-        assertThat(condition.alias).isEqualTo(CoroutineCondition.DEFAULT_ALIAS)
-        assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
-        assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
-
-        val updated = condition.attributes {
-            it.alias("AliasedCoroutineCondition")
-            it.delayMillis(1000)
-            it.timeoutMillis(2000)
-        }
-        assertThat(updated.alias).isEqualTo("AliasedCoroutineCondition")
-        assertThat(updated.delayMillis).isEqualTo(1000)
-        assertThat(updated.timeoutMillis).isEqualTo(2000)
-        assertThat(condition.alias).isEqualTo(CoroutineCondition.DEFAULT_ALIAS)
-        assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
-        assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
-    }
-
-    @Test
     fun update_alias() {
         val condition = coroutineCondition { true }
         assertThat(condition.alias).isEqualTo(CoroutineCondition.DEFAULT_ALIAS)
