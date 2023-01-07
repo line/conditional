@@ -34,9 +34,14 @@ class ComposedCoroutineCondition internal constructor(
 
     override suspend fun match(ctx: CoroutineConditionContext): Boolean = coroutineScope {
         val ds = mutableListOf<Deferred<Boolean>>()
-        conditions.forEach {
-            val d = async { it.matches(ctx) }
-            if (completed(d)) return@coroutineScope cancelWith(ds, d::await)
+        for (condition in conditions) {
+            val d = async { condition.matches(ctx) }
+            try {
+                if (completed(d)) return@coroutineScope cancelWith(ds, d::await)
+            } catch (e: Exception) {
+                cancel(ds)
+                throw e
+            }
             ds += d
         }
         try {
@@ -79,10 +84,7 @@ class ComposedCoroutineCondition internal constructor(
                 }
             }
         }
-        if (!deferred.isCompleted) launch {
-            ds.awaitAll()
-            complete(deferred, false)
-        }
+        if (!deferred.isCompleted) launch { ds.awaitAll().also { complete(deferred, false) } }
         deferred
     }
 
