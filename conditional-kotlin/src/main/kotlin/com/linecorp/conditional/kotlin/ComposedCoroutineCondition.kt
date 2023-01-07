@@ -62,11 +62,10 @@ class ComposedCoroutineCondition internal constructor(
         value
     }
 
-    private suspend fun completed(d: Deferred<Boolean>): Boolean =
-        d.isCompleted && shortCircuit(operator, d.await())
+    private suspend fun completed(d: Deferred<Boolean>) = d.isCompleted && shortCircuit(operator, d.await())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private suspend fun completedAsync(ds: List<Deferred<Boolean>>): CompletableDeferred<Boolean> {
+    private suspend fun completedAsync(ds: List<Deferred<Boolean>>) = coroutineScope {
         val deferred = CompletableDeferred<Boolean>()
         for (d in ds) {
             if (d.isCompleted) {
@@ -83,17 +82,15 @@ class ComposedCoroutineCondition internal constructor(
             }
         }
         if (!deferred.isCompleted) {
-            coroutineScope {
-                launch {
-                    ds.awaitAll()
-                    complete(deferred, false)
-                }
+            launch {
+                ds.awaitAll()
+                complete(deferred, false)
             }
         }
-        return deferred
+        deferred
     }
 
-    private fun shortCircuit(operator: CoroutineConditionOperator, value: Boolean): Boolean = when (operator) {
+    private fun shortCircuit(operator: CoroutineConditionOperator, value: Boolean) = when (operator) {
         AND -> !value
         OR -> value
     }
