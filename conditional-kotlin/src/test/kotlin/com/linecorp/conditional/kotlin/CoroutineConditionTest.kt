@@ -69,6 +69,27 @@ class CoroutineConditionTest {
     }
 
     @Test
+    fun attributes() {
+        val condition = coroutineCondition { true }
+        assertThat(condition.alias).isEqualTo(CoroutineCondition.DEFAULT_ALIAS)
+        assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
+        assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
+
+        val updated = condition.attributes {
+            it.alias("AliasedCoroutineCondition")
+            it.delay(1000)
+            it.timeout(2000)
+        }
+        assertThat(updated.alias).isEqualTo("AliasedCoroutineCondition")
+        assertThat(updated.delayMillis).isEqualTo(1000)
+        assertThat(updated.timeoutMillis).isEqualTo(2000)
+
+        assertThat(condition.alias).isEqualTo(CoroutineCondition.DEFAULT_ALIAS)
+        assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
+        assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
+    }
+
+    @Test
     fun delay() {
         val condition = coroutineCondition(delayMillis = 1000) { true }
         val ctx = coroutineConditionContext()

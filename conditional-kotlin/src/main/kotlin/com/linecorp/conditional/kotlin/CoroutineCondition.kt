@@ -17,6 +17,8 @@
 package com.linecorp.conditional.kotlin
 
 import kotlinx.coroutines.*
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 typealias CoroutineConditionFunction = suspend (CoroutineConditionContext) -> Boolean
 
@@ -30,6 +32,12 @@ abstract class CoroutineCondition(
         if (delayMillis < 0) throw IllegalArgumentException("delayMillis: $delayMillis (expected >= 0)")
         if (timeoutMillis <= 0) throw IllegalArgumentException("timeoutMillis: $timeoutMillis (expected > 0)")
     }
+
+    /**
+     * Returns a newly created [CoroutineCondition] with attributes updated.
+     */
+    fun attributes(block: (AttributeUpdater) -> Unit) =
+        with(AttributeUpdater(this)) { block(this).run { update() } }
 
     /**
      * Returns a newly created [CoroutineCondition].
@@ -110,6 +118,65 @@ abstract class CoroutineCondition(
 
         @JvmStatic
         val DEFAULT_TIMEOUT_MILLIS: Long = Long.MAX_VALUE
+    }
+
+    class AttributeUpdater internal constructor(condition: CoroutineCondition) {
+        private val function: CoroutineConditionFunction
+
+        @Volatile
+        private var alias: String?
+
+        @Volatile
+        private var delayMillis: Long
+
+        @Volatile
+        private var timeoutMillis: Long
+
+        init {
+            function = condition::match
+            alias = condition.alias
+            delayMillis = condition.delayMillis
+            timeoutMillis = condition.timeoutMillis
+        }
+
+        /**
+         * Returns the [AttributeUpdater] with [alias] set.
+         */
+        fun alias(alias: String?) = also { this.alias = alias }
+
+        /**
+         * Returns the [AttributeUpdater] with [delayMillis] set.
+         */
+        fun delay(delayMillis: Long) = also { this.delayMillis = delayMillis }
+
+        /**
+         * Returns the [AttributeUpdater] with [delayMillis] set.
+         */
+        fun delay(delay: Long, unit: TimeUnit) = also { delayMillis = unit.toMillis(delay) }
+
+        /**
+         * Returns the [AttributeUpdater] with [delayMillis] set.
+         */
+        fun delay(delay: Duration) = also { delayMillis = delay.toMillis() }
+
+        /**
+         * Returns the [AttributeUpdater] with [timeoutMillis] set.
+         */
+        fun timeout(timeoutMillis: Long) = also { this.timeoutMillis = timeoutMillis }
+
+        /**
+         * Returns the [AttributeUpdater] with [timeoutMillis] set.
+         */
+        fun timeout(timeout: Long, unit: TimeUnit) = also { timeoutMillis = unit.toMillis(timeout) }
+
+        /**
+         * Returns the [AttributeUpdater] with [timeoutMillis] set.
+         */
+        fun timeout(timeout: Duration) = also { timeoutMillis = timeout.toMillis() }
+
+        internal fun update() = object : CoroutineCondition(alias, delayMillis, timeoutMillis) {
+            override suspend fun match(ctx: CoroutineConditionContext): Boolean = function(ctx)
+        }
     }
 }
 
