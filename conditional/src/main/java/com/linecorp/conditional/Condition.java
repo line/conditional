@@ -81,10 +81,10 @@ public abstract class Condition {
 
     Condition(@Nullable String alias, boolean async, @Nullable Executor executor,
               long delayMillis, long timeoutMillis, boolean cancellable) {
-        if (delayMillis < 0) {
+        if (delayMillis < 0L) {
             throw new IllegalArgumentException("delayMillis: " + delayMillis + " (expected >= 0)");
         }
-        if (timeoutMillis <= 0) {
+        if (timeoutMillis <= 0L) {
             throw new IllegalArgumentException("timeoutMillis: " + timeoutMillis + " (expected > 0)");
         }
         this.alias = alias;

@@ -17,8 +17,9 @@
 package com.linecorp.conditional.kotlin
 
 import kotlinx.coroutines.*
-import java.time.Duration
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 typealias CoroutineConditionFunction = suspend (CoroutineConditionContext) -> Boolean
 
@@ -29,8 +30,8 @@ abstract class CoroutineCondition(
     val timeoutMillis: Long = DEFAULT_TIMEOUT_MILLIS,
 ) {
     init {
-        if (delayMillis < 0) throw IllegalArgumentException("delayMillis: $delayMillis (expected >= 0)")
-        if (timeoutMillis <= 0) throw IllegalArgumentException("timeoutMillis: $timeoutMillis (expected > 0)")
+        if (delayMillis < 0L) throw IllegalArgumentException("delayMillis: $delayMillis (expected >= 0)")
+        if (timeoutMillis <= 0L) throw IllegalArgumentException("timeoutMillis: $timeoutMillis (expected > 0)")
     }
 
     /**
@@ -179,7 +180,7 @@ abstract class CoroutineCondition(
         /**
          * Returns the [AttributeUpdater] with [delayMillis] updated.
          */
-        fun delay(delay: Duration) = also { delayMillis = delay.toMillis() }
+        fun delay(delay: Duration) = also { delayMillis = delay.toLong(DurationUnit.MILLISECONDS) }
 
         /**
          * Returns the [AttributeUpdater] with [timeoutMillis] updated.
@@ -194,7 +195,7 @@ abstract class CoroutineCondition(
         /**
          * Returns the [AttributeUpdater] with [timeoutMillis] updated.
          */
-        fun timeout(timeout: Duration) = also { timeoutMillis = timeout.toMillis() }
+        fun timeout(timeout: Duration) = also { timeoutMillis = timeout.toLong(DurationUnit.MILLISECONDS) }
 
         internal fun update() = object : CoroutineCondition(alias, delayMillis, timeoutMillis) {
             override suspend fun match(ctx: CoroutineConditionContext): Boolean = function(ctx)

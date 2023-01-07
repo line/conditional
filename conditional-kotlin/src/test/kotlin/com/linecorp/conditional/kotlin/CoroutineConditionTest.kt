@@ -23,46 +23,47 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.*
 import org.awaitility.Awaitility.await
 import org.junit.jupiter.api.Test
-import java.time.Duration
 import java.util.concurrent.TimeUnit
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 class CoroutineConditionTest {
 
     @Test
     fun create(): Unit = runBlocking(CoroutineName("coroutine")) {
-        val a = coroutineCondition("a", delayMillis = 1000) { true }
-        val b = coroutineCondition("b", delayMillis = 1100) { true }
-        val c = coroutineCondition("c", delayMillis = 1200) { true }
-        val d = coroutineCondition("d", delayMillis = 1300) { true }
-        val e = coroutineCondition("e", delayMillis = 1400) { true }
-        val f = coroutineCondition("f", delayMillis = 1500) { true }
-        val g = coroutineCondition("g", delayMillis = 1600) { true }
-        val h = coroutineCondition("h", delayMillis = 1700) { true }
-        val i = coroutineCondition("i", delayMillis = 1800) { true }
-        val j = coroutineCondition("j", delayMillis = 1900) { true }
-        val k = coroutineCondition("k", delayMillis = 2000) { true }
-        val l = coroutineCondition("l", delayMillis = 2100) { true }
-        val m = coroutineCondition("m", delayMillis = 2200) { true }
-        val n = coroutineCondition("n", delayMillis = 2300) { true }
-        val o = coroutineCondition("o", delayMillis = 2400) { true }
-        val p = coroutineCondition("p", delayMillis = 2500) { true }
-        val q = coroutineCondition("q", delayMillis = 2600) { true }
-        val r = coroutineCondition("r", delayMillis = 2700) { true }
-        val s = coroutineCondition("s", delayMillis = 2800) { true }
-        val t = coroutineCondition("t", delayMillis = 2900) { true }
-        val u = coroutineCondition("u", delayMillis = 3000) { true }
-        val v = coroutineCondition("v", delayMillis = 3100) { true }
-        val w = coroutineCondition("w", delayMillis = 3200) { true }
-        val x = coroutineCondition("x", delayMillis = 3300) { true }
-        val y = coroutineCondition("y", delayMillis = 3400) { true }
-        val z = coroutineCondition("z", delayMillis = 3500) { true }
+        val a = coroutineCondition("a", delayMillis = 1000L) { true }
+        val b = coroutineCondition("b", delayMillis = 1100L) { true }
+        val c = coroutineCondition("c", delayMillis = 1200L) { true }
+        val d = coroutineCondition("d", delayMillis = 1300L) { true }
+        val e = coroutineCondition("e", delayMillis = 1400L) { true }
+        val f = coroutineCondition("f", delayMillis = 1500L) { true }
+        val g = coroutineCondition("g", delayMillis = 1600L) { true }
+        val h = coroutineCondition("h", delayMillis = 1700L) { true }
+        val i = coroutineCondition("i", delayMillis = 1800L) { true }
+        val j = coroutineCondition("j", delayMillis = 1900L) { true }
+        val k = coroutineCondition("k", delayMillis = 2000L) { true }
+        val l = coroutineCondition("l", delayMillis = 2100L) { true }
+        val m = coroutineCondition("m", delayMillis = 2200L) { true }
+        val n = coroutineCondition("n", delayMillis = 2300L) { true }
+        val o = coroutineCondition("o", delayMillis = 2400L) { true }
+        val p = coroutineCondition("p", delayMillis = 2500L) { true }
+        val q = coroutineCondition("q", delayMillis = 2600L) { true }
+        val r = coroutineCondition("r", delayMillis = 2700L) { true }
+        val s = coroutineCondition("s", delayMillis = 2800L) { true }
+        val t = coroutineCondition("t", delayMillis = 2900L) { true }
+        val u = coroutineCondition("u", delayMillis = 3000L) { true }
+        val v = coroutineCondition("v", delayMillis = 3100L) { true }
+        val w = coroutineCondition("w", delayMillis = 3200L) { true }
+        val x = coroutineCondition("x", delayMillis = 3300L) { true }
+        val y = coroutineCondition("y", delayMillis = 3400L) { true }
+        val z = coroutineCondition("z", delayMillis = 3500L) { true }
         val condition = a and (b and (c and (d and (e and (f and (g
                 and (h and (i and (j and (k and (l and (m and (n
                 and (o and (p and (q and (r and (s and (t and (u
                 and (v and (w and (x and (y and z))))))))))))))))))))))))
         val ctx = coroutineConditionContext()
-        await().atLeast(3500, TimeUnit.MILLISECONDS)
-            .atMost(4000, TimeUnit.MILLISECONDS)
+        await().atLeast(3500L, TimeUnit.MILLISECONDS)
+            .atMost(4000L, TimeUnit.MILLISECONDS)
             .until {
                 runBlocking { condition.matches(ctx) }.also { assertThat(it).isTrue }
                 true
@@ -84,8 +85,8 @@ class CoroutineConditionTest {
         val condition = coroutineCondition { true }
         assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
 
-        val updated = condition.delayMillis { 1000 }
-        assertThat(updated.delayMillis).isEqualTo(1000)
+        val updated = condition.delayMillis { 1000L }
+        assertThat(updated.delayMillis).isEqualTo(1000L)
         assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
     }
 
@@ -94,8 +95,8 @@ class CoroutineConditionTest {
         val condition = coroutineCondition { true }
         assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
 
-        val updated = condition.delay { Duration.ofMillis(1000) }
-        assertThat(updated.delayMillis).isEqualTo(1000)
+        val updated = condition.delay { 1000L.toDuration(DurationUnit.MILLISECONDS) }
+        assertThat(updated.delayMillis).isEqualTo(1000L)
         assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
     }
 
@@ -104,8 +105,8 @@ class CoroutineConditionTest {
         val condition = coroutineCondition { true }
         assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
 
-        val updated = condition.timeoutMillis { 1000 }
-        assertThat(updated.timeoutMillis).isEqualTo(1000)
+        val updated = condition.timeoutMillis { 1000L }
+        assertThat(updated.timeoutMillis).isEqualTo(1000L)
         assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
     }
 
@@ -114,17 +115,17 @@ class CoroutineConditionTest {
         val condition = coroutineCondition { true }
         assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
 
-        val updated = condition.timeout { Duration.ofMillis(1000) }
-        assertThat(updated.timeoutMillis).isEqualTo(1000)
+        val updated = condition.timeout { 1000L.toDuration(DurationUnit.MILLISECONDS) }
+        assertThat(updated.timeoutMillis).isEqualTo(1000L)
         assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
     }
 
     @Test
     fun delay() {
-        val condition = coroutineCondition(delayMillis = 1000) { true }
+        val condition = coroutineCondition(delayMillis = 1000L) { true }
         val ctx = coroutineConditionContext()
-        await().atLeast(1000, TimeUnit.MILLISECONDS)
-            .atMost(1500, TimeUnit.MILLISECONDS)
+        await().atLeast(1000L, TimeUnit.MILLISECONDS)
+            .atMost(1500L, TimeUnit.MILLISECONDS)
             .until {
                 runBlocking { condition.matches(ctx) }.also { assertThat(it).isTrue }
                 true
@@ -138,8 +139,8 @@ class CoroutineConditionTest {
             true
         }
         val ctx = coroutineConditionContext()
-        await().atLeast(500, TimeUnit.MILLISECONDS)
-            .atMost(900, TimeUnit.MILLISECONDS)
+        await().atLeast(500L, TimeUnit.MILLISECONDS)
+            .atMost(900L, TimeUnit.MILLISECONDS)
             .until {
                 assertThatCode {
                     runBlocking { condition.matches(ctx) }.also { assertThat(it).isTrue }
@@ -155,8 +156,8 @@ class CoroutineConditionTest {
             true
         }
         val ctx = coroutineConditionContext()
-        await().atLeast(1000, TimeUnit.MILLISECONDS)
-            .atMost(1500, TimeUnit.MILLISECONDS)
+        await().atLeast(1000L, TimeUnit.MILLISECONDS)
+            .atMost(1500L, TimeUnit.MILLISECONDS)
             .until {
                 assertThatThrownBy {
                     runBlocking {

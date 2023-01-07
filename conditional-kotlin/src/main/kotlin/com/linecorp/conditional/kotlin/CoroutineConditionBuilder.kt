@@ -16,8 +16,9 @@
 
 package com.linecorp.conditional.kotlin
 
-import java.time.Duration
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
 
 @UnstableApi
 class CoroutineConditionBuilder internal constructor(
@@ -43,7 +44,7 @@ class CoroutineConditionBuilder internal constructor(
     /**
      * Returns the [CoroutineConditionBuilder] with [delayMillis] is set.
      */
-    fun delay(delay: Duration) = also { delayMillis = delay.toMillis() }
+    fun delay(delay: Duration) = also { delayMillis = delay.toLong(DurationUnit.MILLISECONDS) }
 
     /**
      * Returns the [CoroutineConditionBuilder] with [timeoutMillis] is set.
@@ -58,7 +59,7 @@ class CoroutineConditionBuilder internal constructor(
     /**
      * Returns the [CoroutineConditionBuilder] with [timeoutMillis] is set.
      */
-    fun timeout(timeout: Duration) = also { timeoutMillis = timeout.toMillis() }
+    fun timeout(timeout: Duration) = also { timeoutMillis = timeout.toLong(DurationUnit.MILLISECONDS) }
 
     /**
      * Returns a newly created [CoroutineCondition] by [CoroutineConditionBuilder].
