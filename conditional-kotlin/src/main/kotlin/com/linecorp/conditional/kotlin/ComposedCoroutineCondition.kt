@@ -55,16 +55,7 @@ class ComposedCoroutineCondition internal constructor(
             cancel(ds)
             throw e
         }
-        val it = ds.iterator()
-        var value = it.next().await()
-        while (it.hasNext()) {
-            val next = it.next().await()
-            value = when (operator) {
-                AND -> value && next
-                OR -> value || next
-            }
-        }
-        value
+        ds.await()
     }
 
     private suspend fun completed(d: Deferred<Boolean>) = d.isCompleted && shortCircuit(operator, d.await())
@@ -108,6 +99,18 @@ class ComposedCoroutineCondition internal constructor(
     private suspend fun <T> cancelWith(ds: List<Deferred<Boolean>>, value: suspend () -> T): T {
         cancel(ds)
         return value()
+    }
+
+    private suspend fun MutableList<Deferred<Boolean>>.await() = with(iterator()) {
+        var value = next().await()
+        while (hasNext()) {
+            val next = next().await()
+            value = when (operator) {
+                AND -> value && next
+                OR -> value || next
+            }
+        }
+        value
     }
 
     override fun toString(): String {
