@@ -23,6 +23,7 @@ import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.*
 import org.awaitility.Awaitility.await
 import org.junit.jupiter.api.Test
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 class CoroutineConditionTest {
@@ -69,7 +70,7 @@ class CoroutineConditionTest {
     }
 
     @Test
-    fun attributes() {
+    fun update_attributes() {
         val condition = coroutineCondition { true }
         assertThat(condition.alias).isEqualTo(CoroutineCondition.DEFAULT_ALIAS)
         assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
@@ -77,15 +78,64 @@ class CoroutineConditionTest {
 
         val updated = condition.attributes {
             it.alias("AliasedCoroutineCondition")
-            it.delay(1000)
-            it.timeout(2000)
+            it.delayMillis(1000)
+            it.timeoutMillis(2000)
         }
         assertThat(updated.alias).isEqualTo("AliasedCoroutineCondition")
         assertThat(updated.delayMillis).isEqualTo(1000)
         assertThat(updated.timeoutMillis).isEqualTo(2000)
-
         assertThat(condition.alias).isEqualTo(CoroutineCondition.DEFAULT_ALIAS)
         assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
+        assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
+    }
+
+    @Test
+    fun update_alias() {
+        val condition = coroutineCondition { true }
+        assertThat(condition.alias).isEqualTo(CoroutineCondition.DEFAULT_ALIAS)
+
+        val updated = condition.alias { "AliasedCoroutineCondition" }
+        assertThat(updated.alias).isEqualTo("AliasedCoroutineCondition")
+        assertThat(condition.alias).isEqualTo(CoroutineCondition.DEFAULT_ALIAS)
+    }
+
+    @Test
+    fun update_delayMillis() {
+        val condition = coroutineCondition { true }
+        assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
+
+        val updated = condition.delayMillis { 1000 }
+        assertThat(updated.delayMillis).isEqualTo(1000)
+        assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
+    }
+
+    @Test
+    fun update_delay() {
+        val condition = coroutineCondition { true }
+        assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
+
+        val updated = condition.delay { Duration.ofMillis(1000) }
+        assertThat(updated.delayMillis).isEqualTo(1000)
+        assertThat(condition.delayMillis).isEqualTo(CoroutineCondition.DEFAULT_DELAY_MILLIS)
+    }
+
+    @Test
+    fun update_timeoutMillis() {
+        val condition = coroutineCondition { true }
+        assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
+
+        val updated = condition.timeoutMillis { 1000 }
+        assertThat(updated.timeoutMillis).isEqualTo(1000)
+        assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
+    }
+
+    @Test
+    fun update_timeout() {
+        val condition = coroutineCondition { true }
+        assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
+
+        val updated = condition.timeout { Duration.ofMillis(1000) }
+        assertThat(updated.timeoutMillis).isEqualTo(1000)
         assertThat(condition.timeoutMillis).isEqualTo(CoroutineCondition.DEFAULT_TIMEOUT_MILLIS)
     }
 

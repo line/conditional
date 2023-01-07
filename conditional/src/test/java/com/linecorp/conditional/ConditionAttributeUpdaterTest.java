@@ -58,7 +58,7 @@ class ConditionAttributeUpdaterTest {
         final var attributeUpdater = new ConditionAttributeUpdater(trueCondition());
         final var delayMillis = 1000L;
         assertThat(attributeUpdater.delayMillis()).isNotEqualTo(delayMillis);
-        attributeUpdater.delay(delayMillis);
+        attributeUpdater.delayMillis(delayMillis);
         assertThat(attributeUpdater.update().delayMillis()).isEqualTo(delayMillis);
     }
 
@@ -67,7 +67,7 @@ class ConditionAttributeUpdaterTest {
         final var attributeUpdater = new ConditionAttributeUpdater(trueCondition());
         final var timeoutMillis = 1000L;
         assertThat(attributeUpdater.timeoutMillis()).isNotEqualTo(timeoutMillis);
-        attributeUpdater.timeout(timeoutMillis);
+        attributeUpdater.timeoutMillis(timeoutMillis);
         assertThat(attributeUpdater.update().timeoutMillis()).isEqualTo(timeoutMillis);
     }
 }

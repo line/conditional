@@ -40,6 +40,31 @@ abstract class CoroutineCondition(
         with(AttributeUpdater(this)) { block(this).run { update() } }
 
     /**
+     * Returns a newly created [CoroutineCondition] with [alias] updated.
+     */
+    fun alias(block: () -> String?) = attributes { it.alias(block()) }
+
+    /**
+     * Returns a newly created [CoroutineCondition] with [delayMillis] updated.
+     */
+    fun delayMillis(block: () -> Long) = attributes { it.delayMillis(block()) }
+
+    /**
+     * Returns a newly created [CoroutineCondition] with [delayMillis] updated.
+     */
+    fun delay(block: () -> Duration) = attributes { it.delay(block()) }
+
+    /**
+     * Returns a newly created [CoroutineCondition] with [timeoutMillis] updated.
+     */
+    fun timeoutMillis(block: () -> Long) = attributes { it.timeoutMillis(block()) }
+
+    /**
+     * Returns a newly created [CoroutineCondition] with [timeoutMillis] updated.
+     */
+    fun timeout(block: () -> Duration) = attributes { it.timeout(block()) }
+
+    /**
      * Returns a newly created [CoroutineCondition].
      * This [CoroutineCondition] is composed with the AND operator.
      *
@@ -140,37 +165,37 @@ abstract class CoroutineCondition(
         }
 
         /**
-         * Returns the [AttributeUpdater] with [alias] set.
+         * Returns the [AttributeUpdater] with [alias] updated.
          */
         fun alias(alias: String?) = also { this.alias = alias }
 
         /**
-         * Returns the [AttributeUpdater] with [delayMillis] set.
+         * Returns the [AttributeUpdater] with [delayMillis] updated.
          */
-        fun delay(delayMillis: Long) = also { this.delayMillis = delayMillis }
+        fun delayMillis(delayMillis: Long) = also { this.delayMillis = delayMillis }
 
         /**
-         * Returns the [AttributeUpdater] with [delayMillis] set.
+         * Returns the [AttributeUpdater] with [delayMillis] updated.
          */
         fun delay(delay: Long, unit: TimeUnit) = also { delayMillis = unit.toMillis(delay) }
 
         /**
-         * Returns the [AttributeUpdater] with [delayMillis] set.
+         * Returns the [AttributeUpdater] with [delayMillis] updated.
          */
         fun delay(delay: Duration) = also { delayMillis = delay.toMillis() }
 
         /**
-         * Returns the [AttributeUpdater] with [timeoutMillis] set.
+         * Returns the [AttributeUpdater] with [timeoutMillis] updated.
          */
-        fun timeout(timeoutMillis: Long) = also { this.timeoutMillis = timeoutMillis }
+        fun timeoutMillis(timeoutMillis: Long) = also { this.timeoutMillis = timeoutMillis }
 
         /**
-         * Returns the [AttributeUpdater] with [timeoutMillis] set.
+         * Returns the [AttributeUpdater] with [timeoutMillis] updated.
          */
         fun timeout(timeout: Long, unit: TimeUnit) = also { timeoutMillis = unit.toMillis(timeout) }
 
         /**
-         * Returns the [AttributeUpdater] with [timeoutMillis] set.
+         * Returns the [AttributeUpdater] with [timeoutMillis] updated.
          */
         fun timeout(timeout: Duration) = also { timeoutMillis = timeout.toMillis() }
 

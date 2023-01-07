@@ -47,7 +47,7 @@ import javax.annotation.Nullable;
  * // Step 3: Match a conditional expression.
  * assert condition.matches(ctx) == true;</pre>
  * <p>
- * If you need set timeout, use {@link Condition#timeout(long)}, {@link Condition#timeout(long, TimeUnit)}.
+ * If you need set timeout, use {@link Condition#timeoutMillis(long)}, {@link Condition#timeout(long, TimeUnit)}.
  * </p><p>
  * If you need asynchronous support, use {@link Condition#async()} related methods.
  * Alternatively, {@link Condition#parallel()} might also help.
@@ -129,7 +129,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code function} is null.
      */
     public static Condition of(ConditionFunction function, long timeoutMillis) {
-        return of(function).timeout(timeoutMillis);
+        return of(function).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -180,7 +180,7 @@ public abstract class Condition {
      * @throws NullPointerException if {@code function} or {@code alias} is null.
      */
     public static Condition of(ConditionFunction function, String alias, long timeoutMillis) {
-        return of(function, alias).timeout(timeoutMillis);
+        return of(function, alias).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -230,7 +230,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code function} is null.
      */
     public static Condition async(ConditionFunction function, long timeoutMillis) {
-        return async(function).timeout(timeoutMillis);
+        return async(function).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -243,7 +243,7 @@ public abstract class Condition {
      * @throws NullPointerException if {@code function} or {@code executor} is null.
      */
     public static Condition async(ConditionFunction function, long timeoutMillis, Executor executor) {
-        return async(function, executor).timeout(timeoutMillis);
+        return async(function, executor).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -334,7 +334,7 @@ public abstract class Condition {
      * @throws NullPointerException if {@code function} or {@code alias} is null.
      */
     public static Condition async(ConditionFunction function, String alias, long timeoutMillis) {
-        return async(function, alias).timeout(timeoutMillis);
+        return async(function, alias).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -350,7 +350,7 @@ public abstract class Condition {
     public static Condition async(ConditionFunction function, String alias, long timeoutMillis,
                                   Executor executor) {
         requireNonNull(executor, "executor");
-        return async(function, alias).timeout(timeoutMillis).executor(executor);
+        return async(function, alias).timeoutMillis(timeoutMillis).executor(executor);
     }
 
     /**
@@ -422,7 +422,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code function} is null.
      */
     public static Condition delayed(ConditionFunction function, long delayMillis) {
-        return of(function).delay(delayMillis);
+        return of(function).delayMillis(delayMillis);
     }
 
     /**
@@ -460,7 +460,7 @@ public abstract class Condition {
      * @throws NullPointerException if {@code function} or {@code alias} is null.
      */
     public static Condition delayed(ConditionFunction function, String alias, long delayMillis) {
-        return of(function, alias).delay(delayMillis);
+        return of(function, alias).delayMillis(delayMillis);
     }
 
     /**
@@ -525,7 +525,7 @@ public abstract class Condition {
      * @throws NullPointerException if {@code future} or {@code alias} is null.
      */
     public static Condition from(CompletableFuture<Boolean> future, String alias, long timeoutMillis) {
-        return from(future, alias).timeout(timeoutMillis);
+        return from(future, alias).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -551,7 +551,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code future} is null.
      */
     public static Condition from(CompletableFuture<Boolean> future, long timeoutMillis) {
-        return from(future).timeout(timeoutMillis);
+        return from(future).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -602,7 +602,7 @@ public abstract class Condition {
      * @throws NullPointerException if {@code supplier} or {@code alias} is null.
      */
     public static Condition from(Supplier<Boolean> supplier, String alias, long timeoutMillis) {
-        return from(supplier, alias).timeout(timeoutMillis);
+        return from(supplier, alias).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -628,7 +628,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code supplier} is null.
      */
     public static Condition from(Supplier<Boolean> supplier, long timeoutMillis) {
-        return from(supplier).timeout(timeoutMillis);
+        return from(supplier).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -679,7 +679,7 @@ public abstract class Condition {
      */
     public static Condition from(Function<ConditionContext, Boolean> function, String alias,
                                  long timeoutMillis) {
-        return from(function, alias).timeout(timeoutMillis);
+        return from(function, alias).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -706,7 +706,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code function} is null.
      */
     public static Condition from(Function<ConditionContext, Boolean> function, long timeoutMillis) {
-        return from(function).timeout(timeoutMillis);
+        return from(function).timeoutMillis(timeoutMillis);
     }
 
     /**
@@ -954,8 +954,8 @@ public abstract class Condition {
     /**
      * Returns the {@link Condition} with {@code delayMillis} attribute updated.
      */
-    public Condition delay(long delayMillis) {
-        return update(attributeUpdater -> attributeUpdater.delay(delayMillis));
+    public Condition delayMillis(long delayMillis) {
+        return update(attributeUpdater -> attributeUpdater.delayMillis(delayMillis));
     }
 
     /**
@@ -986,8 +986,8 @@ public abstract class Condition {
     /**
      * Returns the {@link Condition} with {@code timeoutMillis} attribute updated.
      */
-    public Condition timeout(long timeoutMillis) {
-        return update(attributeUpdater -> attributeUpdater.timeout(timeoutMillis));
+    public Condition timeoutMillis(long timeoutMillis) {
+        return update(attributeUpdater -> attributeUpdater.timeoutMillis(timeoutMillis));
     }
 
     /**

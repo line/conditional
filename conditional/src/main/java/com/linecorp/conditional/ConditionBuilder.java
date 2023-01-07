@@ -77,7 +77,7 @@ public final class ConditionBuilder {
     /**
      * Returns the {@link ConditionBuilder} with {@code delayMillis} set.
      */
-    public ConditionBuilder delay(long delayMillis) {
+    public ConditionBuilder delayMillis(long delayMillis) {
         this.delayMillis = delayMillis;
         return this;
     }
@@ -107,7 +107,7 @@ public final class ConditionBuilder {
     /**
      * Returns the {@link ConditionBuilder} with {@code timeoutMillis} set.
      */
-    public ConditionBuilder timeout(long timeoutMillis) {
+    public ConditionBuilder timeoutMillis(long timeoutMillis) {
         this.timeoutMillis = timeoutMillis;
         return this;
     }

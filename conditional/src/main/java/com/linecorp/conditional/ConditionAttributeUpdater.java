@@ -76,7 +76,7 @@ class ConditionAttributeUpdater {
         return executor;
     }
 
-    final ConditionAttributeUpdater delay(long delayMillis) {
+    final ConditionAttributeUpdater delayMillis(long delayMillis) {
         this.delayMillis = delayMillis;
         return this;
     }
@@ -97,7 +97,7 @@ class ConditionAttributeUpdater {
         return delayMillis;
     }
 
-    final ConditionAttributeUpdater timeout(long timeoutMillis) {
+    final ConditionAttributeUpdater timeoutMillis(long timeoutMillis) {
         this.timeoutMillis = timeoutMillis;
         return this;
     }

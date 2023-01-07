@@ -56,7 +56,7 @@ class ConditionBuilderTest {
     @Test
     void delayMillis() {
         final var builder = new ConditionBuilder();
-        builder.delay(1000);
+        builder.delayMillis(1000);
         final var condition = builder.build(ctx -> true);
         assertThat(condition.delayMillis()).isEqualTo(1000);
     }
@@ -64,7 +64,7 @@ class ConditionBuilderTest {
     @Test
     void timeoutMillis() {
         final var builder = new ConditionBuilder();
-        builder.timeout(1000);
+        builder.timeoutMillis(1000);
         final var condition = builder.build(ctx -> true);
         assertThat(condition.timeoutMillis()).isEqualTo(1000);
     }

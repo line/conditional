@@ -30,7 +30,7 @@ class ComposableConditionTest {
             @Override
             protected Condition compose() {
                 final var a = Condition.async(ctx -> true).alias("a");
-                final var b = Condition.failed(new RuntimeException()).async().delay(1000).alias("b");
+                final var b = Condition.failed(new RuntimeException()).async().delayMillis(1000).alias("b");
                 return a.and(b);
             }
         }.alias("Composed");

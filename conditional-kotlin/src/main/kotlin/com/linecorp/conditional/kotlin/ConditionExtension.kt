@@ -40,7 +40,7 @@ fun condition(
     function: ConditionFunction,
 ): Condition = Condition.of(function)
     .alias(alias).async(async).executor(executor)
-    .delay(delayMillis).timeout(timeoutMillis).cancellable(cancellable)
+    .delayMillis(delayMillis).timeoutMillis(timeoutMillis).cancellable(cancellable)
 
 /**
  * Returns the [ConditionBuilder].

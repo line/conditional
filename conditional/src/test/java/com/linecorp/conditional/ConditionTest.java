@@ -152,24 +152,24 @@ class ConditionTest {
         final Supplier<Condition> t2 = f.apply(2000L, TimeUnit.MILLISECONDS);
         return Stream.of(
                 Arguments.of(c(t1), false, 1000, 1300),
-                Arguments.of(c(t1).timeout(500), true, 500, 800),
-                Arguments.of(c(t1).timeout(1500), false, 1000, 1300),
+                Arguments.of(c(t1).timeoutMillis(500), true, 500, 800),
+                Arguments.of(c(t1).timeoutMillis(1500), false, 1000, 1300),
 
                 Arguments.of(c(t1).and(c(t2)), false, 3000, 3300),
-                Arguments.of(c(t1).and(c(t2)).timeout(2500), true, 2500, 2800),
-                Arguments.of(c(t1).and(c(t2)).timeout(3500), false, 3000, 3300),
-                Arguments.of(c(t1).timeout(500).and(c(t2)), true, 500, 800),
-                Arguments.of(c(t1).timeout(1500).and(c(t2)), false, 3000, 3300),
-                Arguments.of(c(t1).and(c(t2).timeout(1500)), true, 2500, 2800),
-                Arguments.of(c(t1).and(c(t2).timeout(2500)), false, 3000, 3300),
+                Arguments.of(c(t1).and(c(t2)).timeoutMillis(2500), true, 2500, 2800),
+                Arguments.of(c(t1).and(c(t2)).timeoutMillis(3500), false, 3000, 3300),
+                Arguments.of(c(t1).timeoutMillis(500).and(c(t2)), true, 500, 800),
+                Arguments.of(c(t1).timeoutMillis(1500).and(c(t2)), false, 3000, 3300),
+                Arguments.of(c(t1).and(c(t2).timeoutMillis(1500)), true, 2500, 2800),
+                Arguments.of(c(t1).and(c(t2).timeoutMillis(2500)), false, 3000, 3300),
 
                 Arguments.of(c(t1).or(c(t2)), false, 1000, 1300),
-                Arguments.of(c(t1).or(c(t2)).timeout(500), true, 500, 800),
-                Arguments.of(c(t1).or(c(t2)).timeout(1500), false, 1000, 1300),
-                Arguments.of(c(t1).timeout(500).or(c(t2)), true, 500, 800),
-                Arguments.of(c(t1).timeout(1500).or(c(t2)), false, 1000, 1300),
-                Arguments.of(c(t1).or(c(t2).timeout(500)), false, 1000, 1300),
-                Arguments.of(c(t1).or(c(t2).timeout(1500)), false, 1000, 1300));
+                Arguments.of(c(t1).or(c(t2)).timeoutMillis(500), true, 500, 800),
+                Arguments.of(c(t1).or(c(t2)).timeoutMillis(1500), false, 1000, 1300),
+                Arguments.of(c(t1).timeoutMillis(500).or(c(t2)), true, 500, 800),
+                Arguments.of(c(t1).timeoutMillis(1500).or(c(t2)), false, 1000, 1300),
+                Arguments.of(c(t1).or(c(t2).timeoutMillis(500)), false, 1000, 1300),
+                Arguments.of(c(t1).or(c(t2).timeoutMillis(1500)), false, 1000, 1300));
     }
 
     @ParameterizedTest
