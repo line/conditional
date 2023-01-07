@@ -723,71 +723,71 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link ComposedCondition}.
-     * This {@link ComposedCondition} is composed with the AND operator.
+     * Returns a newly created {@link Condition}.
+     * This {@link Condition} is composed with the AND operator.
      *
      * @param conditions the {@link Condition}s to compose.
      *
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
-    public static ComposedCondition allOf(Condition... conditions) {
+    public static Condition allOf(Condition... conditions) {
         return new ComposedCondition(ConditionOperator.AND, conditions);
     }
 
     /**
-     * Returns a newly created {@link ComposedCondition}.
-     * This {@link ComposedCondition} is composed with the AND operator.
+     * Returns a newly created {@link Condition}.
+     * This {@link Condition} is composed with the AND operator.
      *
      * @param conditions the {@link Condition}s to compose.
      *
      * @throws NullPointerException if the {@code conditions} is null.
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
-    public static ComposedCondition allOf(List<Condition> conditions) {
+    public static Condition allOf(List<Condition> conditions) {
         return new ComposedCondition(ConditionOperator.AND, conditions);
     }
 
     /**
-     * Returns a newly created {@link ComposedCondition}.
-     * This {@link ComposedCondition} is composed with the OR operator.
+     * Returns a newly created {@link Condition}.
+     * This {@link Condition} is composed with the OR operator.
      *
      * @param conditions the {@link Condition}s to compose.
      *
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
-    public static ComposedCondition anyOf(Condition... conditions) {
+    public static Condition anyOf(Condition... conditions) {
         return new ComposedCondition(ConditionOperator.OR, conditions);
     }
 
     /**
-     * Returns a newly created {@link ComposedCondition}.
-     * This {@link ComposedCondition} is composed with the OR operator.
+     * Returns a newly created {@link Condition}.
+     * This {@link Condition} is composed with the OR operator.
      *
      * @param conditions the {@link Condition}s to compose.
      *
      * @throws NullPointerException if the {@code conditions} is null.
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
-    public static ComposedCondition anyOf(List<Condition> conditions) {
+    public static Condition anyOf(List<Condition> conditions) {
         return new ComposedCondition(ConditionOperator.OR, conditions);
     }
 
     /**
-     * Returns a newly created {@link ComposedCondition}.
-     * This {@link ComposedCondition} is composed with the AND operator.
+     * Returns a newly created {@link Condition}.
+     * This {@link Condition} is composed with the AND operator.
      * All {@code conditions} passed as parameters are negated.
      *
      * @param conditions the {@link Condition}s to compose.
      *
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
-    public static ComposedCondition noneOf(Condition... conditions) {
+    public static Condition noneOf(Condition... conditions) {
         return new ComposedCondition(ConditionOperator.AND, negateAll(conditions));
     }
 
     /**
-     * Returns a newly created {@link ComposedCondition}.
-     * This {@link ComposedCondition} is composed with the AND operator.
+     * Returns a newly created {@link Condition}.
+     * This {@link Condition} is composed with the AND operator.
      * All {@code conditions} passed as parameters are negated.
      *
      * @param conditions the {@link Condition}s to compose.
@@ -795,7 +795,7 @@ public abstract class Condition {
      * @throws NullPointerException if the {@code conditions} is null.
      * @throws IllegalArgumentException if the {@code conditions} is empty.
      */
-    public static ComposedCondition noneOf(List<Condition> conditions) {
+    public static Condition noneOf(List<Condition> conditions) {
         return new ComposedCondition(ConditionOperator.AND, negateAll(conditions));
     }
 
@@ -1041,30 +1041,30 @@ public abstract class Condition {
     }
 
     /**
-     * Returns a newly created {@link ComposedCondition}.
-     * This {@link ComposedCondition} is composed with the AND operator.
+     * Returns a newly created {@link Condition}.
+     * This {@link Condition} is composed with the AND operator.
      *
      * @param condition the {@link Condition} to compose.
      *
      * @throws NullPointerException if the {@code condition} is null.
      */
-    public final ComposedCondition and(Condition condition) {
+    public final Condition and(Condition condition) {
         return composeWith(ConditionOperator.AND, condition);
     }
 
     /**
-     * Returns a newly created {@link ComposedCondition}.
-     * This {@link ComposedCondition} is composed with the OR operator.
+     * Returns a newly created {@link Condition}.
+     * This {@link Condition} is composed with the OR operator.
      *
      * @param condition the {@link Condition} to compose.
      *
      * @throws NullPointerException if the {@code condition} is null.
      */
-    public final ComposedCondition or(Condition condition) {
+    public final Condition or(Condition condition) {
         return composeWith(ConditionOperator.OR, condition);
     }
 
-    private ComposedCondition composeWith(ConditionOperator operator, Condition condition) {
+    private Condition composeWith(ConditionOperator operator, Condition condition) {
         requireNonNull(operator, "operator");
         requireNonNull(condition, "condition");
         if (this instanceof ComposedCondition this0) {

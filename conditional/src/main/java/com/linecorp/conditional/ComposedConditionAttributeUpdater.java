@@ -25,8 +25,12 @@ final class ComposedConditionAttributeUpdater extends ConditionAttributeUpdater 
     private final ConditionOperator operator;
     private volatile List<Condition> conditions;
 
-    ComposedConditionAttributeUpdater(ComposedCondition composedCondition) {
-        super(composedCondition);
+    ComposedConditionAttributeUpdater(Condition condition) {
+        super(condition);
+        if (!(condition instanceof final ComposedCondition composedCondition)) {
+            throw new IllegalArgumentException(
+                    "condition is not an instance of ComposedCondition (expected instanceof ComposedCondition)");
+        }
         operator = composedCondition.operator();
         conditions = composedCondition.conditions();
     }

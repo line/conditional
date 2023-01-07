@@ -65,20 +65,20 @@ fun `true`(): Condition = Condition.trueCondition()
 fun `false`(): Condition = Condition.falseCondition()
 
 /**
- * Returns a newly created [ComposedCondition].
- * This [ComposedCondition] is composed with the AND operator.
+ * Returns a newly created [Condition].
+ * This [Condition] is composed with the AND operator.
  *
  * @param condition the [Condition] to compose.
  */
-infix fun Condition.and(condition: Condition): ComposedCondition = this.and(condition)
+infix fun Condition.and(condition: Condition): Condition = this.and(condition)
 
 /**
- * Returns a newly created [ComposedCondition].
- * This [ComposedCondition] is composed with the OR operator.
+ * Returns a newly created [Condition].
+ * This [Condition] is composed with the OR operator.
  *
  * @param condition the [Condition] to compose.
  */
-infix fun Condition.or(condition: Condition): ComposedCondition = this.or(condition)
+infix fun Condition.or(condition: Condition): Condition = this.or(condition)
 
 /**
  * Returns a newly created negative [Condition].
