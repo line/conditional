@@ -22,7 +22,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.util.concurrent.ForkJoinPool
 
-class ConditionalExtensionKtTest {
+class ConditionExtensionKtTest {
 
     @Test
     fun testCondition() {

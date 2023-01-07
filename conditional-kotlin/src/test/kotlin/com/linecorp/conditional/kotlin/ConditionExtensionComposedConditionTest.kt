@@ -29,7 +29,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
-internal class ConditionalExtensionComposedConditionTest {
+internal class ConditionExtensionComposedConditionTest {
 
     @ParameterizedTest
     @MethodSource("AND")
