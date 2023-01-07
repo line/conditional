@@ -17,7 +17,6 @@
 package com.linecorp.conditional.kotlin
 
 import kotlinx.coroutines.*
-import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
@@ -175,22 +174,12 @@ abstract class CoroutineCondition(
         /**
          * Returns the [AttributeUpdater] with [delayMillis] updated.
          */
-        internal fun delay(delay: Long, unit: TimeUnit) = also { delayMillis = unit.toMillis(delay) }
-
-        /**
-         * Returns the [AttributeUpdater] with [delayMillis] updated.
-         */
         internal fun delay(delay: Duration) = also { delayMillis = delay.toLong(DurationUnit.MILLISECONDS) }
 
         /**
          * Returns the [AttributeUpdater] with [timeoutMillis] updated.
          */
         internal fun timeoutMillis(timeoutMillis: Long) = also { this.timeoutMillis = timeoutMillis }
-
-        /**
-         * Returns the [AttributeUpdater] with [timeoutMillis] updated.
-         */
-        internal fun timeout(timeout: Long, unit: TimeUnit) = also { timeoutMillis = unit.toMillis(timeout) }
 
         /**
          * Returns the [AttributeUpdater] with [timeoutMillis] updated.
