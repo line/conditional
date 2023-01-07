@@ -22,6 +22,7 @@ import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -29,10 +30,13 @@ import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import com.linecorp.conditional.ComposedCondition.AttributeUpdaterImpl;
 
 class ComposedConditionTest {
 
@@ -156,5 +160,29 @@ class ComposedConditionTest {
                  .timeout(30, TimeUnit.SECONDS);
         final var ctx = ConditionContext.of();
         assertThat(condition.matches(ctx)).isTrue();
+    }
+
+    @Nested
+    class AttributeUpdaterTest {
+
+        @Test
+        void conditions() {
+            final var attributeUpdater =
+                    new AttributeUpdaterImpl(trueCondition().or(falseCondition()));
+            final var conditions = List.of(trueCondition(), trueCondition());
+            assertThat(attributeUpdater.conditions()).isNotEqualTo(conditions);
+            attributeUpdater.conditions(conditions);
+            assertThat(attributeUpdater.update().conditions()).isEqualTo(conditions);
+        }
+
+        @Test
+        void cancellable() {
+            final var attributeUpdater =
+                    new AttributeUpdaterImpl(trueCondition().or(falseCondition()));
+            final var cancellable = true;
+            assertThat(attributeUpdater.cancellable()).isNotEqualTo(cancellable);
+            attributeUpdater.cancellable(cancellable);
+            assertThat(attributeUpdater.update().cancellable()).isEqualTo(cancellable);
+        }
     }
 }

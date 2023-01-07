@@ -883,17 +883,16 @@ public abstract class Condition {
      *
      * @throws NullPointerException if the {@code exceptionSupplier} is null.
      */
-    public static Condition failed(
-            ConditionContextAwareSupplier<? extends Throwable> exceptionSupplier) {
+    public static Condition failed(ConditionContextAwareSupplier<? extends Throwable> exceptionSupplier) {
         requireNonNull(exceptionSupplier, "exceptionSupplier");
         return of(ctx -> rethrow(exceptionSupplier.get(ctx))).alias(Aliases.FAILED);
     }
 
-    protected ConditionAttributeUpdater attributeUpdater() {
-        return new ConditionAttributeUpdater(this);
+    protected AttributeUpdater attributeUpdater() {
+        return new AttributeUpdater(this);
     }
 
-    private Condition update(ConditionAttributeUpdaterConsumer attributeUpdaterConsumer) {
+    private Condition update(AttributeUpdaterConsumer attributeUpdaterConsumer) {
         requireNonNull(attributeUpdaterConsumer, "attributeUpdaterConsumer");
         final var attributeUpdater = attributeUpdater();
         attributeUpdaterConsumer.accept(attributeUpdater);
@@ -1239,5 +1238,124 @@ public abstract class Condition {
     private static <R, T extends Throwable> R typeErasure(Throwable e) throws T {
         requireNonNull(e, "e");
         throw (T) e;
+    }
+
+    static class AttributeUpdater {
+
+        private final ConditionFunction function;
+        @Nullable
+        private volatile String alias;
+        private volatile boolean async;
+        @Nullable
+        private volatile Executor executor;
+        private volatile long delayMillis;
+        private volatile long timeoutMillis;
+        private volatile boolean cancellable;
+
+        AttributeUpdater(Condition condition) {
+            requireNonNull(condition, "condition");
+            function = condition::match;
+            alias = condition.alias();
+            async = condition.isAsync();
+            executor = condition.executor();
+            delayMillis = condition.delayMillis();
+            timeoutMillis = condition.timeoutMillis();
+            cancellable = condition.cancellable();
+        }
+
+        final AttributeUpdater alias(@Nullable String alias) {
+            this.alias = alias;
+            return this;
+        }
+
+        @Nullable
+        final String alias() {
+            return alias;
+        }
+
+        final AttributeUpdater async(boolean async) {
+            this.async = async;
+            return this;
+        }
+
+        final boolean isAsync() {
+            return async;
+        }
+
+        final AttributeUpdater executor(@Nullable Executor executor) {
+            this.executor = executor;
+            return this;
+        }
+
+        @Nullable
+        final Executor executor() {
+            return executor;
+        }
+
+        final AttributeUpdater delayMillis(long delayMillis) {
+            this.delayMillis = delayMillis;
+            return this;
+        }
+
+        final AttributeUpdater delay(long delay, TimeUnit unit) {
+            requireNonNull(unit, "unit");
+            delayMillis = unit.toMillis(delay);
+            return this;
+        }
+
+        final AttributeUpdater delay(Duration delay) {
+            requireNonNull(delay, "delay");
+            delayMillis = delay.toMillis();
+            return this;
+        }
+
+        final long delayMillis() {
+            return delayMillis;
+        }
+
+        final AttributeUpdater timeoutMillis(long timeoutMillis) {
+            this.timeoutMillis = timeoutMillis;
+            return this;
+        }
+
+        final AttributeUpdater timeout(long timeout, TimeUnit unit) {
+            requireNonNull(unit, "unit");
+            timeoutMillis = unit.toMillis(timeout);
+            return this;
+        }
+
+        final AttributeUpdater timeout(Duration timeout) {
+            requireNonNull(timeout, "timeout");
+            timeoutMillis = timeout.toMillis();
+            return this;
+        }
+
+        final long timeoutMillis() {
+            return timeoutMillis;
+        }
+
+        final AttributeUpdater cancellable(boolean cancellable) {
+            this.cancellable = cancellable;
+            return this;
+        }
+
+        final boolean cancellable() {
+            return cancellable;
+        }
+
+        Condition update() {
+            return new Condition(alias, async, executor, delayMillis, timeoutMillis, cancellable) {
+                @Override
+                protected boolean match(ConditionContext ctx) {
+                    return function.match(ctx);
+                }
+            };
+        }
+    }
+
+    @FunctionalInterface
+    interface AttributeUpdaterConsumer {
+
+        void accept(AttributeUpdater attributeUpdater);
     }
 }

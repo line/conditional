@@ -72,11 +72,11 @@ public final class ComposedCondition extends Condition {
     }
 
     @Override
-    protected ComposedConditionAttributeUpdater attributeUpdater() {
-        return new ComposedConditionAttributeUpdater(this);
+    protected AttributeUpdaterImpl attributeUpdater() {
+        return new AttributeUpdaterImpl(this);
     }
 
-    ComposedCondition update(ComposedConditionAttributeUpdaterConsumer attributeUpdaterConsumer) {
+    ComposedCondition update(AttributeUpdaterConsumer attributeUpdaterConsumer) {
         requireNonNull(attributeUpdaterConsumer, "attributeUpdaterConsumer");
         final var attributeUpdater = attributeUpdater();
         attributeUpdaterConsumer.accept(attributeUpdater);
@@ -235,5 +235,43 @@ public final class ComposedCondition extends Condition {
             joiner.add(condition.toString());
         }
         return joiner.toString();
+    }
+
+    static final class AttributeUpdaterImpl extends Condition.AttributeUpdater {
+
+        private final ConditionOperator operator;
+        private volatile List<Condition> conditions;
+
+        AttributeUpdaterImpl(Condition condition) {
+            super(condition);
+            if (!(condition instanceof final ComposedCondition composedCondition)) {
+                throw new IllegalArgumentException(
+                        "condition is not an instance of ComposedCondition (expected instanceof ComposedCondition)");
+            }
+            operator = composedCondition.operator();
+            conditions = composedCondition.conditions();
+        }
+
+        List<Condition> conditions() {
+            return conditions;
+        }
+
+        AttributeUpdaterImpl conditions(List<Condition> conditions) {
+            this.conditions = requireNonNull(conditions, "conditions");
+            return this;
+        }
+
+        @Override
+        ComposedCondition update() {
+            return new ComposedCondition(alias(), isAsync(), executor(),
+                                         delayMillis(), timeoutMillis(), cancellable(),
+                                         operator, conditions);
+        }
+    }
+
+    @FunctionalInterface
+    interface AttributeUpdaterConsumer {
+
+        void accept(AttributeUpdaterImpl attributeUpdater);
     }
 }

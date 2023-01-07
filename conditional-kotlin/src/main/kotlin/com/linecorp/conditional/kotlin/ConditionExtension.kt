@@ -19,6 +19,8 @@ package com.linecorp.conditional.kotlin
 import com.linecorp.conditional.*
 import java.util.concurrent.Executor
 
+typealias ConditionFunction = (ConditionContext) -> Boolean
+
 /**
  * Returns a newly created [Condition].
  *

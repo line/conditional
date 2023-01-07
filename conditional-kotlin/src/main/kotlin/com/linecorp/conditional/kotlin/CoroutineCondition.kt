@@ -143,7 +143,7 @@ abstract class CoroutineCondition(
         val DEFAULT_TIMEOUT_MILLIS: Long = Long.MAX_VALUE
     }
 
-    class AttributeUpdater internal constructor(condition: CoroutineCondition) {
+    internal class AttributeUpdater internal constructor(condition: CoroutineCondition) {
         private val function: CoroutineConditionFunction
 
         @Volatile
@@ -165,37 +165,38 @@ abstract class CoroutineCondition(
         /**
          * Returns the [AttributeUpdater] with [alias] updated.
          */
-        fun alias(alias: String?) = also { this.alias = alias }
+        internal fun alias(alias: String?) = also { this.alias = alias }
 
         /**
          * Returns the [AttributeUpdater] with [delayMillis] updated.
          */
-        fun delayMillis(delayMillis: Long) = also { this.delayMillis = delayMillis }
+        internal fun delayMillis(delayMillis: Long) = also { this.delayMillis = delayMillis }
 
         /**
          * Returns the [AttributeUpdater] with [delayMillis] updated.
          */
-        fun delay(delay: Long, unit: TimeUnit) = also { delayMillis = unit.toMillis(delay) }
+        internal fun delay(delay: Long, unit: TimeUnit) = also { delayMillis = unit.toMillis(delay) }
 
         /**
          * Returns the [AttributeUpdater] with [delayMillis] updated.
          */
-        fun delay(delay: Duration) = also { delayMillis = delay.toLong(DurationUnit.MILLISECONDS) }
+        internal fun delay(delay: Duration) = also { delayMillis = delay.toLong(DurationUnit.MILLISECONDS) }
 
         /**
          * Returns the [AttributeUpdater] with [timeoutMillis] updated.
          */
-        fun timeoutMillis(timeoutMillis: Long) = also { this.timeoutMillis = timeoutMillis }
+        internal fun timeoutMillis(timeoutMillis: Long) = also { this.timeoutMillis = timeoutMillis }
 
         /**
          * Returns the [AttributeUpdater] with [timeoutMillis] updated.
          */
-        fun timeout(timeout: Long, unit: TimeUnit) = also { timeoutMillis = unit.toMillis(timeout) }
+        internal fun timeout(timeout: Long, unit: TimeUnit) = also { timeoutMillis = unit.toMillis(timeout) }
 
         /**
          * Returns the [AttributeUpdater] with [timeoutMillis] updated.
          */
-        fun timeout(timeout: Duration) = also { timeoutMillis = timeout.toLong(DurationUnit.MILLISECONDS) }
+        internal fun timeout(timeout: Duration) =
+            also { timeoutMillis = timeout.toLong(DurationUnit.MILLISECONDS) }
 
         internal fun update() = object : CoroutineCondition(alias, delayMillis, timeoutMillis) {
             override suspend fun match(ctx: CoroutineConditionContext): Boolean = function(ctx)
