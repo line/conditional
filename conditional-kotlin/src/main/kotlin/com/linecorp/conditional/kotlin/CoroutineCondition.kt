@@ -127,9 +127,8 @@ abstract class CoroutineCondition(
 
     protected abstract suspend fun match(ctx: CoroutineConditionContext): Boolean
 
-    override fun toString(): String = if (alias.isNullOrBlank()) classNameOf(this, "Undefined") else alias
-    private fun classNameOf(obj: Any, defaultValue: String): String =
-        (obj::class.simpleName ?: "").ifBlank { defaultValue }
+    override fun toString(): String = if (!alias.isNullOrBlank()) alias else classNameOf(this, "Undefined")
+    private fun classNameOf(obj: Any, defaultValue: String) = obj::class.simpleName ?: defaultValue
 
     companion object {
         @JvmStatic

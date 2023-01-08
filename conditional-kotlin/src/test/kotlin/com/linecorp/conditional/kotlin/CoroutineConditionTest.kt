@@ -192,6 +192,7 @@ class CoroutineConditionTest {
         }.toString().also { assertThat(it).isEqualTo("Undefined") }
         coroutineCondition { true }.toString().also { assertThat(it).isEqualTo("Undefined") }
         coroutineCondition { false }.toString().also { assertThat(it).isEqualTo("Undefined") }
+        coroutineCondition(alias = "  ") { true }.toString().also { assertThat(it).isEqualTo("Undefined") }
         coroutineCondition(alias = "TrueCondition") { true }.toString()
             .also { assertThat(it).isEqualTo("TrueCondition") }
         coroutineCondition(alias = "FalseCondition") { false }.toString()
