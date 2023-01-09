@@ -18,6 +18,9 @@ package com.linecorp.conditional;
 
 import static java.util.Objects.requireNonNull;
 
+import java.time.Instant;
+import java.time.ZoneId;
+
 import javax.annotation.Nullable;
 
 public final class ConditionMatchResult {
@@ -146,6 +149,10 @@ public final class ConditionMatchResult {
         return millis == Long.MAX_VALUE ? "INF" : millis + "ms";
     }
 
+    private static String millisAsISO8601String(long millis) {
+        return Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toOffsetDateTime().toString();
+    }
+
     @Override
     public String toString() {
         final var builder = new StringBuilder();
@@ -160,8 +167,8 @@ public final class ConditionMatchResult {
                .append(", thread=").append(thread.getName())
                .append(", delay=").append(millisAsString(condition.delayMillis()))
                .append(", timeout=").append(millisAsString(condition.timeoutMillis()))
-               .append(", startTime=").append(millisAsString(startTimeMillis))
-               .append(", endTime=").append(millisAsString(endTimeMillis))
+               .append(", startTime=").append(millisAsISO8601String(startTimeMillis))
+               .append(", endTime=").append(millisAsISO8601String(endTimeMillis))
                .append(", duration=").append(millisAsString(durationMillis))
                .append('}');
         return builder.toString();
