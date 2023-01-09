@@ -217,7 +217,8 @@ try {
 ```
 
 ## Kotlin support
-If you are using the [Kotlin programming language](https://kotlinlang.org), try to use _Conditional-Kotlin_. It makes it easier for you to make conditional expressions.
+If you are using the [Kotlin programming language](https://kotlinlang.org), try to use _Conditional-Kotlin_.
+It makes it easier for you to make conditional expressions in Kotlin.
 
 To add a dependency on _Conditional-Kotlin_ using Gradle, use the following:
 ```groovy
