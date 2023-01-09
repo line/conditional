@@ -218,7 +218,6 @@ try {
 
 ## Kotlin support
 If you are using the [Kotlin programming language](https://kotlinlang.org), try to use _Conditional-Kotlin_.
-It makes it easier for you to make conditional expressions in Kotlin.
 
 To add a dependency on _Conditional-Kotlin_ using Gradle, use the following:
 ```groovy
@@ -253,7 +252,7 @@ val ctx: ConditionContext = conditionContext()
 assert(condition.matches(ctx) == true)
 ```
 
-And it also supports [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html), so you can easily make more high-performance conditional expressions:
+And it also supports [Kotlin Coroutines](https://kotlinlang.org/docs/coroutines-overview.html), so you can make more high-performance conditional expressions:
 ```kotlin
 val a: CoroutineCondition = coroutineCondition { ctx -> true }
 val b: CoroutineCondition = coroutineCondition { true }
