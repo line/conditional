@@ -12,7 +12,7 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation("com.linecorp.conditional:conditional:1.1.2")
+    implementation("com.linecorp.conditional:conditional:1.1.3")
     testImplementation("org.awaitility:awaitility:4.2.0")
 
     implementation("org.springframework.boot:spring-boot-starter-webflux")
