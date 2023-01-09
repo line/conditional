@@ -18,6 +18,8 @@ package com.linecorp.conditional.kotlin
 
 import com.linecorp.conditional.kotlin.CoroutineConditionMatchState.*
 import kotlinx.coroutines.CoroutineName
+import java.time.Instant
+import java.time.ZoneId
 import kotlin.coroutines.CoroutineContext
 
 @UnstableApi
@@ -53,12 +55,14 @@ class CoroutineConditionMatchResult internal constructor(
             .append(", coroutine=${coroutineContext[CoroutineName]}")
             .append(", delay=${millisAsString(condition.delayMillis)}")
             .append(", timeout=${millisAsString(condition.timeoutMillis)}")
-            .append(", startTime=${millisAsString(startTimeMillis)}")
-            .append(", endTime=${millisAsString(endTimeMillis)}")
+            .append(", startTime=${millisAsISO8601String(startTimeMillis)}")
+            .append(", endTime=${millisAsISO8601String(endTimeMillis)}")
             .append(", duration=${millisAsString(durationMillis)}")
             .append('}')
         toString()
     }
 
     private fun millisAsString(millis: Long) = if (millis == Long.MAX_VALUE) "INF" else "${millis}ms"
+    private fun millisAsISO8601String(millis: Long): String =
+        with(Instant.ofEpochMilli(millis)) { atZone(ZoneId.systemDefault()).toOffsetDateTime() }.toString()
 }
