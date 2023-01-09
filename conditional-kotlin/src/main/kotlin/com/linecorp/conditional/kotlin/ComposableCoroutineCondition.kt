@@ -45,7 +45,6 @@ package com.linecorp.conditional.kotlin
  * }
  * ```
  */
-@UnstableApi
 abstract class ComposableCoroutineCondition(
     alias: String? = DEFAULT_ALIAS,
     delayMillis: Long = DEFAULT_DELAY_MILLIS,

@@ -16,7 +16,6 @@
 
 package com.linecorp.conditional.kotlin
 
-@UnstableApi
 enum class CoroutineConditionMatchState {
 
     COMPLETED,

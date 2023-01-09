@@ -21,7 +21,6 @@ import com.linecorp.conditional.kotlin.CoroutineConditionOperator.OR
 import kotlinx.coroutines.*
 import java.util.*
 
-@UnstableApi
 class ComposedCoroutineCondition internal constructor(
     private val operator: CoroutineConditionOperator,
     private val conditions: List<CoroutineCondition>,

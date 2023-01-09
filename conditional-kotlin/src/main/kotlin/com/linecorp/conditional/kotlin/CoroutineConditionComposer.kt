@@ -18,7 +18,6 @@ package com.linecorp.conditional.kotlin
 
 import java.util.concurrent.CopyOnWriteArrayList
 
-@UnstableApi
 class CoroutineConditionComposer internal constructor(
     private val operator: CoroutineConditionOperator,
     private val conditions: CopyOnWriteArrayList<CoroutineCondition> = CopyOnWriteArrayList(),

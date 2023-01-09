@@ -22,7 +22,6 @@ import kotlin.time.DurationUnit
 
 typealias CoroutineConditionFunction = suspend (CoroutineConditionContext) -> Boolean
 
-@UnstableApi
 abstract class CoroutineCondition(
     val alias: String? = DEFAULT_ALIAS,
     val delayMillis: Long = DEFAULT_DELAY_MILLIS,

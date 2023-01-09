@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
-@UnstableApi
 class CoroutineConditionBuilder internal constructor(
     @Volatile private var alias: String? = CoroutineCondition.DEFAULT_ALIAS,
     @Volatile private var delayMillis: Long = CoroutineCondition.DEFAULT_DELAY_MILLIS,

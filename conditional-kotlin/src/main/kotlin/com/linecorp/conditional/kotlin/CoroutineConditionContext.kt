@@ -18,7 +18,6 @@ package com.linecorp.conditional.kotlin
 
 import java.util.concurrent.CopyOnWriteArrayList
 
-@UnstableApi
 class CoroutineConditionContext internal constructor(
     private val contextVariables: Map<String, Any> = mapOf(),
     private val logs: CopyOnWriteArrayList<CoroutineConditionMatchResult> = CopyOnWriteArrayList(),

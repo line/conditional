@@ -22,7 +22,6 @@ import java.time.Instant
 import java.time.ZoneId
 import kotlin.coroutines.CoroutineContext
 
-@UnstableApi
 class CoroutineConditionMatchResult internal constructor(
     private val thread: Thread,
     private val coroutineContext: CoroutineContext,
