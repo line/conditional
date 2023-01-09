@@ -63,5 +63,5 @@ class CoroutineConditionMatchResult internal constructor(
 
     private fun millisAsString(millis: Long) = if (millis == Long.MAX_VALUE) "INF" else "${millis}ms"
     private fun millisAsISO8601String(millis: Long): String =
-        with(Instant.ofEpochMilli(millis)) { atZone(ZoneId.systemDefault()).toOffsetDateTime() }.toString()
+        Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toOffsetDateTime().toString()
 }
