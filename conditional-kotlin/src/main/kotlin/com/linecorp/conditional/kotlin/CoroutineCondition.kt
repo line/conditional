@@ -132,8 +132,8 @@ abstract class CoroutineCondition(
      * @throws IllegalStateException if the [delayMillis] is greater than or equal to [timeoutMillis].
      * @throws TimeoutCancellationException if the timeout is exceeded.
      * @throws CancellationException if the [CoroutineCondition] is cancelled.
-     * @see [CoroutineCondition.matches]
      * @see [runBlocking]
+     * @see [CoroutineCondition.matches]
      */
     fun blockingMatches(ctx: CoroutineConditionContext): Boolean = runBlocking { matches(ctx) }
 
