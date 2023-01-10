@@ -1124,7 +1124,7 @@ public abstract class Condition {
     }
 
     /**
-     * Returns the matched result of the {@link Condition}.
+     * Returns the match result of the {@link Condition}.
      * If the timeout is exceeded, a {@link TimeoutException} is raised.
      *
      * @param ctx the context for matching {@link Condition}.

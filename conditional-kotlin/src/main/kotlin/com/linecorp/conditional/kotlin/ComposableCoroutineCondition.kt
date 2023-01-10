@@ -26,7 +26,7 @@ package com.linecorp.conditional.kotlin
  *     lateinit var b: CoroutineCondition
  *
  *     override suspend fun match(ctx: CoroutineConditionContext): Boolean {
- *         // You have to invoke `matches` method manually.
+ *         // You have to invoke `matches` function manually.
  *         return (a and b).matches(ctx)
  *     }
  * }
@@ -39,7 +39,7 @@ package com.linecorp.conditional.kotlin
  *     lateinit var b: CoroutineCondition
  *
  *     override suspend fun compose(): CoroutineCondition {
- *         // You don't have to invoke `matches` method manually.
+ *         // You don't have to invoke `matches` function manually.
  *         return a and b
  *     }
  * }

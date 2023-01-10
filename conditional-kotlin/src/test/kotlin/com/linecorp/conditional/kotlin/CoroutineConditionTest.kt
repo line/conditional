@@ -16,10 +16,8 @@
 
 package com.linecorp.conditional.kotlin
 
-import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.*
 import org.awaitility.Awaitility.await
 import org.junit.jupiter.api.Test
@@ -30,7 +28,7 @@ import kotlin.time.toDuration
 class CoroutineConditionTest {
 
     @Test
-    fun create(): Unit = runBlocking(CoroutineName("coroutine")) {
+    fun create() {
         val a = coroutineCondition("a", delayMillis = 1000L) { true }
         val b = coroutineCondition("b", delayMillis = 1100L) { true }
         val c = coroutineCondition("c", delayMillis = 1200L) { true }
@@ -65,7 +63,7 @@ class CoroutineConditionTest {
         await().atLeast(3500L, TimeUnit.MILLISECONDS)
             .atMost(4000L, TimeUnit.MILLISECONDS)
             .until {
-                runBlocking { condition.matches(ctx) }.also { assertThat(it).isTrue }
+                assertThat(condition.blockingMatches(ctx)).isTrue
                 true
             }
     }
@@ -127,7 +125,7 @@ class CoroutineConditionTest {
         await().atLeast(1000L, TimeUnit.MILLISECONDS)
             .atMost(1500L, TimeUnit.MILLISECONDS)
             .until {
-                runBlocking { condition.matches(ctx) }.also { assertThat(it).isTrue }
+                assertThat(condition.blockingMatches(ctx)).isTrue
                 true
             }
     }
@@ -143,14 +141,14 @@ class CoroutineConditionTest {
             .atMost(900L, TimeUnit.MILLISECONDS)
             .until {
                 assertThatCode {
-                    runBlocking { condition.matches(ctx) }.also { assertThat(it).isTrue }
+                    assertThat(condition.blockingMatches(ctx)).isTrue
                 }.doesNotThrowAnyException()
                 true
             }
     }
 
     @Test
-    fun timeout_raised(): Unit = runBlocking {
+    fun timeout_raised() {
         val condition = coroutineCondition(timeoutMillis = 1000L) {
             delay(2000L)
             true
@@ -160,10 +158,8 @@ class CoroutineConditionTest {
             .atMost(1500L, TimeUnit.MILLISECONDS)
             .until {
                 assertThatThrownBy {
-                    runBlocking {
-                        condition.matches(ctx)
-                        fail("If the TimeoutCancellationException is raised, this code should not run.")
-                    }
+                    condition.blockingMatches(ctx)
+                    fail("If the TimeoutCancellationException is raised, this code should not run.")
                 }.isExactlyInstanceOf(TimeoutCancellationException::class.java)
                 true
             }
@@ -173,16 +169,16 @@ class CoroutineConditionTest {
     fun negate_matches() {
         val condition = coroutineCondition("CoroutineCondition") { true }
         val negate = condition.negate();
-        runBlocking { condition.matches(coroutineConditionContext()) }.also { assertThat(it).isTrue }
-        runBlocking { negate.matches(coroutineConditionContext()) }.also { assertThat(it).isFalse }
+        assertThat(condition.blockingMatches(coroutineConditionContext())).isTrue
+        assertThat(negate.blockingMatches(coroutineConditionContext())).isFalse
     }
 
     @Test
     fun not_matches() {
         val condition = coroutineCondition("CoroutineCondition") { true }
         val not = !condition
-        runBlocking { condition.matches(coroutineConditionContext()) }.also { assertThat(it).isTrue }
-        runBlocking { not.matches(coroutineConditionContext()) }.also { assertThat(it).isFalse }
+        assertThat(condition.blockingMatches(coroutineConditionContext())).isTrue
+        assertThat(not.blockingMatches(coroutineConditionContext())).isFalse
     }
 
     @Test

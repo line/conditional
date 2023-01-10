@@ -87,7 +87,7 @@ abstract class CoroutineCondition(
     fun negate() = coroutineCondition("!${this.alias}") { !this.matches(it) }
 
     /**
-     * Returns the matched result of the [CoroutineCondition].
+     * Returns the match result of the [CoroutineCondition].
      *
      * @param ctx the context for matching [CoroutineCondition].
      *
@@ -123,6 +123,19 @@ abstract class CoroutineCondition(
         ).also(ctx::log)
         return matches
     }
+
+    /**
+     * Returns the match result of the [CoroutineCondition].
+     *
+     * @param ctx the context for matching [CoroutineCondition].
+     *
+     * @throws IllegalStateException if the [delayMillis] is greater than or equal to [timeoutMillis].
+     * @throws TimeoutCancellationException if the timeout is exceeded.
+     * @throws CancellationException if the [CoroutineCondition] is cancelled.
+     * @see [CoroutineCondition.matches]
+     * @see [runBlocking]
+     */
+    fun blockingMatches(ctx: CoroutineConditionContext): Boolean = runBlocking { matches(ctx) }
 
     protected abstract suspend fun match(ctx: CoroutineConditionContext): Boolean
 

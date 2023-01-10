@@ -16,7 +16,6 @@
 
 package com.linecorp.conditional.kotlin
 
-import kotlinx.coroutines.runBlocking
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -28,6 +27,6 @@ class CoroutineConditionComposerTest {
             .with(coroutineCondition { true }, coroutineCondition { true })
             .compose()
         val ctx = coroutineConditionContext()
-        runBlocking { condition.matches(ctx) }.also { assertThat(it).isTrue }
+        assertThat(condition.blockingMatches(ctx)).isTrue
     }
 }
