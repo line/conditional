@@ -261,9 +261,17 @@ val ctx: CoroutineConditionContext = coroutineConditionContext()
 assert(condition.matches(ctx) == true)
 ```
 
-## How to contribute
+## Contribute
 See [CONTRIBUTING](CONTRIBUTING.md).
 If you believe you have discovered a vulnerability or have an issue related to security, please contact the maintainer directly or send us an [email](mailto:dl_oss_dev@linecorp.com) before sending a pull request.
+
+## Credits
+- [Suyeong Hong](https://github.com/icepeppermint) (Author)
+- [Contributors](https://github.com/line/conditional/contributors)
+
+<a href="https://github.com/line/conditional/graphs/contributors">
+    <img src="https://contrib.rocks/image?repo=line/conditional" alt="Contributors" />
+</a>
 
 ## License
 ```
@@ -282,10 +290,3 @@ If you believe you have discovered a vulnerability or have an issue related to s
    limitations under the License.
 ```
 See [LICENSE](LICENSE) for more details.
-
-## Contributors
-See [the complete list of our contributors](https://github.com/line/conditional/contributors).
-
-<a href="https://github.com/line/conditional/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=line/conditional" alt="Contributors" />
-</a>
