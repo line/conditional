@@ -142,7 +142,7 @@ ConditionContext ctx = ConditionContext.of();
 condition.matches(ctx); // 👈 TimeoutException will be raised due to 'b' after 4 seconds.
 ```
 In this example, we create two conditions `a` and `b`, each with their own timeout.
-We then combine these conditions with an and operator and set a global timeout for the combined condition.
+We then combine these conditions with an `and` operator and set a global timeout for the combined condition.
 If either of the conditions or the entire condition does not complete within their respective timeouts, a `TimeoutException` will be raised.
 
 ## Asynchronous support
